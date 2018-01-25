@@ -1,0 +1,196 @@
+import React, { Component } from 'react';
+import '../App.css';
+import { Map, TileLayer, Marker, Popup, GeoJSON  } from 'react-leaflet'
+import {Jumbotron, Grid, Col, Row, Button} from 'react-bootstrap';
+import world_countries from '../geoJson/world_countries';
+
+
+function getColor (d) {
+  return 'white'
+
+}
+function style (feature) {
+  return {
+    fillColor: getColor(feature.properties.density),
+    weight: 2,
+    opacity: 1,
+    color: 'white',
+    dashArray: '1',
+    fillOpacity: 1
+  };
+}
+
+// highlight on mouseOver
+function highlightFeature (feature, e) {
+  var layer = e.target;
+
+  layer.setStyle({
+    weight: 5,
+    color: '#666',
+    dashArray: '',
+    fillOpacity: 0.7
+  });
+  // this.setState({countryDisplayed:feature.properties.name})
+  countryNameDisplayed= feature.properties.name;
+}
+
+// reset default style on mouseOut
+function resetHighlight (component, e) {
+  component.refs.geojson.leafletElement.resetStyle(e.target);
+
+}
+
+function zoomToFeature (feature,e) {
+  // map.fitBounds(e.target.getBounds());
+  // how to encapsulate Map component/object?
+  var layer = e.target;
+  console.log(layer.getBounds());//får ut bounds
+  layer.bindPopup(feature.properties.name).openPopup();
+  // layer.setStyle({
+  //   weight: 5,
+  //   dashArray: '',
+  //   fillOpacity: 0
+  // });
+}
+
+function onEachFeature (component, feature, layer) {
+  layer.on({
+    mouseover: highlightFeature.bind(null, feature),
+    mouseout: resetHighlight.bind(null, component),
+    click: zoomToFeature.bind(null, feature),
+  });
+}
+
+let outer = [[81, 180], [41, -180]];
+let countryNameDisplayed = '';
+
+class MapContainer extends Component {
+  constructor() {
+    super()
+
+    this.state = {
+      lat: 42.403505,
+      lng: 48.925165,
+      zoom: 0.7,
+      bounds: outer,
+      displayInfo: false,
+      pageX:0,
+      pageY:0,
+      scale:1,
+    }
+  }
+
+  onScale(){
+    this.setState({
+      scale: this.state.scale < 1 ? 1:0
+    });
+  }
+
+  _handleClick(e){
+    var x = window.event.pageX;
+    var y = window.event.pageY
+    this.setState({pageY: y, pageX: x});
+    this.handleShow();
+  }
+  handleHide() {
+  this.setState({ displayInfo: false });
+  }
+  handleShow() {
+    this.setState({ displayInfo: true });
+  }
+
+  renderInfo(){
+    if(this.state.displayInfo){
+      let origin = ''+this.state.pageX+'px '+this.state.pageY+'px';
+      // var colorTable = document.getElementById("mapid");
+      // var tOLeft = colorTable.offsetTop;
+      // console.log(tOLeft);
+      return(
+        <div className="infoContainerBackground" style={{  animation: 'scaleInfo 300ms ease-in forwards', transformOrigin: origin,}}>
+
+          <Row className="infoContainer" >
+            <Row style={{height: 30, margin: 5}}>
+              <img src={require('../images/exit.png')} style={{height: 30 }} onClick={this.handleHide.bind(this)}/>
+            </Row>
+            <Col xs={12} sm={6} md={6}>
+              <Jumbotron style={{height: 300, backgroundColor: '#F0F8FF', color: '#2a3446'}} >
+            		<h1>Del erfaringer</h1>
+            		<p>
+            			Help other students choose their adventure by telling them about your experience.
+            		</p>
+          	   </Jumbotron>
+            </Col>
+            <Col xs={12} sm={6} md={6}>
+              <Jumbotron style={{height: 300, backgroundColor: '#F0F8FF', color: '#2a3446'}} >
+                <h1>Del erfaringer</h1>
+                <p>
+                  Help other students choose their adventure by telling them about your experience.
+                </p>
+               </Jumbotron>
+            </Col>
+          </Row>
+
+        </div>
+      );
+    }
+  }
+
+//     highlightFeature(e) {
+//       var layer = e.target;
+//       console.log(layer);
+//       layer.setStyle({
+//           weight: 5,
+//           color: '#666',
+//           dashArray: '',
+//           fillOpacity: 0.7
+//       });
+//       layer.bringToFront();
+//     }
+//     onEachFeature(feature, layer) {
+//     if (feature.properties.name) {
+//         layer.bindPopup(feature.properties.name);
+//     }
+// }
+
+/*
+<TileLayer
+url="https://api.mapbox.com/styles/v1/kampenes/cjckg518s27a72rnroccgk5rv/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia2FtcGVuZXMiLCJhIjoiY2pjZDkydmw0MGVlZjJxcm41Z3lienR0dSJ9.SMLNm7TAUXL9xXdoZuTiZA"
+attribution="<attribution>" />
+*/
+
+  render() {
+    const position = [this.state.lat, this.state.lng];
+      return (
+        <div className="mapbox">
+          <div className="map">
+            <Map
+              id="mapid"
+              center={position}
+              zoom={this.state.zoom}
+              onMoveend={this.handleMoveend}
+              ref="map"
+              scrollWheelZoom={false}
+              onClick={this._handleClick.bind(this)}
+            >
+
+              {/* <Marker position={position}>
+                <Popup>
+                  <span>A pretty CSS3 popup. <br/> Easily customizable.</span>
+                </Popup>
+              </Marker> */}
+              <GeoJSON ref="geojson" data={world_countries} style={style} onEachFeature={onEachFeature.bind(null, this)}/>
+              <div className="infoMapDiv"> Land </div>
+
+            </Map>
+          </div>
+
+          {this.renderInfo()}
+        </div>
+
+
+
+    );
+  }
+}
+
+export default MapContainer;
