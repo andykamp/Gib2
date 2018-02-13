@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {getGEOJSON} from '../actions/mapActions';
+
 import '../App.css';
 import { Map, TileLayer, Marker, Popup, GeoJSON  } from 'react-leaflet'
 import {Jumbotron, Grid, Col, Row, Button} from 'react-bootstrap';
@@ -6,7 +10,7 @@ import world_countries from '../geoJson/world_countries';
 
 
 function getColor (d) {
-  return 'white'
+  return '#2a3446'
 
 }
 function style (feature) {
@@ -14,7 +18,7 @@ function style (feature) {
     fillColor: getColor(feature.properties.density),
     weight: 2,
     opacity: 1,
-    color: 'white',
+    color: '#2a3446',
     dashArray: '1',
     fillOpacity: 1
   };
@@ -77,8 +81,10 @@ class MapContainer extends Component {
       pageX:0,
       pageY:0,
       scale:1,
+      countries: {},
     }
   }
+
 
   onScale(){
     this.setState({
@@ -178,6 +184,8 @@ attribution="<attribution>" />
                   <span>A pretty CSS3 popup. <br/> Easily customizable.</span>
                 </Popup>
               </Marker> */}
+
+
               <GeoJSON ref="geojson" data={world_countries} style={style} onEachFeature={onEachFeature.bind(null, this)}/>
               <div className="infoMapDiv"> Land </div>
 
@@ -192,5 +200,14 @@ attribution="<attribution>" />
     );
   }
 }
-
-export default MapContainer;
+function mapStateToProps(state){
+  return{
+    geojson: state.map.geojson
+  }
+}
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    getGEOJSON: getGEOJSON,
+  },dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(MapContainer);

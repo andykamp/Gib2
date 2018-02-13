@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 //CSS AND BOOTSTRAP
 import '../../App.css';
 import {Modal, Grid, Col, Row, Button} from 'react-bootstrap';
-import $ from "jquery";
 
 //IMPORT COMPOMNENTS USED IN RENDER
 import Map from '../map';
@@ -21,9 +20,9 @@ class Home extends Component {
 
       return (
         <Grid className="wholescreen">
-          <Row className="containerMap">
+          <div className="containerMap">
             <Map />
-          </Row>
+          </div>
             <Form />
         </Grid>
     );
