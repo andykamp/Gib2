@@ -2,6 +2,7 @@
 .leaflet-container {
     background: #dfe6e9;
     /* background-image: url('./images/background.png'); */
+    z-index: 1;
 
 
 }
@@ -19,6 +20,7 @@
 .header{
   min-height: 10vh;
   background-color: #2a3446;
+  z-index: 2;
   /* background-color: rgba(0, 0, 0, 0.2); */
   color: white;
   border: 0;
@@ -27,7 +29,7 @@
 .headerOnTop{
   height: 10vh;
   background-color: #2a3446;
-
+  z-index: 2;
   /* background-color: rgba(0, 0, 0, 0); */
   color: white;
   border: 0;
@@ -61,24 +63,37 @@
 
 /*  */
 
-/* loading */
-.loading{
-  position: absolute;
-  top:0;
-  bottom:0;
-  left: 0;
-  right:0;
-  z-index: 100;
-  min-height: 100vh;
-  overflow: hidden;
-  background-color: white;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  animation: flyleft 2s ease-in
+/* modal */
+
+/* Remove scroll on the body when react-modal is open */
+.ReactModal__Body--open {
+    overflow: hidden;
 }
 
+
+.loading{
+
+  height: 100vh;
+  width: 100vw;
+  z-index: 3;
+  background-color: red;
+
+  /* animation: flyleft 2s ease-in */
+}
+.login{
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.introPlane{
+  position: absolute;
+  left: -100px;
+  height: 200px;
+  width: 200px;
+  overflow:visible;
+}
 @keyframes flyleft {
   from { transform: translateX(0); }
   to { transform: translateX(3000px); }
