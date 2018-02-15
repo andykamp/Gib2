@@ -5,10 +5,13 @@ import {combineReducers} from 'redux';
 import {cartReducers} from './cartReducers';
 import {mapReducer} from './mapReducer';
 import {profileReducer} from './profileReducer';
+import {loginReducer} from './loginReducer';
+
 
 //HERE COMBINE THE REDUCERS
 export default combineReducers({
   cart: cartReducers,
   map: mapReducer,
   profile: profileReducer,
+  login: loginReducer,
 })

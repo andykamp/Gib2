@@ -61,10 +61,21 @@ function onEachFeature (component, feature, layer) {
   layer.on({
     mouseover: highlightFeature.bind(null, feature),
     mouseout: resetHighlight.bind(null, component),
-    click: zoomToFeature.bind(null, feature),
+    click: function(){
+        console.log(  layer.setStyle({
+            fillColor: 'red',
+          }))
+        var init_bounds = layer.getBounds();
+        console.log('center',init_bounds.getCenter());
+        var name = feature.properties.name;
+        console.log('name',name);
+        temp_bound = init_bounds;
+
+      },
   });
 }
 
+let temp_bound = [[81, 180], [41, -180]];
 let outer = [[81, 180], [41, -180]];
 let countryNameDisplayed = '';
 
@@ -85,6 +96,16 @@ class MapContainer extends Component {
     }
   }
 
+  setBounds(){
+      //var target_bound = [[init_bounds._southWest.lat,init_bounds._southWest.lng],[init_bounds._northEast.lat,init_bounds._northEast.lng]];
+      //console.log('bounds',target_bound);
+      this.setState({
+        bounds: temp_bound,
+        boundsOptions: {padding: [50,50]}
+
+      })
+      console.log('settes',this.state.bounds);
+  }
 
   onScale(){
     this.setState({
@@ -96,7 +117,9 @@ class MapContainer extends Component {
     var x = window.event.pageX;
     var y = window.event.pageY
     this.setState({pageY: y, pageX: x});
-    this.handleShow();
+    // this.handleShow();
+    this.setBounds();
+
   }
   handleHide() {
   this.setState({ displayInfo: false });
@@ -177,6 +200,7 @@ attribution="<attribution>" />
               ref="map"
               scrollWheelZoom={false}
               onClick={this._handleClick.bind(this)}
+              bounds={this.state.bounds}
             >
 
               {/* <Marker position={position}>
