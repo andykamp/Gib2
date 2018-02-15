@@ -117,7 +117,7 @@ class App extends Component {
           {/* Renders startupscreen if first time enterin */}
           {/* Login modal */}
           <Modal
-           isOpen={!this.props.loggedIn}
+           isOpen={this.props.loggedIn}
            style={this.props.loggedIn?(animationStyles):(customStyles)}
            >
             <div className='login'>
