@@ -26,15 +26,20 @@ class SignIn extends React.Component {
   handleChange(e) {
     this.setState({ value: e.target.value });
   }
+  handleLogin(){
+    this.props.setLoginInfo();
+  }
 
   render() {
     return (
-      <form>
+      <form className="signIn">
+        <img src={require('../images/logo.png')} style={{height: '10vh'}} />
+        <h2 style={{color: 'white'}}>Velkommen</h2>
+        <p style={{color: 'white', textAlign: 'center'}}>Logg deg inn med studieretning for å at vi kan tilrettelegge bedre for deg</p>
         <FormGroup
           controlId="formBasicText"
           validationState={this.getValidationState()}
         >
-          <ControlLabel>Working example with validation</ControlLabel>
           <FormControl
             type="text"
             value={this.state.value}
@@ -42,9 +47,9 @@ class SignIn extends React.Component {
             onChange={this.handleChange}
           />
           <FormControl.Feedback />
-          <HelpBlock>Validation is based on string length.</HelpBlock>
+          {/* <HelpBlock>Validation is based on string length.</HelpBlock> */}
         </FormGroup>
-        <Button bsStyle="primary" onClick={this.props.setLoginInfo}>Log in</Button>
+        <Button className="signIn" onClick={this.handleLogin.bind(this)}>Log in</Button>
 
       </form>
     );

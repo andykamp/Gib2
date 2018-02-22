@@ -3,7 +3,7 @@
 
 export const getUniversities = () => {
   return (dispatch) => {
-    fetch('http://localhost:8080/uni_in_country/taiwan')
+    fetch('http://localhost:8080/uni/all')
       .then(response => response.json())
       .then(json => dispatch({ type: "FETCHED_UNIVERSITIES", payload: json })
 );

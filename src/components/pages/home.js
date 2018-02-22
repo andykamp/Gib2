@@ -6,7 +6,8 @@ import {Modal, Grid, Col, Row, Button} from 'react-bootstrap';
 //IMPORT COMPOMNENTS USED IN RENDER
 import Map from '../map';
 import Form from '../form';
-
+import TopSearched from '../topSearched'
+import MapInfo from '../mapInfo'
 class Home extends Component {
   constructor() {
     super()
@@ -23,7 +24,9 @@ class Home extends Component {
           <div className="containerMap">
             <Map />
           </div>
-            <Form />
+            <MapInfo/>
+            <TopSearched />
+            {/* <Form /> */}
         </Grid>
     );
   }

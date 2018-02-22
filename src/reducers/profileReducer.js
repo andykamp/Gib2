@@ -8,7 +8,7 @@ uni_name:''
 export function profileReducer(state = INITIAL_STATE, action) {
     switch (action.type) {
       case "FETCHED_UNIVERSITIES":
-        return  {...state, uni: action.payload.features}
+        return  {...state, uni: action.payload}
         break;
       case "INFO_RETIREVED":
         return {...state, [action.payload.prop]: action.payload.value}

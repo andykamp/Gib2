@@ -7,7 +7,7 @@ import '../App.css';
 import { Map, TileLayer, Marker, Popup, GeoJSON  } from 'react-leaflet'
 import {Jumbotron, Grid, Col, Row, Button} from 'react-bootstrap';
 import world_countries from '../geoJson/world_countries';
-
+import MapInfo from './mapInfo';
 
 function getColor (d) {
   return '#2a3446'
@@ -20,7 +20,8 @@ function style (feature) {
     opacity: 1,
     color: '#2a3446',
     dashArray: '1',
-    fillOpacity: 1
+    fillOpacity: 1,
+    padding: 50
   };
 }
 
@@ -76,7 +77,7 @@ function onEachFeature (component, feature, layer) {
 }
 
 let temp_bound = [[81, 180], [41, -180]];
-let outer = [[81, 180], [41, -180]];
+let outer = [[-50, 90], [90, -90]];
 let countryNameDisplayed = '';
 
 class MapContainer extends Component {
@@ -136,29 +137,12 @@ class MapContainer extends Component {
       // console.log(tOLeft);
       return(
         <div className="infoContainerBackground" style={{  animation: 'scaleInfo 300ms ease-in forwards', transformOrigin: origin,}}>
-
           <Row className="infoContainer" >
             <Row style={{height: 30, margin: 5}}>
               <img src={require('../images/exit.png')} style={{height: 30 }} onClick={this.handleHide.bind(this)}/>
             </Row>
-            <Col xs={12} sm={6} md={6}>
-              <Jumbotron style={{height: 300, backgroundColor: '#F0F8FF', color: '#2a3446'}} >
-            		<h1>Del erfaringer</h1>
-            		<p>
-            			Help other students choose their adventure by telling them about your experience.
-            		</p>
-          	   </Jumbotron>
-            </Col>
-            <Col xs={12} sm={6} md={6}>
-              <Jumbotron style={{height: 300, backgroundColor: '#F0F8FF', color: '#2a3446'}} >
-                <h1>Del erfaringer</h1>
-                <p>
-                  Help other students choose their adventure by telling them about your experience.
-                </p>
-               </Jumbotron>
-            </Col>
-          </Row>
-
+          <MapInfo/>
+        </Row>
         </div>
       );
     }

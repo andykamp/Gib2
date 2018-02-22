@@ -30,7 +30,7 @@ const customStyles = {
       right                      : '0px',
       bottom                     : '0px',
       border                     : '1px solid #ccc',
-      background                 : '#95CAFE',
+      background                 : '#2a3446',
       overflow                   : 'auto',
       WebkitOverflowScrolling    : 'touch',
       borderRadius               : '4px',
@@ -49,7 +49,7 @@ const animationStyles = {
       right             : 0,
       bottom            : 0,
       backgroundColor   : 'rgba(255, 255, 255, 0.75)',
-        animation: 'flyleft 3s ease-in',
+      animation: 'flyUp 1s ease-in',
       overflow:'visible',
 
     },
@@ -60,7 +60,7 @@ const animationStyles = {
       right                      : '0px',
       bottom                     : '0px',
       border                     : '1px solid #ccc',
-      background                 : '#95CAFE',
+      background                 : '#2a3446',
       overflow                   : 'auto',
       WebkitOverflowScrolling    : 'touch',
       borderRadius               : '4px',
@@ -81,25 +81,37 @@ class App extends Component {
       showModal: false,
       loadSpinner:true,
       animatePlane:true,
+      showInfo: false,
     }
   }
 
   componentWillMount(){
-    //timer for Modal
-    // const that=this;
-  //   setTimeout(function(){
-  //     that.setState({showModal: false});
-  // }, 3000);
   }
 
-  //------listener for scroll used in header ect----------
   componentDidMount(){
+      //------listener for scroll used in header ect----------
       window.addEventListener('scroll', this.handleScroll.bind(this));
       //sets timeout for loadingscreen
       setTimeout(function() { this.setState({firstTime: false}); }.bind(this), 2000);
 
+      //if we are not logged in open login
+      if(!this.props.loggedIn){
+        this.setState({showModal:true});
+      }
   }
+  componentWillReceiveProps(nextProps){
+    //if user is logged in--> set timer for the modal to close
+    if(nextProps.loggedIn == true){
+       const that=this;
+         setTimeout(function(){
+           that.setState({showModal: false, showInfo:true});
+       }, 1000);    }
+   // this.setState({showModal: false});
+
+  }
+
   componentWillUnmount(){
+    //remove listener
     window.removeEventListener('scroll', this.handleScroll);
 
   }
@@ -107,9 +119,11 @@ class App extends Component {
   handleScroll(event) {
     this.setState({scrolly:window.scrollY})
   }
-  //---------------------------------------------------------
 
+renderinfo(){
+  console.log('renderpopup');
 
+}
 
   render() {
       return (
@@ -117,16 +131,23 @@ class App extends Component {
           {/* Renders startupscreen if first time enterin */}
           {/* Login modal */}
           <Modal
-           isOpen={this.props.loggedIn}
+           isOpen={this.state.showModal}
            style={this.props.loggedIn?(animationStyles):(customStyles)}
            >
             <div className='login'>
-              {/* If we animate slide we animate the pain */}
-              {this.props.loggedIn ?(<img src={require('./images/plane.png')} className="introPlane" />):('')}
+
               <SignIn/>
             </div>
           </Modal>
+          {(this.state.showInfo) ? (
+            <div className="turtorialPopup">
+              <div className="turtorialPopupExit">
+                <img src={require('./images/exit.png')} style={{height: 20, marginLeft:0 }} onClick={()=> this.setState({showInfo:false})}/>
+              </div>
+              <p style= {{marginTop:10}}>Use the dynamic map to find your universities</p>
 
+            </div>
+          ):("")}
           <Menu scrollY={this.state.scrolly}/>
             {this.props.children}
           <Footer />
