@@ -22,3 +22,6 @@ yarn-error.log*
 
 # es linting
 .eslintrc.js
+
+# vs code
+.vscode
