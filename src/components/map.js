@@ -10,31 +10,38 @@ import world_countries from '../geoJson/world_countries';
 import universities from '../geoJson/uni';
 
 //Global variables
-let tile_layer ='https://api.mapbox.com/styles/v1/kristogs/cjee2fy4u00jb2ro1kwgrex8w/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia3Jpc3RvZ3MiLCJhIjoiY2pjdWlrbHhjMGt3YzJ3cW9sNm5xODc1dSJ9.Nvgmd0tPcaQWPgoUk2DISA';
+let tile_layer ='';
 let start_pos = [42.403505,48.925165];
 let temp_pos = [];
 let temp_zoom = 0;
 let show_uni = false;
 let temp_bound = [[81, 180], [41, -180]];
-const outer = [[-30.005769, -100.923439], [70, 140.295311]];
+const outer = [[-69.005769, -172.923439], [70, 140.295311]];
 let countryNameDisplayed = '';
+let countryClicked ='';
 let new_fillOpacity = 1;
 let new_Opacity = 1;
 var change_zoom = true;
-
 
 function getColor (d) {
   return '#2a3446'
 
 }
+function getOpacity(d) {
+  let opacity=1
+  if(d === countryNameDisplayed){
+    opacity = 0
+  }
+  return opacity
+}
 function style (feature) {
   return {
-    fillColor: getColor(feature.properties.density),
+    fillColor: getColor(feature.properties.name),
     weight: 2,
     opacity: 1,
     color: '#2a3446',
     dashArray: '1',
-    fillOpacity: 0,
+    fillOpacity: getOpacity(feature.properties.name),
   };
 }
 
@@ -46,7 +53,7 @@ function highlightFeature (feature, e) {
     weight: 5,
     color: '#666',
     dashArray: '',
-    fillOpacity: 0.4,
+    fillOpacity: (feature.properties.name === countryClicked)?('0'):('0.4'),
     opacity:0,
   });
   // this.setState({countryDisplayed:feature.properties.name})
@@ -54,38 +61,55 @@ function highlightFeature (feature, e) {
 }
 
 // reset default style on mouseOut
-function resetHighlight (component, e) {
-  component.refs.geojson.leafletElement.resetStyle(e.target);
+function resetHighlight (feature, e) {
+  // component.refs.geojson.leafletElement.resetStyle(e.target);
+  var layer = e.target;
+  layer.setStyle({
+    fillColor: getColor(feature.properties.name),
+    weight: 2,
+    opacity: 1,
+    color: '#2a3446',
+    dashArray: '1',
+    fillOpacity: (feature.properties.name === countryClicked)?('0'):('1')
+  });
 }
 
 
 function onEachFeature (component, feature, layer) {
   layer.on({
     mouseover: highlightFeature.bind(null, feature),
-    mouseout: resetHighlight.bind(null, component),
+    mouseout: resetHighlight.bind(null, feature),
     click: function(){
           if(change_zoom){
             var init_bounds = layer.getBounds();
             var center = init_bounds.getCenter();
             var name = feature.properties.name;
-            resetHighlight.bind(null,component);
-            highlightFeature.bind(null, feature);
+            countryClicked= name;
             console.log('name',name);
             temp_bound = init_bounds;
+            component.props.getGEOJSON(countryNameDisplayed);
+
+            component.refs.geojson.leafletElement.clearLayers();
+
+            component.refs.geojson.leafletElement.addData(world_countries);
+
+            console.log(component);
+            tile_layer = 'https://api.mapbox.com/styles/v1/kristogs/cjee2fy4u00jb2ro1kwgrex8w/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia3Jpc3RvZ3MiLCJhIjoiY2pjdWlrbHhjMGt3YzJ3cW9sNm5xODc1dSJ9.Nvgmd0tPcaQWPgoUk2DISA';
+
             if (!show_uni){show_uni = true};
             layer.setStyle({
               fillOpacity: 0,
               opacity: 1,
               fillColor: 'red'
             });
+
           };
       },
   });
 }
 
 function onEachPopUp(component, feature, layer) {
-
-  layer.on({
+    layer.on({
     mouseover: function(){
       change_zoom = false;
       var content = "<img style='height:15px;width:15px;margin-bottom:2px' src="+require('../images/exit.png')+"/>"
@@ -131,9 +155,13 @@ class MapContainer extends Component {
     }
   }
   componentWillReceiveProps(nextProp){
+
     if(nextProp.geojson !== this.props.geojson){
-      this._pop.forceUpdate()
-      console.log('this._pop',this._pop);
+      this.refs.popjson.leafletElement.clearLayers();
+
+        console.log('nextProp',nextProp);
+      this.refs.popjson.leafletElement.addData(nextProp.geojson);
+
     }
   }
 
@@ -168,8 +196,6 @@ class MapContainer extends Component {
     this.setBounds();
     this.setTileLayer();
     this.setUni();
-    this.props.getGEOJSON(countryNameDisplayed);
-
   }
   handleHide() {
   this.setState({ displayInfo: false });
@@ -182,6 +208,21 @@ class MapContainer extends Component {
     this.setState({bounds:outer})
     this.setState({showUni: false})
     change_zoom = true;
+    // this.refs.geojson.props.setStyle({
+    //   fillColor: 'red',
+    //   weight: 2,
+    //   opacity: 1,
+    //   color: '#2a3446',
+    //   dashArray: '1',
+    //   fillOpacity: '1'
+    // });
+
+    this.refs.popjson.leafletElement.clearLayers();
+    // this.refs.geojson.leafletElement.clearLayers();
+    // this.refs.geojson.leafletElement.addData(world_countries);
+
+    tile_layer = '';
+    this.setState({tile_layer_url: tile_layer})
   }
 
   setUni(){
@@ -196,8 +237,7 @@ attribution="<attribution>" />
 */
 
   render() {
-    console.log('uni:', universities);
-    console.log('this.props.heosjen', this.props.geojson);
+
       return (
         <div className="mapbox">
           <div className="map">
@@ -218,6 +258,9 @@ attribution="<attribution>" />
                 className = "tileLayer"
                 url  = {tile_layer}
                 attribution="<attribution>"
+                  noWrap = {true}
+                continuousWorld = {true}
+                bounds={outer}
               />
 
               {}
@@ -225,7 +268,7 @@ attribution="<attribution>" />
 
               <GeoJSON ref="geojson" data={world_countries} style={style} onEachFeature={onEachFeature.bind(null, this)}/>
 
-              {(!this.state.showUni)?(''):(<GeoJSON ref={(c) => this._pop = c} data={this.props.geojson} style={style} onClick={this.setBounds.bind(this)} onEachFeature={onEachPopUp.bind(null,this)}/>)}
+              <GeoJSON ref="popjson" data={this.props.geojson} style={style} onClick={this.setBounds.bind(this)} onEachFeature={onEachPopUp.bind(null,this)}/>
               <h2 className = "infoMapDivFont"> {countryNameDisplayed} </h2>
               <a onClick={this.resetButton.bind(this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>
               <div className="infoMapDiv jumbotron" ></div>
