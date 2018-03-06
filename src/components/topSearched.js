@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label, FormGroup, ControlLabel, FormControl, HelpBlock} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {getUniversities} from '../actions/profileActions';
 import {Link} from 'react-router';
 
 class topSearched extends React.Component {
@@ -94,7 +93,6 @@ function mapStateToProps(state){
 }
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    getUniversities: getUniversities,
 
   }, dispatch)
 }

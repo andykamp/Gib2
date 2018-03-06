@@ -1,7 +1,25 @@
+const geo = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
 
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+
+          ]
+        ]
+      }
+    }
+  ]
+}
 
 const INITIAL_STATE = {
-geojson: {},
+geojson: geo,
 };
 
 export function mapReducer(state = INITIAL_STATE, action) {

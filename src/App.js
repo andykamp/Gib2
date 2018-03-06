@@ -126,6 +126,10 @@ renderinfo(){
 }
 
   render() {
+
+    const intViewportHeight = window.innerHeight;
+    let scroll = window.scrollY;
+
       return (
         <div className="wholescreenApp" >
           {/* Renders startupscreen if first time enterin */}
@@ -140,11 +144,27 @@ renderinfo(){
             </div>
           </Modal>
           {(this.state.showInfo) ? (
-            <div className="turtorialPopup">
+            <div style={{
+              position: 'absolute',
+              right:30,
+              top:intViewportHeight + scroll-80,
+              height: 70,
+              width: 300,
+              display: 'flex',
+              flexDirection: 'column',
+              alignitems: 'center',
+              justifyContent: 'flex-start',
+              backgroundColor: '#2a3446',
+              color: 'white',
+              borderRadius: 5,
+              padding: 10,
+              zIndex: 10,
+              animation: 'flyUpInfo 200ms ease-in'
+            }} >
               <div className="turtorialPopupExit">
                 <img src={require('./images/exit.png')} style={{height: 20, marginLeft:0 }} onClick={()=> this.setState({showInfo:false})}/>
               </div>
-              <p style= {{marginTop:10}}>Use the dynamic map to find your universities</p>
+              <p style= {{marginTop:10}}>Use the searchbar or the dynamic map to find your university.</p>
 
             </div>
           ):("")}

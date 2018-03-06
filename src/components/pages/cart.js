@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label} from 'react-bootstrap';
 import {bindActionCreators} from 'redux';
-import {getUniversities, setInfo} from '../../actions/profileActions';
+import {getProfileUniversity, setInfo} from '../../actions/profileActions';
 import {Link} from 'react-router';
 import { BeatLoader } from 'react-spinners';
 
@@ -19,7 +19,7 @@ class Cart extends React.Component{
     }
   }
   componentWillMount(){
-    this.props.getUniversities();
+    // this.props.getProfileUniversity();
   }
   componentDidMount(){
     const that=this;
@@ -28,8 +28,8 @@ class Cart extends React.Component{
     }, 2000);
   }
 
- handleClick(name){
-   this.props.setInfo({ prop:'uni_name', value: name})
+ handleClick(uni){
+   this.props.getProfileUniversity(uni)
  }
 
 
@@ -54,16 +54,16 @@ class Cart extends React.Component{
      );
    }
    else {
-     const universities= this.props.uni.map(function(uniArr){
+     const universities= this.props.uni.my_universities.map(function(uniArr){
        return(
 
          <Col xs={12} sm={6} md={3} className="cartList">
-           <Link  to="/universitet" onClick={this.handleClick.bind(this, uniArr.land)} className="collegeItem" >
+           <Link  to="/universitet" onClick={this.handleClick.bind(this, uniArr.university)} className="collegeItem" >
              <Row style={{flex: 2, width: '100%', heigth: 200, }}>
                <img src={require('../../images/placeholder.png')} style={{width:'100%', height:150}} />
              </Row>
              <Row style={{flex: 1, height: 70}}>
-             <h3 >{uniArr.land}</h3>
+             <h3 >{uniArr.university.universitet}</h3>
              </Row>
 
            </Link>
@@ -75,7 +75,7 @@ class Cart extends React.Component{
 
      return(
        <div>
-       {(!this.props.uni.length) ? (this.renderEmpty()):
+       {(!universities.length) ? (this.renderEmpty()):
          (<Row >
          {universities}
        </Row>)}
@@ -101,7 +101,7 @@ function mapStateToProps(state){
 }
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    getUniversities: getUniversities,
+    getProfileUniversity: getProfileUniversity,
     setInfo: setInfo,
   }, dispatch)
 }

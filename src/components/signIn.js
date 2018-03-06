@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label, FormGroup, ControlLabel, FormControl, HelpBlock} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {setLoginInfo} from '../actions/loginActions';
+import {setLoginInfo, ContinueWithoutLogin} from '../actions/loginActions';
 
 class SignIn extends React.Component {
   constructor(props, context) {
@@ -11,15 +11,15 @@ class SignIn extends React.Component {
     this.handleChange = this.handleChange.bind(this);
 
     this.state = {
-      value: ''
+      value: '',
+      validation: false
     };
   }
 
   getValidationState() {
-    const length = this.state.value.length;
-    if (length > 10) return 'success';
-    else if (length > 5) return 'warning';
-    else if (length > 0) return 'error';
+    const mail = this.state.value
+    if (mail.includes('@stud.ntnu.no')) return 'success';
+    else return 'error';
     return null;
   }
 
@@ -27,7 +27,12 @@ class SignIn extends React.Component {
     this.setState({ value: e.target.value });
   }
   handleLogin(){
-    this.props.setLoginInfo();
+    if(this.state.value.includes('@stud.ntnu.no')) {
+    this.props.setLoginInfo(this.state.value);
+  }
+  }
+  handleContinueWithoutLogin(){
+    this.props.ContinueWithoutLogin(this.state.value);
   }
 
   render() {
@@ -49,7 +54,8 @@ class SignIn extends React.Component {
           <FormControl.Feedback />
           {/* <HelpBlock>Validation is based on string length.</HelpBlock> */}
         </FormGroup>
-        <Button className="signIn" onClick={this.handleLogin.bind(this)}>Log in</Button>
+        <Button className="signIn" onClick={this.handleLogin.bind(this)}>Logg in</Button>
+        <p style={{color: 'white'}} onClick={this.handleContinueWithoutLogin.bind(this)}>Fortsett uten innlogging</p>
 
       </form>
     );
@@ -63,7 +69,7 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
     setLoginInfo: setLoginInfo,
-
+    ContinueWithoutLogin: ContinueWithoutLogin
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SignIn)

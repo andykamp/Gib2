@@ -4,18 +4,34 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {getUniversities} from '../actions/mapInfoActions';
 import {Link} from 'react-router';
+import Animation from './animation'
+import Review from './review';
 
 class mapInfo extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      value: ''
+      value: '',
+      showModal: false,
+      form:'',
     };
   }
 
 componentWillMount(){
-  this.props.getUniversities('get_university_by_id/5a59f09098c056e100406abc');
+  // this.props.getUniversities('get_university_by_id/5a59f09098c056e100406abc');
 }
+
+//--------Modal---------
+
+//opens/closes the modal
+open(){
+  this.setState({showModal:true})
+}
+close(){
+  this.setState({showModal: false})
+}
+
+
   renderInfo(){
     // const array1 = ['link', 'link', 'link', 'link'];
     const thumbsUp = 60;
@@ -34,7 +50,7 @@ componentWillMount(){
       <div style={{flex: 1, width: '100%', minHeight: '90vh', color:'#2a3446'}}>
         <Row className="topSearched" style={{paddingLeft: 50, paddingRight: 50, paddingTop: 20 }}>
           {/* <img src={require('../images/arrowDown.png')} style={{height: 20, marginTop: 5, marginBottom: 20}} /> */}
-          <h2>San Diego State University, California State University</h2>
+          <h2>{this.props.uni.universitet}</h2>
           <img src={require('../images/line.png')} style={{width: 300}} />
 
           <Row className="mapInfo">
@@ -70,8 +86,10 @@ componentWillMount(){
 
                     <div className="infoRowHeader">
                     <Button style={{margin: 20, color: 'white', backgroundColor:'#2a3446' }}>
-                      Hvordan søker jeg?
-                    </Button>
+                        <a href="http://www.ntnu.no/studier/studier_i_utlandet/prosedyrer" style={{color: 'white'}} target="_blank">
+                          Hvordan søker jeg?
+                        </a>
+                        </Button>
                   </div>
 
                   </Tab>
@@ -81,25 +99,25 @@ componentWillMount(){
                       <h4>Lenker til lærestedet</h4>
 
                     </div>
-                        <div className="infoCol">
-                          <h5>Finansiering:  {this.props.uni["Mer informasjon på Innsida"].Finansiering}</h5>
-                          <h5>Kontaktinfo:  {this.props.uni["Mer informasjon på Innsida"].Kontaktinfo}</h5>
-                          <h5>Søknadsprosedyrer:  {this.props.uni["Mer informasjon på Innsida"].Søknadsprosedyrer}</h5>
-                          <h5>Temaside for utenlandsstudier:  {this.props.uni["Mer informasjon på Innsida"]['Temaside for utenlandsstudier']}</h5>
+                        <div className="infoCol" style={{width:'100%'}}>
 
+                          <h5><a href={this.props.uni["Lenker til lærestedet"]["Søknadsside lærested"]} target="_blank">Søknadsside lærested</a></h5>
+                          <h5><a href={this.props.uni["Lenker til lærestedet"]["Akademisk kalender"]} target="_blank">Akademisk kalender</a></h5>
+                          <h5><a href={this.props.uni["Lenker til lærestedet"].Bolig} target="_blank">Bolig</a></h5>
+                          <h5><a href={this.props.uni["Lenker til lærestedet"]["Emner/fag ved studiestedet"]} target="_blank">Emner/fag ved studiestedet</a></h5>
+                          <h5><a href={this.props.uni["Lenker til lærestedet"]["Internasjonalt kontor"]} target="_blank">Internasjonalt kontor</a></h5>
+                          <h5><a href={this.props.uni["Lenker til lærestedet"]["Språkkurs"]} target="_blank">Språkkurs</a></h5>
                         </div>
                     <div className="infoRow">
                       {/* <img src={require('../images/link.png')} style={{height: 20,marginBottom: 0, marginRight: 5}}/> */}
                       <h4>Mer informasjon på Innsida</h4>
                     </div>
                         <div className="infoCol">
+                          <h5><a href={this.props.uni["Mer informasjon på Innsida"].Finansiering} target="_blank">Finansiering</a></h5>
+                          <h5><a href={this.props.uni["Mer informasjon på Innsida"].Kontaktinfo} target="_blank">Kontaktinfo</a></h5>
+                          <h5><a href={this.props.uni["Mer informasjon på Innsida"].Søknadsprosedyrer} target="_blank">Søknadsprosedyrer</a></h5>
+                          <h5><a href={this.props.uni["Mer informasjon på Innsida"]['Temaside for utenlandsstudier']} target="_blank">Temaside for utenlandsstudier</a></h5>
 
-                          <h5>Søknadsside lærested:  {this.props.uni["Lenker til lærestedet"]["Søknadsside lærested"]}</h5>
-                          <h5>Akademisk kalender:  {this.props.uni["Lenker til lærestedet"]["Akademisk kalender"]}</h5>
-                          <h5>Bolig:  {this.props.uni["Lenker til lærestedet"].Bolig}</h5>
-                          <h5>Emner/fag ved studiestedet:  {this.props.uni["Lenker til lærestedet"]["Emner/fag ved studiestedet"]}</h5>
-                          <h5>Internasjonalt kontor:  {this.props.uni["Lenker til lærestedet"]["Internasjonalt kontor"]}</h5>
-                          <h5>Språkkurs:  {this.props.uni["Lenker til lærestedet"]["Språkkurs"]}</h5>
                         </div>
                   </Tab>
                   <Tab eventKey={3} title="Tips fra studenter" >
@@ -114,10 +132,10 @@ componentWillMount(){
               </div>
 
               <div className="infoRowHeader">
-                <h4>10 stk har gitt tilbakemelding på dette universitetet</h4>
+                <p>10 stk har gitt tilbakemelding på dette universitetet</p>
               </div>
 
-              <div className="infoRow">
+              {/* <div className="infoRow">
                 <h4 style={{width: '30%'}}>Anbefaler</h4>
                 <ProgressBar bsStyle="success" now={thumbsUp} label={`${thumbsUp}%`}  style={{width: '70%', marginBottom: 0}}/>
               </div>
@@ -125,36 +143,24 @@ componentWillMount(){
               <div className="infoRow">
                 <h4 style={{width: '30%'}}>Anbefaler ikke</h4>
                 <ProgressBar bsStyle="danger" now={thumbsDown} label={`${thumbsDown}%`}  style={{width: '70%', marginBottom: 0}}/>
+              </div> */}
+              <div className="infoRowHeader">
+                <Animation anbefaler={80} anbefalerikke={20} />
               </div>
 
               <Row style={{height: 20}}/>
-              <div className="infoRow">
-                <img src={require('../images/profil.png')} style={{height: 60,marginBottom: 0, marginRight: 5}}/>
-                <div className="infoCol">
-                  <div className="infoRow">
-                    <h6 style={{marginRight: 5}}>MTING</h6>
-                    <h6>18.02.2017</h6>
-                  </div>
-                  <p>"Godt universitet med gode forelesninger og godt studiemiljø for utenlandske studenter. Mye interessante fag."</p>
-                </div>
-              </div>
 
-              <div className="infoRow">
-                <img src={require('../images/profil.png')} style={{height: 60,marginBottom: 0, marginRight: 5}}/>
-                <div className="infoCol">
-                  <div className="infoRow">
-                    <h6 style={{marginRight: 5}}>MTING</h6>
-                    <h6>18.02.2017</h6>
-                  </div>
-                  <p>"Godt universitet med gode forelesninger og godt studiemiljø for utenlandske studenter. Mye interessante fag."</p>
-                </div>
-              </div>
+              <Review/>
+              <Review/>
+              <Review/>
+
 
               <div className="infoRowHeader">
                 <Button style={{margin: 20, color: 'white', backgroundColor:'#2a3446' }}>
                   Se alle
                 </Button>
               </div>
+
 
               </Col>
           </Row>

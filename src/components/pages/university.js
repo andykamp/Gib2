@@ -7,7 +7,7 @@ import {deleteCartItem, addToCart, updateCart, addLinkToCart, deleteLinkItem} fr
 
 import NoteItem from '../noteItem';
 import LinkItem from '../linkItem';
-import UnInfo from '../universitetsInfo';
+import MapInfo from '../mapInfo';
 
 class University extends React.Component{
   //constructor fro modal state
@@ -157,12 +157,8 @@ handleNoteAdd(){
     //the actual rendering
     return(
       <Grid className="cart">
-        <h1>{this.props.uni_name}</h1>
         <Row>
-          <UnInfo
-            title={'Henter ut all data fra state'}
-            description={'Beskrivelse ioaosf oifsdhoubfsa nofbisdu kkbfbiusdbfi nfisidbu dfsbfi sdfibbdi iobsiufviub bsafvib'}
-          />
+          <MapInfo />
         </Row>
         <Row>
           <Col xs={12} sm={6} className="cartItem">
@@ -226,7 +222,7 @@ function mapStateToProps(state){
   return{
     link: state.cart.link,
     cart:state.cart.cart,
-    uni_name: state.profile.uni_name,
+    uni: state.university.university,
   }
 }
 function mapDispatchToProps(dispatch){

@@ -1,12 +1,9 @@
 
 
 
-export const getUniversities = () => {
+export const getProfileUniversity = (uni) => {
   return (dispatch) => {
-    fetch('http://localhost:8080/uni/all')
-      .then(response => response.json())
-      .then(json => dispatch({ type: "FETCHED_UNIVERSITIES", payload: json })
-);
+   dispatch({ type: "UNIVERSITY_RETIREVED", payload: uni })
   }
 
 };
