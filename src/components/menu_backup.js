@@ -1,7 +1,7 @@
 import React from 'react';
-import {Nav, NavItem, Navbar, Badge} from 'react-bootstrap';
 // import {LinkContainer} from 'react-router-bootstrap';
 import '../App.css';
+import {Link} from 'react-router';
 
 
 class Menu extends React.Component{
@@ -13,62 +13,58 @@ class Menu extends React.Component{
     }
   }
   renderLine(){
-    //return <div className="headerAnimation" />
+    // return <div className= "headerAnimation" />
 
   }
-  onPressNav1(){
+  onPressdiv1(){
     this.setState({from:1})
   }
-  onPressNav2(){
+  onPressdiv2(){
     this.setState({from:2})
   }
-  onPressNav3(){
+  onPressdiv3(){
     this.setState({from:3})
   }
-  onPressNav4(){
+  onPressdiv4(){
     this.setState({from:4})
   }
 
   render(){
     return(
-      <Navbar inverse fixedTop className={(this.props.scrollY===0)?("headerOnTop"):("header")}>
-    		<Navbar.Header className="headerLogo">
+      <div  className={(this.props.scrollY===0)?("headerOnTop"):("headerOnTop")}>
 
-    				<a href="/">NTNU Utveklsing</a>
+    			<div className="headerButton">
 
-    			<Navbar.Toggle />
-    		</Navbar.Header>
-    		<Navbar.Collapse>
-    			<Nav pullLeft>
-
-      				<NavItem eventKey={1}  onSelect={this.onPressNav1.bind(this)} className="headerItem">
+      				<div  onClick={this.onPressdiv1.bind(this)} className="headerItem">
                 Hjem
                 {this.state.from === 1 ? (this.renderLine()):('')}
-      				</NavItem>
-              <NavItem eventKey={1} onSelect={this.onPressNav2.bind(this)} className="headerItem">
+      				</div>
+              <div  onClick={this.onPressdiv2.bind(this)} className="headerItem">
                 Statestikk
                 {this.state.from == 2 ? (this.renderLine()):('')}
-      				</NavItem>
-      				<NavItem eventKey={2}  onSelect={this.onPressNav3.bind(this)} className="headerItem">
-      					Kontakt oss
-                {this.state.from === 3 ? (this.renderLine()):('')}
+      				</div>
 
-      				</NavItem>
+    			</div>
+          <div className="headerLogo">
 
+      				<Link to="/" onClick={this.onPressdiv1.bind(this)}>
+              <img src={require('../images/logo.png')} style={{height: 40}} />
+              </Link>
 
-    			</Nav>
-          <Nav pullRight>
+      		</div>
+          <div className="headerButton">
 
-      				<NavItem eventKey={4}  href="/cart" onSelect={this.onPressNav4.bind(this)} className="headerItem">
-                Din profil
+      				<div  onClick={this.onPressdiv4.bind(this)} className="headerItem">
+                <Link to="/cart">
+                  Min profil
+                </Link>
                 {this.state.from === 4 ? (this.renderLine()):('')}
-      				</NavItem>
+      				</div>
 
-    			</Nav>
+    			</div>
 
 
-    		</Navbar.Collapse>
-    	</Navbar>
+    	</div>
     );
   }
 }

@@ -1,14 +1,14 @@
 
 
 const INITIAL_STATE = {
-uni:[],
+uni:{},
 uni_name:''
 };
 
 export function profileReducer(state = INITIAL_STATE, action) {
     switch (action.type) {
-      case "FETCHED_UNIVERSITIES":
-        return  {...state, uni: action.payload.features}
+      case "FETCHED_USER_PROFILE":
+        return  {...state, uni: action.payload}
         break;
       case "INFO_RETIREVED":
         return {...state, [action.payload.prop]: action.payload.value}

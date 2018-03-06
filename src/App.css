@@ -1,7 +1,13 @@
-
+@font-face {
+  font-family: 'MyFont';
+  src: local('MyFont'), url(./fonts/Lato-Light.ttf) format('trueType');
+}
+*{
+  font-family: Myfont;
+}
 .leaflet-container {
     background: #dfe6e9;
-    /* background-image: url('./images/background.png'); */
+    /* background-image: url('./images/divider.png'); */
     z-index: 1;
 
 
@@ -20,24 +26,31 @@
 .header{
   min-height: 10vh;
   background-color: #2a3446;
-  z-index: 2;
+  z-index: 10;
   /* background-color: rgba(0, 0, 0, 0.2); */
   color: white;
   border: 0;
 }
+/* .container{
+  margin:0px;
+  padding:0px;
+} */
 
 .headerOnTop{
   height: 10vh;
   background-color: #2a3446;
-  z-index: 2;
+  z-index: 10;
   /* background-color: rgba(0, 0, 0, 0); */
   color: white;
   border: 0;
 }
 .headerLogo{
-  text-align: center;
-  vertical-align: middle;
-  line-height: 10vh;
+  width: 100px;
+  height: 10vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 .headerItem{
@@ -45,7 +58,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 }
 .headerAnimation{
   position: absolute;
@@ -53,13 +66,16 @@
   right:0;
   bottom:0;
   height: 3px;
-  background-color: white;
+  background-color: #2a3446;
 
 }
 .coloredText{
   color: red;
 }
-.navbar-inverse .navbar-nav>li>a { color: #fff; }
+.navbar-inverse .navbar-nav>li>a {
+  color: #fff;
+  height: 10vh;
+}
 
 /*  */
 
@@ -70,6 +86,14 @@
     overflow: hidden;
 }
 
+.signIn{
+  color: 'white';
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
 .loading{
 
@@ -98,12 +122,145 @@
   from { transform: translateX(0); }
   to { transform: translateX(3000px); }
 }
+@keyframes flyUp {
+  0% { transform: translateY(0); }
+  70% { transform: translateY(-90vh);opacity:1; }
+  100% { transform: translateY(-90vh); opacity:0; }
+}
+@keyframes flyUpInfo {
+  0% { transform: translateY(100px); }
+  100% { transform: translateY(0px); }
+}
+
+
+.searchbar{
+  position: absolute;
+  top:12vh;
+  left: 30%;
+  right: 30%;
+  width: 40%;
+  height: 34px;
+  z-index: 2;
+  border-color: none;
+}
+.search-btn{
+   position: absolute;
+   right: 2px;
+   top: 2px;
+
+   height:34px;
+   color: #aaa;
+   border-radius: 3px;
+   padding: 5px;
+   z-index: 2;
+ }
+ .search-btn:hover{
+   cursor: pointer;
+
+ }
+ .searchItem{
+   background-color: white;
+   height: 30px;
+   width: 100%;
+   display: flex;
+   flex-direction: row;
+   align-items: flex-start;
+   justify-content: flex-start;padding: 5px;
+ }
+ .searchItem:hover{
+   cursor: pointer;
+   background-color: #dfe6e9;
+
+
+ }
+.turtorialPopup{
+  position: absolute;
+  right:30px;
+  bottom:30px;
+  height: 70px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #2a3446;
+  color: white;
+  border-radius: 5px;
+  padding: 10px;
+  z-index: 10;
+  animation: flyUpInfo 200ms ease-in
+
+}
+.turtorialPopupExit{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+}
+
 /*  */
 
 /*Map components*/
 .containerMap {
   min-height: 85vh;
 }
+/*infodiv right corner*/
+.infoMapDiv{
+  position: absolute;
+  padding: 10px;
+  top: 10px;
+  right: 10px;
+  height: 40px;
+  width:110px;
+  background-color: white;
+  z-index: 1000;
+}
+
+.infoMapDivFont{
+  position: absolute;
+  padding-top: 10px;
+  padding-left: 10px;
+  margin-left: 90%;
+  top: -8px;
+  right: 10px;
+  height: 40px;
+  width:110px;
+  z-index: 1100;
+  opacity: 1;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+/*resetzoom*/
+.resetZoomButton{
+  position: absolute;
+  top: 72px;
+  left: 10.7px;
+  height: 33px;
+  width:33px;
+  background-color: white;
+  z-index: 1000;
+  border: 2px solid rgba(178, 184, 186, .5);
+  border-radius: 3px;
+  cursor: pointer;
+  background-clip: padding-box;
+}
+
+.resetZoom{
+  position: absolute;
+  color: black;
+  padding: 9px;
+  width: 10px;
+  height: 10px;
+  margin-top: -2px;
+}
+
+.resetZoomButton:hover{
+  background-color: #f4f4f4;
+  text-decoration: none;
+}
+
 .mapbox{
   left: 0;
   right:0;
@@ -139,6 +296,47 @@
   background-color: #2a3446;
   border-radius: 10px;
 }
+.mapInfo{
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+}
+.infoRowHeader{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.infoRow{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+.infoRowBar{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  align-items: center;
+}
+.infoRowPointer{
+  display: flex;
+  flex-direction: row;
+  justify-content:flex-start;
+  align-items: center;
+}
+.infoRowPointer:hover{
+  cursor: pointer;
+}
+.infoCol{
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
 .info{
   height: 20px;
   width:100px;
@@ -155,13 +353,9 @@
 
 /* cart */
 .cartList{
-  min-height: 80vh;
-  margin-top: 10vh;
-  padding: 20px;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
+height: 250px;
+margin-bottom: 10px;
+margin-top: 10px;
 }
 .cart{
   min-height: 80vh;
@@ -173,17 +367,18 @@
   justify-content: flex-start;
 }
 .collegeItem{
-  margin: 10px;
-  height: 20vh;
-  width: 20vw;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background-color: white;
+  color: #2a3446;
 }
 .collegeItem:hover {
-    box-shadow: 10px 10px grey;
+    box-shadow: 10px 10px #d8dfe2;
+    text-decoration: none;
+    text-decoration-color: #2a3446;
 
 }
 .cartItem{
@@ -204,7 +399,25 @@
 }
 /*  */
 
-
+/* top searched */
+.topSearched{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.topSearchedCol{
+  height: 200px;
+  width: 200px;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  color: #2a3446
+}
+/*  */
 /* footer */
 
 .footer {

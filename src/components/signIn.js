@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label, FormGroup, ControlLabel, FormControl, HelpBlock} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {setLoginInfo} from '../actions/loginActions';
+import {setLoginInfo, ContinueWithoutLogin} from '../actions/loginActions';
 
 class SignIn extends React.Component {
   constructor(props, context) {
@@ -11,30 +11,40 @@ class SignIn extends React.Component {
     this.handleChange = this.handleChange.bind(this);
 
     this.state = {
-      value: ''
+      value: '',
+      validation: false
     };
   }
 
   getValidationState() {
-    const length = this.state.value.length;
-    if (length > 10) return 'success';
-    else if (length > 5) return 'warning';
-    else if (length > 0) return 'error';
+    const mail = this.state.value
+    if (mail.includes('@stud.ntnu.no')) return 'success';
+    else return 'error';
     return null;
   }
 
   handleChange(e) {
     this.setState({ value: e.target.value });
   }
+  handleLogin(){
+    if(this.state.value.includes('@stud.ntnu.no')) {
+    this.props.setLoginInfo(this.state.value);
+  }
+  }
+  handleContinueWithoutLogin(){
+    this.props.ContinueWithoutLogin(this.state.value);
+  }
 
   render() {
     return (
-      <form>
+      <form className="signIn">
+        <img src={require('../images/logo.png')} style={{height: '10vh'}} />
+        <h2 style={{color: 'white'}}>Velkommen</h2>
+        <p style={{color: 'white', textAlign: 'center'}}>Logg deg inn med studieretning for å at vi kan tilrettelegge bedre for deg</p>
         <FormGroup
           controlId="formBasicText"
           validationState={this.getValidationState()}
         >
-          <ControlLabel>Working example with validation</ControlLabel>
           <FormControl
             type="text"
             value={this.state.value}
@@ -42,9 +52,10 @@ class SignIn extends React.Component {
             onChange={this.handleChange}
           />
           <FormControl.Feedback />
-          <HelpBlock>Validation is based on string length.</HelpBlock>
+          {/* <HelpBlock>Validation is based on string length.</HelpBlock> */}
         </FormGroup>
-        <Button bsStyle="primary" onClick={this.props.setLoginInfo}>Log in</Button>
+        <Button className="signIn" onClick={this.handleLogin.bind(this)}>Logg in</Button>
+        <p style={{color: 'white'}} onClick={this.handleContinueWithoutLogin.bind(this)}>Fortsett uten innlogging</p>
 
       </form>
     );
@@ -58,7 +69,7 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
     setLoginInfo: setLoginInfo,
-
+    ContinueWithoutLogin: ContinueWithoutLogin
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SignIn)

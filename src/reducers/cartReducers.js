@@ -23,7 +23,7 @@ export function cartReducers(state={cart:[], link:[]}, action) {
 
     const newBookToUpdate ={
       ...currentBokToUpdate[indexToUpdate],
-      note:'UPDATE IS COMPLITED' //test if it works
+      note: action.payload //test if it works
     }
     //uses slice to remove the book at the specified indexToUpdate
     let cartUpdate = [...currentBokToUpdate.slice(0,indexToUpdate),newBookToUpdate, ...currentBokToUpdate.slice(indexToUpdate + 1)]

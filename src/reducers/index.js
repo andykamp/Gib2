@@ -6,6 +6,7 @@ import {cartReducers} from './cartReducers';
 import {mapReducer} from './mapReducer';
 import {profileReducer} from './profileReducer';
 import {loginReducer} from './loginReducer';
+import {universityReducer} from './universityReducer';
 
 
 //HERE COMBINE THE REDUCERS
@@ -14,4 +15,5 @@ export default combineReducers({
   map: mapReducer,
   profile: profileReducer,
   login: loginReducer,
+  university: universityReducer,
 })
