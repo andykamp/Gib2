@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import Home from './components/pages/home';
+import Cart from './components/pages/cart';
+import Stat from './components/pages/stat';
+
+import University from './components/pages/university';
 import registerServiceWorker from './registerServiceWorker';
 
 //REACT-ROUTER
@@ -27,6 +31,10 @@ const Routes = (
       <Route path="/" component={App} >
         <IndexRoute component={Home} />
         <Route path="/about us" component={Home} />
+        <Route path="/cart" component={Cart} />
+        <Route path="/universitet" component={University} />
+        <Route path="/stat" component={Stat} />
+
       </Route>
     </Router>
   </Provider>

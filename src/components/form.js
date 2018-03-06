@@ -44,7 +44,7 @@ class Form extends React.Component{
           <Jumbotron style={{height: 400, backgroundColor: '#fff', color: '#2a3446'}} >
         		<h1>Del erfaringer</h1>
         		<p>
-        			Help other students choose their adventure by telling them about your experience.
+        			Hjelp medstudenter ved å dele dine erfaringer!
         		</p>
       	   </Jumbotron>
         </Col>
