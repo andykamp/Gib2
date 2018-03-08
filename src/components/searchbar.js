@@ -65,6 +65,7 @@ goToSearch(){
             value={this.state.value}
             placeholder="Search"
             onChange={this.handleChange}
+            className="searchform"
           />
           <div  className="search-btn" onClick={this.goToSearch.bind(this)}>
             <Glyphicon glyph="glyphicon glyphicon-search" />

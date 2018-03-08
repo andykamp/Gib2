@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {getGEOJSON} from '../actions/mapActions';
+import {getGEOJSON, getSearchResult,getGEOJSONbyID, emptySeachResult} from '../actions/mapActions';
 
 import '../App.css';
 import { Map, TileLayer, Marker, Popup, GeoJSON  } from 'react-leaflet'
-import {Jumbotron, Grid, Col, Row, Button, Glyphicon} from 'react-bootstrap';
+import {Glyphicon,FormGroup, form, FormControl, Grid, Col, Row, Button} from 'react-bootstrap';
 import world_countries from '../geoJson/world_countries';
 import universities from '../geoJson/uni';
+import Searchbar from './searchbar'
 
 //Global variables
 let tile_layer ='';
@@ -150,8 +151,8 @@ class MapContainer extends Component {
       tile_layer_url: tile_layer,
       show_tileLayer: false,
       fillOpacity:1,
-      maxBounds: [[-180,-180],[180,180]],
-
+      maxBounds: [[-70,-180],[180,180]],
+      value: '',
     }
   }
   componentWillReceiveProps(nextProp){
@@ -168,7 +169,6 @@ class MapContainer extends Component {
   setBounds(){
       this.setState({
         bounds: temp_bound,
-        fillColor: 1,
       })
   }
 
@@ -236,11 +236,61 @@ url="https://api.mapbox.com/styles/v1/kampenes/cjckg518s27a72rnroccgk5rv/tiles/2
 attribution="<attribution>" />
 */
 
+  //Searchbar
+  handleChange(e) {
+    this.setState({ value: e.target.value });
+    console.log(this.state.value);
+    this.search(e.target.value)
+  }
+  search(searched){
+  this.props.getSearchResult(searched)
+}
+clearSearch(result, id){
+  this.setState({ value: result });
+  this.props.emptySeachResult();
+  this.goToSearch(id)
+}
+goToSearch(id){
+  this.props.getGEOJSONbyID(id);
+  this.refs.popjson.leafletElement.addData(this.props.geojson);
+
+}
+
   render() {
+    let result = this.props.searchResult.features.map(function(result){
+      return(
+        <div className="searchItem" onClick={this.clearSearch.bind(this,result.properties.university, result._id)}>
+          <Glyphicon style={{marginRight: 5}} glyph="glyphicon glyphicon-map-marker" />
+          <p>{result.properties.university}</p>
+        </div>
+
+
+    );
+    }, this)
 
       return (
         <div className="mapbox">
           <div className="map">
+
+            <form className="searchbar">
+                <FormControl
+                  type="text"
+                  value={this.state.value}
+                  placeholder="Search"
+                  onChange={this.handleChange.bind(this)}
+                  className="searchform"
+                />
+                <div  className="search-btn" onClick={this.goToSearch.bind(this)}>
+                  <Glyphicon glyph="glyphicon glyphicon-search" />
+                </div>
+              { !this.props.searchResult.features.length?(''):(
+                  <div style={{backgroundColor: 'white', borderRadius: 2, padding:2, marginTop: 2}}>
+                    {result}
+                  </div>
+                )}
+
+            </form>
+
             <Map
 
               id="mapid"
@@ -285,12 +335,16 @@ attribution="<attribution>" />
 }
 function mapStateToProps(state){
   return{
-    geojson: state.map.geojson
+    geojson: state.map.geojson,
+    searchResult: state.map.searchResult,
   }
 }
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
     getGEOJSON: getGEOJSON,
+    getSearchResult: getSearchResult,
+    getGEOJSONbyID: getGEOJSONbyID,
+    emptySeachResult:emptySeachResult,
   },dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(MapContainer);
