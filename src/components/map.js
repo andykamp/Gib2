@@ -12,12 +12,9 @@ import Searchbar from './searchbar'
 
 //Global variables
 let tile_layer ='';
-let start_pos = [42.403505,48.925165];
-let temp_pos = [];
-let temp_zoom = 0;
-let show_uni = false;
 let temp_bound = [[81, 180], [41, -180]];
 const outer = [[-69.005769, -172.923439], [70, 140.295311]];
+let num_countryuni = 0;
 let countryNameDisplayed = '';
 let countryClicked ='';
 let new_fillOpacity = 1;
@@ -82,27 +79,18 @@ function onEachFeature (component, feature, layer) {
     mouseout: resetHighlight.bind(null, feature),
     click: function(){
           if(change_zoom){
-            var init_bounds = layer.getBounds();
-            var center = init_bounds.getCenter();
-            var name = feature.properties.name;
-            countryClicked= name;
-            console.log('name',name);
-            temp_bound = init_bounds;
-            component.props.getGEOJSON(countryNameDisplayed);
-
-            component.refs.geojson.leafletElement.clearLayers();
-
-            component.refs.geojson.leafletElement.addData(world_countries);
-
-            console.log(component);
-            tile_layer = 'https://api.mapbox.com/styles/v1/kristogs/cjee2fy4u00jb2ro1kwgrex8w/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia3Jpc3RvZ3MiLCJhIjoiY2pjdWlrbHhjMGt3YzJ3cW9sNm5xODc1dSJ9.Nvgmd0tPcaQWPgoUk2DISA';
-
-            if (!show_uni){show_uni = true};
-            layer.setStyle({
-              fillOpacity: 0,
-              opacity: 1,
-              fillColor: 'red'
-            });
+              var init_bounds = layer.getBounds();
+              var name = feature.properties.name;
+              var tile_layer = 'https://api.mapbox.com/styles/v1/kristogs/cjee2fy4u00jb2ro1kwgrex8w/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia3Jpc3RvZ3MiLCJhIjoiY2pjdWlrbHhjMGt3YzJ3cW9sNm5xODc1dSJ9.Nvgmd0tPcaQWPgoUk2DISA';
+              countryClicked= name;
+              console.log('name',name);
+              component.props.getGEOJSON(countryNameDisplayed);
+              component.refs.geojson.leafletElement.clearLayers();
+              component.refs.geojson.leafletElement.addData(world_countries);
+              component.setState({bounds: init_bounds})
+              component.setState({tile_layer_url: tile_layer})
+              num_countryuni = component.props.num_uni;
+              console.log('num_uni map',num_countryuni);
 
           };
       },
@@ -113,21 +101,22 @@ function onEachPopUp(component, feature, layer) {
     layer.on({
     mouseover: function(){
       change_zoom = false;
-      var content = "<img style='height:15px;width:15px;margin-bottom:2px' src="+require('../images/exit.png')+"/>"
-                  +"<br>"+feature.properties.universitet
+//"<img style='height:15px;width:15px;margin-bottom:2px' src="+require('../images/exit.png')+"/>"+ "<br>"+    
+      var content = feature.properties.universitet
       layer.bindPopup(content)
       //hvis vi vil begrense popupen
       //layer.bindPopup(content, {maxWidth: 100, maxHeight: 100})
-      //console.log(layer.bindPopup(feature.properties.university));
       layer.openPopup()
+    },
+    mouseout: function(){
+      change_zoom = true;
     },
     click: function(){
       //get coordinates of uni
-      temp_pos = feature.geometry.coordinates;
+      var temp_pos = feature.geometry.coordinates;
+
       var init_bounds = [[temp_pos[1]-0.1,temp_pos[0]-0.1],[temp_pos[1]+0.1,temp_pos[0]+0.1]];
-      temp_bound = init_bounds;
-
-
+      component.setState({bounds: init_bounds})
 
     }
   });
@@ -139,7 +128,6 @@ class MapContainer extends Component {
     super()
 
     this.state = {
-      center:start_pos,
       zoom: 0.7,
       bounds: outer,
       displayInfo: false,
@@ -148,7 +136,7 @@ class MapContainer extends Component {
       scale:1,
       countries: {},
       showUni: false,
-      tile_layer_url: tile_layer,
+      tile_layer_url: '',
       show_tileLayer: false,
       fillOpacity:1,
       maxBounds: [[-70,-180],[180,180]],
@@ -184,19 +172,7 @@ class MapContainer extends Component {
     });
   }
 
-  zoomToPopup(){
-    this.setState({bounds:temp_bound})
-  }
 
-  _handleClick(e){
-    var x = window.event.pageX;
-    var y = window.event.pageY;
-    this.setState({pageY: y, pageX: x});
-    // this.handleShow();
-    this.setBounds();
-    this.setTileLayer();
-    this.setUni();
-  }
   handleHide() {
   this.setState({ displayInfo: false });
   }
@@ -205,29 +181,17 @@ class MapContainer extends Component {
   }
 
   resetButton(){
-    this.setState({bounds:outer})
-    this.setState({showUni: false})
-    change_zoom = true;
-    // this.refs.geojson.props.setStyle({
-    //   fillColor: 'red',
-    //   weight: 2,
-    //   opacity: 1,
-    //   color: '#2a3446',
-    //   dashArray: '1',
-    //   fillOpacity: '1'
-    // });
-
-    this.refs.popjson.leafletElement.clearLayers();
-    // this.refs.geojson.leafletElement.clearLayers();
-    // this.refs.geojson.leafletElement.addData(world_countries);
-
-    tile_layer = '';
-    this.setState({tile_layer_url: tile_layer})
+      this.refs.popjson.leafletElement.clearLayers();
+      this.refs.geojson.leafletElement.clearLayers();
+      this.setState({bounds:outer})
+      this.setState({showUni: false})
+      this.refs.geojson.leafletElement.addData(world_countries);
+      var tile_layer = '';
+      num_countryuni = 0;
+      this.setState({tile_layer_url: tile_layer})
+      change_zoom = true;
   }
 
-  setUni(){
-    this.setState({showUni: show_uni})
-  }
 
 
 /*
@@ -294,19 +258,17 @@ goToSearch(id){
             <Map
 
               id="mapid"
-              center={this.state.center}
               zoom={this.state.zoom}
               onMoveend={this.handleMoveend}
               ref="map"
               scrollWheelZoom={false}
-              onClick={this._handleClick.bind(this)}
               bounds={this.state.bounds}
               fillOpacity = {this.state.fillOpacity}
               maxBounds = {this.state.maxBounds}
             >
               <TileLayer
                 className = "tileLayer"
-                url  = {tile_layer}
+                url  = {this.state.tile_layer_url}
                 attribution="<attribution>"
                   noWrap = {true}
                 continuousWorld = {true}
@@ -317,11 +279,18 @@ goToSearch(id){
 
 
               <GeoJSON ref="geojson" data={world_countries} style={style} onEachFeature={onEachFeature.bind(null, this)}/>
+              <GeoJSON ref="popjson" data={this.props.geojson} style={style} onEachFeature={onEachPopUp.bind(null,this)}/>
 
-              <GeoJSON ref="popjson" data={this.props.geojson} style={style} onClick={this.setBounds.bind(this)} onEachFeature={onEachPopUp.bind(null,this)}/>
-              <h2 className = "infoMapDivFont"> {countryNameDisplayed} </h2>
               <a onClick={this.resetButton.bind(this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>
-              <div className="infoMapDiv jumbotron" ></div>
+
+              <div className="infoMapDiv jumbotron" style={{opacity:1}}>
+                <h3 style={{opacity:1}}>
+                    {countryNameDisplayed}
+                </h3>
+                {(this.props.num_uni !== 0)?(
+                  <h5 style={{opacity:1}}>Number of universitet: {this.props.num_uni}</h5>
+                ):('')}
+              </div>
 
             </Map>
           </div>
