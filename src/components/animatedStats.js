@@ -79,7 +79,7 @@ class Example extends PureComponent {
 
     return (
       <div style={{marginTop: '10vh'}}>
-        <button onClick={this.update}>
+        <button onClick={this.update} className="sortButton">
           {`Sort ${sortAlpha ? 'Value' : 'Alpha'}`}
         </button>
         <Surface view={view} trbl={trbl}>

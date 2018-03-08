@@ -11,3 +11,28 @@ export const getGEOJSON = (name) => {
   }
 
 };
+export const getGEOJSONbyID = (id) => {
+  return (dispatch) => {
+    fetch('http://localhost:8080/get_university_geojson_by_id/' + id)
+      .then(response => response.json())
+      .then(json => dispatch({ type: "GEOJSON_RETIREVED", payload: json })
+);
+  }
+
+};
+
+export const getSearchResult = (searched) => {
+  console.log('searched',searched);
+  return (dispatch) => {
+    fetch('http://localhost:8080/search_universities/' + searched)
+      .then(response => response.json())
+      .then(json => dispatch({ type: "SEARCH_RETIREVED", payload: json })
+);
+  }
+
+};
+export const emptySeachResult =() => {
+  return {
+         type: "SEARCH_EMPTY"
+       }
+  }

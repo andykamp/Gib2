@@ -1,5 +1,5 @@
 import React from 'react';
-import {Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label, FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
+import {Glyphicon,Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label, FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
 import {Link} from 'react-router';
 import ReactModal from 'react-modal';
 
@@ -125,11 +125,10 @@ login(){
           </Modal.Header>
           <Modal.Body>
             <Row className="infoRowHeader">
-              <img src={require('../images/profile.png')} style={{height: 100}} />
-            </Row>
+              <Glyphicon glyph="glyphicon glyphicon-user" />
+              </Row>
             <Row className="infoRowHeader">
               <p>For å legge til eller se dine universiteter må du logge inn.</p>
-              <Button onClick={this.login.bind(this)}>Logg inn</Button>
 
             </Row>
             <Row className="infoRowHeader">

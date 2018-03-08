@@ -57,7 +57,7 @@ class Menu extends React.Component{
               <NavItem eventKey={1} onSelect={this.onPressNav2.bind(this)} className="headerItem">
                 <Link to="/stat" onClick={this.onPressNav1.bind(this)}>
 
-                <h4 style={{color: 'white'}}>Statestikk</h4>
+                <h4 style={{color: 'white'}}>Statistikk</h4>
                 {this.state.from == 2 ? (this.renderLine()):('')}
               </Link>
       				</NavItem>

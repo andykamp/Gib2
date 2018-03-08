@@ -8,7 +8,6 @@ import Map from '../map';
 import Form from '../form';
 import TopSearched from '../topSearched'
 import MapInfo from '../mapInfo'
-import Searchbar from '../searchbar'
 
 class Home extends Component {
   constructor() {
@@ -24,7 +23,6 @@ class Home extends Component {
       return (
         <Grid className="wholescreen">
           <div className="containerMap">
-            <Searchbar/>
             <Map />
           </div>
             <MapInfo/>
