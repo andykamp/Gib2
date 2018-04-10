@@ -20,9 +20,12 @@ import thunk from 'redux-thunk';
 //IMPORT COMBINED REDUCERS
 import reducers from './reducers/index';
 
+// API URL comment out the one you don't use
+const API_URL = 'https://gib2-api.herokuapp.com';
+// const API_URL = 'http://localhost:8080';
+
 //STEP 1 create the store
 const middleware =applyMiddleware(thunk, logger);
-
 const store = createStore(reducers, middleware);
 
 const Routes = (
@@ -46,3 +49,5 @@ ReactDOM.render(
   Routes, document.getElementById('root')
 );
 registerServiceWorker();
+
+export default API_URL;
