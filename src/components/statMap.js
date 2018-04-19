@@ -26,13 +26,7 @@ function getColor (d) {
   return '#2a3446'
 
 }
-function getOpacity(d) {
-  let opacity=1
-  if(d === countryNameDisplayed){
-    opacity = 0
-  }
-  return opacity
-}
+
 function style (feature) {
   return {
     fillColor: getColor(feature.properties.name),
@@ -40,7 +34,7 @@ function style (feature) {
     opacity: 1,
     color: '#2a3446',
     dashArray: '1',
-    fillOpacity: getOpacity(feature.properties.name),
+    fillOpacity: 1,
   };
 }
 
@@ -49,11 +43,11 @@ function highlightFeature (feature, e) {
   var layer = e.target;
 
   layer.setStyle({
-    weight: 5,
-    color: '#666',
+    weight: 2,
+    color: '#2a3446',
     dashArray: '',
-    fillOpacity: (feature.properties.name === countryClicked)?('0'):('0.4'),
-    opacity:0,
+    fillOpacity: 1,
+    opacity:1,
   });
   // this.setState({countryDisplayed:feature.properties.name})
   countryNameDisplayed= feature.properties.name;
@@ -81,17 +75,17 @@ function onEachFeature (component, feature, layer) {
     click: function(){
           if(change_zoom){
               var init_bounds = layer.getBounds();
-              var name = feature.properties.name;
-              var tile_layer = 'https://api.mapbox.com/styles/v1/kristogs/cjee2fy4u00jb2ro1kwgrex8w/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia3Jpc3RvZ3MiLCJhIjoiY2pjdWlrbHhjMGt3YzJ3cW9sNm5xODc1dSJ9.Nvgmd0tPcaQWPgoUk2DISA';
-              countryClicked= name;
-              console.log('name',name);
-              component.props.getGEOJSON(countryNameDisplayed);
-              component.refs.geojson.leafletElement.clearLayers();
-              component.refs.geojson.leafletElement.addData(world_countries);
+              // var name = feature.properties.name;
+              // var tile_layer = 'https://api.mapbox.com/styles/v1/kristogs/cjee2fy4u00jb2ro1kwgrex8w/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia3Jpc3RvZ3MiLCJhIjoiY2pjdWlrbHhjMGt3YzJ3cW9sNm5xODc1dSJ9.Nvgmd0tPcaQWPgoUk2DISA';
+              // countryClicked= name;
+              // console.log('name',name);
+              // component.props.getGEOJSON(countryNameDisplayed);
+              // component.refs.geojson.leafletElement.clearLayers();
+              // component.refs.geojson.leafletElement.addData(world_countries);
               component.setState({bounds: init_bounds})
-              component.setState({tile_layer_url: tile_layer})
-              num_countryuni = component.props.num_uni;
-              console.log('num_uni map',num_countryuni);
+              // component.setState({tile_layer_url: tile_layer})
+              // num_countryuni = component.props.num_uni;
+              // console.log('num_uni map',num_countryuni);
 
           };
       },
@@ -103,11 +97,11 @@ function onEachPopUp(component, feature, layer) {
     mouseover: function(){
       change_zoom = false;
 //"<img style='height:15px;width:15px;margin-bottom:2px' src="+require('../images/exit.png')+"/>"+ "<br>"+
-      var content = feature.properties.universitet
-      layer.bindPopup(content)
-      //hvis vi vil begrense popupen
-      //layer.bindPopup(content, {maxWidth: 100, maxHeight: 100})
-      layer.openPopup()
+      // var content = feature.properties.universitet
+      // layer.bindPopup(content)
+      // //hvis vi vil begrense popupen
+      // //layer.bindPopup(content, {maxWidth: 100, maxHeight: 100})
+      // layer.openPopup()
     },
     mouseout: function(){
       change_zoom = true;
@@ -119,7 +113,7 @@ function onEachPopUp(component, feature, layer) {
       var init_bounds = [[temp_pos[1]-0.1,temp_pos[0]-0.1],[temp_pos[1]+0.1,temp_pos[0]+0.1]];
       component.setState({bounds: init_bounds})
       // console.log('LAYER', layer.properties)
-      component.props.getUniversities(feature.properties._id)
+      // component.props.getUniversities(feature.properties._id)
 
     }
   });
@@ -187,11 +181,11 @@ class MapContainer extends Component {
   }
 
   resetButton(){
-      this.refs.popjson.leafletElement.clearLayers();
-      this.refs.geojson.leafletElement.clearLayers();
+      // this.refs.popjson.leafletElement.clearLayers();
+      // this.refs.geojson.leafletElement.clearLayers();
       this.setState({bounds:outer})
       this.setState({showUni: false})
-      this.refs.geojson.leafletElement.addData(world_countries);
+      // this.refs.geojson.leafletElement.addData(world_countries);
       var tile_layer = '';
       num_countryuni = 0;
       this.setState({tile_layer_url: tile_layer})
@@ -206,25 +200,6 @@ url="https://api.mapbox.com/styles/v1/kampenes/cjckg518s27a72rnroccgk5rv/tiles/2
 attribution="<attribution>" />
 */
 
-  //Searchbar
-  handleChange(e) {
-    this.setState({ value: e.target.value });
-    console.log(this.state.value);
-    this.search(e.target.value)
-  }
-  search(searched){
-  this.props.getSearchResult(searched)
-}
-clearSearch(result, id){
-  this.setState({ value: result });
-  this.props.emptySeachResult();
-  this.goToSearch(id)
-}
-goToSearch(id){
-  this.props.getGEOJSONbyID(id);
-  this.refs.popjson.leafletElement.addData(this.props.geojson);
-
-}
 
 pointToLayer = (feature, latlng) => {
   return L.circleMarker(latlng, {
@@ -238,40 +213,13 @@ pointToLayer = (feature, latlng) => {
 }
 
   render() {
-    console.log('FITTE', this.props.uni_all);
-    let result = this.props.searchResult.features.map(function(result){
-      return(
-        <div className="searchItem" onClick={this.clearSearch.bind(this,result.properties.university, result._id)}>
-          <Glyphicon style={{marginRight: 5}} glyph="glyphicon glyphicon-map-marker" />
-          <p>{result.properties.university}</p>
-        </div>
 
-
-    );
-    }, this)
 
       return (
         <div className="mapbox">
           <div className="map">
 
-            <form className="searchbar">
-                <FormControl
-                  type="text"
-                  value={this.state.value}
-                  placeholder="Search"
-                  onChange={this.handleChange.bind(this)}
-                  className="searchform"
-                />
-                <div  className="search-btn" onClick={this.goToSearch.bind(this)}>
-                  <Glyphicon glyph="glyphicon glyphicon-search" />
-                </div>
-              { !this.props.searchResult.features.length?(''):(
-                  <div style={{backgroundColor: 'white', borderRadius: 2, padding:2, marginTop: 2}}>
-                    {result}
-                  </div>
-                )}
 
-            </form>
 
             <Map
 
@@ -284,32 +232,18 @@ pointToLayer = (feature, latlng) => {
               fillOpacity = {this.state.fillOpacity}
               maxBounds = {this.state.maxBounds}
             >
-              <TileLayer
-                className = "tileLayer"
-                url  = {this.state.tile_layer_url}
-                attribution="<attribution>"
-                  noWrap = {true}
-                continuousWorld = {true}
-                bounds={outer}
-              />
+
 
               {}
 
 
               <GeoJSON ref="geojson" data={world_countries} style={style} onEachFeature={onEachFeature.bind(null, this)}/>
-                <GeoJSON ref="popjson" data={this.props.geojson} style={style} onEachFeature={onEachPopUp.bind(null,this)}/>
-              {/* <GeoJSON ref="popjson" data={universities} pointToLayer={this.pointToLayer.bind(this)}/> */}
+                {/* <GeoJSON ref="popjson" data={this.props.geojson} style={style} onEachFeature={onEachPopUp.bind(null,this)}/> */}
+              <GeoJSON ref="popjson" data={universities} pointToLayer={this.pointToLayer.bind(this)}/>
 
               <a onClick={this.resetButton.bind(this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>
 
-              <div className="infoMapDiv jumbotron" style={{opacity:1}}>
-                <h3 style={{opacity:1}}>
-                    {countryNameDisplayed}
-                </h3>
-                {(this.props.num_uni !== 0)?(
-                  <h5 style={{opacity:1}}>Number of universitet: {this.props.num_uni}</h5>
-                ):('')}
-              </div>
+
 
             </Map>
           </div>
