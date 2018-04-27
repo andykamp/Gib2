@@ -3,14 +3,20 @@ import keydown from 'react-keydown';
 import KeyHandler, {KEYPRESS, KEYDOWN, KEYUP} from 'react-key-handler';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {getGEOJSON, getSearchResult,getGEOJSONbyID, emptySeachResult} from '../actions/mapActions';
+
+import {getGEOJSON, getSearchResult,getGEOJSONbyID, emptySeachResult, get_all_GEOJSON} from '../actions/mapActions';
+import {getUniversities} from '../actions/mapInfoActions';
+
 import '../App.css';
-import { Map, TileLayer, Marker, Popup, GeoJSON  } from 'react-leaflet'
+import { Map, TileLayer, Popup, GeoJSON, CircleMarker, Marker} from 'react-leaflet'
 import {Glyphicon,FormGroup, form, FormControl, Grid, Col, Row, Button} from 'react-bootstrap';
 import world_countries from '../geoJson/world_countries';
 import universities from '../geoJson/uni';
 import Searchbar from './searchbar'
+
 import orangeMarker from '../images/map_marker-orange.png'
+
+import L from 'leaflet';
 
 //Global variables
 const outer = [[-69.005769, -172.923439], [70, 140.295311]];
@@ -89,6 +95,7 @@ function onEachFeature (component, feature, layer) {
 function onEachPopUp(component, feature, layer) {
     layer.on({
     mouseover: function(){
+
       var content = feature.properties.universitet
       layer.bindPopup(content)
       layer.openPopup()
@@ -98,6 +105,8 @@ function onEachPopUp(component, feature, layer) {
       var temp_pos = feature.geometry.coordinates;
       var init_bounds = [[temp_pos[1]-0.1,temp_pos[0]-0.1],[temp_pos[1]+0.1,temp_pos[0]+0.1]];
       component.setState({bounds: init_bounds})
+      // console.log('LAYER', layer.properties)
+      component.props.getUniversities(feature.properties._id)
 
     }
   });
@@ -184,6 +193,9 @@ class MapContainer extends Component {
       searched:false,
       showSearchedMarker:false,
     }
+  }
+  componentDidMount(){
+    this.props.get_all_GEOJSON()
   }
   componentWillReceiveProps(nextProp){
 
@@ -290,8 +302,21 @@ class MapContainer extends Component {
     this.setState({showSearchedMarker:true})
   }
 
+pointToLayer = (feature, latlng) => {
+  return L.circleMarker(latlng, {
+    radius: 5,
+    fillColor: "orange",
+    color: "orange",
+    weight: 0.5,
+    opacity: 1,
+    fillOpacity: 0.5
+})
+}
+
   render() {
+
     console.log(this.state.searched);
+
     let result = this.props.searchResult.features.map(function(result){
       return(
         <div className="searchItem" onClick={this.updateSearched.bind(this, result._id)}>
@@ -363,10 +388,12 @@ class MapContainer extends Component {
               {}
 
 
+
               <GeoJSON ref="geojson" data={world_countries} style={style.bind(null,this)} onEachFeature={onEachFeature.bind(null, this)}/>
               <GeoJSON ref="popjson" data={this.props.geojson} style={style.bind(null,this)} onEachFeature={onEachPopUp.bind(null,this)}/>
 
               <a onClick={resetButton.bind(null,this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>
+
 
               <div className="infoMapDiv">
                 {(this.props.top3 !== 0)?(
@@ -406,11 +433,15 @@ function mapStateToProps(state){
   return{
     geojson: state.map.geojson,
     searchResult: state.map.searchResult,
+
     top3: top_list,
+
   }
 }
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
+    get_all_GEOJSON: get_all_GEOJSON,
+    getUniversities: getUniversities,
     getGEOJSON: getGEOJSON,
     getSearchResult: getSearchResult,
     getGEOJSONbyID: getGEOJSONbyID,

@@ -1,13 +1,14 @@
 const geo = {
   "type": "FeatureCollection",
   "features": [
-  
+
   ]
 }
 
 const INITIAL_STATE = {
 geojson: geo,
 searchResult: geo,
+uni_all:geo,
 };
 
 export function mapReducer(state = INITIAL_STATE, action) {
@@ -17,6 +18,9 @@ export function mapReducer(state = INITIAL_STATE, action) {
         break;
       case 'SEARCH_RETIREVED':
         return  {...state, searchResult: action.payload}
+        break;
+      case 'ALL_GEOJSON_RETIREVED':
+        return  {...state, uni_all: action.payload}
         break;
       case 'SEARCH_EMPTY':
         return {...state, searchResult: geo}

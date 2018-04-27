@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Tabs, Tab,ProgressBar,Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label, FormGroup, ControlLabel, FormControl, HelpBlock} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {getUniversities} from '../actions/mapInfoActions';
+import {getUniversities, add_favorite_university} from '../actions/mapInfoActions';
 import {Link} from 'react-router';
 import Animation from './animation'
 import Review from './review';
@@ -31,6 +31,10 @@ close(){
   this.setState({showModal: false})
 }
 
+addFavorite(){
+this.props.add_favorite_university()
+}
+
 
   renderInfo(){
     // const array1 = ['link', 'link', 'link', 'link'];
@@ -50,7 +54,7 @@ close(){
       <div style={{flex: 1, width: '100%', minHeight: '90vh', color:'#2a3446'}}>
         <Row className="topSearched" style={{paddingLeft: 50, paddingRight: 50, paddingTop: 20 }}>
           {/* <img src={require('../images/arrowDown.png')} style={{height: 20, marginTop: 5, marginBottom: 20}} /> */}
-          <h2>{this.props.uni.universitet}</h2>
+          <h2 onClick={this.addFavorite.bind(this, this.props.login, this.props.uni._id)}>{this.props.uni.universitet}</h2>
           <img src={require('../images/line.png')} style={{width: 300}} />
 
           <Row className="mapInfo">
@@ -174,7 +178,7 @@ close(){
     console.log("jfdsgkjfsnlajrkgdblrnsei", this.props.uni.by);
 
     return (
-      <div>
+      <div id="mapInfo">
         {(this.props.uni.by) ? (this.renderInfo()) : ("")}
       </div>
     )
@@ -183,10 +187,12 @@ close(){
 function mapStateToProps(state){
   return {
     uni:state.university.university,
+    login:state.login.mail
   }
 }
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
+    add_favorite_university:add_favorite_university,
     getUniversities:getUniversities
   }, dispatch)
 }
