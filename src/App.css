@@ -22,6 +22,15 @@
   min-height: 90vh;
   width: 100%;
 }
+
+.exitTutorial{
+  position:absolute;
+  right:10px;
+  margin-top:-3px;
+}
+.exitTutorial:hover{
+  cursor: pointer;
+}
 /* header */
 .header{
   min-height: 10vh;
@@ -180,9 +189,9 @@
 
 
  }
-.turtorialPopup{
+.turtorialPopupExit{
   position: absolute;
-  right:30px;
+  right:200px;
   bottom:30px;
   height: 70px;
   width: 300px;
@@ -215,11 +224,33 @@
 /*infodiv right corner*/
 .infoMapDiv{
   position: absolute;
-  padding: 2px;
-  top: 10px;
-  right: 10px;
+  max-width: 20vw;
+  right: 2vw;
+  top: 2vh;
+  padding: 5px;
+  padding-left: 10px;
   background-color: white;
   z-index: 1000;
+  border-radius: 10px;
+}
+
+.list_top3{
+  margin-bottom: 5px;
+  padding-top: 5px;
+  font-size: 13px;
+}
+
+.uni{
+  padding-top: 12px;
+  color: black;
+}
+
+.uni:hover{
+  cursor: pointer;
+}
+.country_displayed{
+  margin-top: 0px;
+  font-size: 20px;
 }
 
 
@@ -457,6 +488,22 @@ margin-top: 10px;
 #mapid {
   height: 85vh;
 }
+
+
+
+.custom-marker{
+  width: 50px;
+  height: 100px;
+  position: absolute;
+  right:50vw;
+  top:20vh;
+  z-index: 2000;
+}
+.orange-marker{
+  width:40px;
+  height: 60px;
+}
+
 
 /*Statistikk*/
 .sortButton{
