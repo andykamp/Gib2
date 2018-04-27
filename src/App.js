@@ -8,6 +8,8 @@ import {bindActionCreators} from 'redux';
 import Footer from './components/footer';
 import Menu from './components/menu';
 import SignIn from './components/signIn';
+import {Glyphicon,FormGroup, form, FormControl, Grid, Col, Row, Button} from 'react-bootstrap';
+
 
 //costum class for Modal
 const customStyles = {
@@ -126,7 +128,6 @@ renderinfo(){
 }
 
   render() {
-
     const intViewportHeight = window.innerHeight;
     let scroll = window.scrollY;
 
@@ -146,7 +147,7 @@ renderinfo(){
           {(this.state.showInfo) ? (
             <div style={{
               position: 'absolute',
-              right:30,
+              right:'50vw',
               top:intViewportHeight + scroll-80,
               height: 70,
               width: 300,
@@ -161,10 +162,10 @@ renderinfo(){
               zIndex: 10,
               animation: 'flyUpInfo 200ms ease-in'
             }} >
-              <div className="turtorialPopupExit">
-                <img src={require('./images/exit.png')} style={{height: 20, marginLeft:0 }} onClick={()=> this.setState({showInfo:false})}/>
+              <div className="tutorialPopupExit">
+                <a className='exitTutorial' onClick={()=> this.setState({showInfo:false})}><Glyphicon style = {{color:'white'}} glyph="glyphicon glyphicon-remove" /></a>
               </div>
-              <p style= {{marginTop:10}}>Use the searchbar or the dynamic map to find your university.</p>
+              <p style= {{marginTop:13}}>Use the searchbar or the dynamic map to find your university.</p>
 
             </div>
           ):("")}

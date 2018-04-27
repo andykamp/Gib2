@@ -4,6 +4,7 @@ import API_URL from '../index';
 
 
 export const getGEOJSON = (name) => {
+  
   return (dispatch) => {
     fetch(`${API_URL}/uni_in_country/${name}`)
       .then(response => response.json())
