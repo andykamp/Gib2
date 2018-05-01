@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label} from 'react-bootstrap';
 import {bindActionCreators} from 'redux';
-import {getProfileUniversity, setInfo} from '../../actions/profileActions';
+import {getProfileUniversity, getProfileNotesAndLinks,setInfo} from '../../actions/profileActions';
 import {Link} from 'react-router';
 import { BeatLoader } from 'react-spinners';
 
@@ -28,8 +28,9 @@ class Cart extends React.Component{
     }, 2000);
   }
 
- handleClick(uni){
+ handleClick(uni, notes, links){
    this.props.getProfileUniversity(uni)
+   this.props.getProfileNotesAndLinks(notes, links)
  }
 
 
@@ -58,7 +59,7 @@ class Cart extends React.Component{
        return(
 
          <Col xs={12} sm={6} md={3} className="cartList">
-           <Link  to="/universitet" onClick={this.handleClick.bind(this, uniArr.university)} className="collegeItem" >
+           <Link  to="/universitet" onClick={this.handleClick.bind(this, uniArr.university, uniArr.notes, uniArr.links)} className="collegeItem" >
              <Row style={{flex: 2, width: '100%', heigth: 200, }}>
                <img src={require('../../images/placeholder.png')} style={{width:'100%', height:150}} />
              </Row>
@@ -102,6 +103,7 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
     getProfileUniversity: getProfileUniversity,
+    getProfileNotesAndLinks:getProfileNotesAndLinks,
     setInfo: setInfo,
   }, dispatch)
 }

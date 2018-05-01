@@ -2,7 +2,7 @@ import React from 'react';
 import {Row, Col, Well, Button} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {deleteLinkItem} from '../actions/cartActions';
+import {deleteLinkCartItem} from '../actions/cartActions';
 
 class LinkItem extends React.Component{
   constructor(){
@@ -23,14 +23,16 @@ class LinkItem extends React.Component{
     const currentCartToDelete = this.props.link
     //Determine at wich index in books array is the book to be deleted
     const indexToDelete = currentCartToDelete.findIndex(
-      function(link){
-        return link._id === _id
+      function(cart){
+        return cart[0] === _id
       }
     )
+    console.log('indexToDelete',indexToDelete)
     //uses slice to remove the book at the specified indexToDelete
     let cartAfterDelete = [...currentCartToDelete.slice(0,indexToDelete), ...currentCartToDelete.slice(indexToDelete + 1)];
     //returns the new array to reducer
-    this.props.deleteLinkItem(cartAfterDelete);
+    console.log('cartAfterDelete', cartAfterDelete);
+    this.props.deleteLinkCartItem(_id, cartAfterDelete, this.props.mail, this.props.uni._id );
   }
 
 
@@ -50,12 +52,14 @@ class LinkItem extends React.Component{
 }
 function mapStateToProps(state){
   return {
-    link: state.cart.link
+    link: state.profile.links,
+    uni: state.university.university,
+    mail: state.login.mail,
   }
 }
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    deleteLinkItem: deleteLinkItem,
+    deleteLinkCartItem: deleteLinkCartItem,
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(LinkItem);
