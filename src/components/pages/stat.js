@@ -30,9 +30,17 @@ class Stat extends Component {
       return (
         <Grid className="wholescreen">
           <div className="containerMap" style={{marginTop: '10vh'}}>
-          <button onClick={()=> this.setState({list:!this.state.list})}>
-          hello
-          </button>
+            {/* <h1>Statestikk</h1>
+            <img src={require('../../images/line.png')} style={{width: 300}} /> */}
+          <Row className="centerRow" style={{marginTop: 20}}>
+            <button className={this.state.list?"buttonBlue": "buttonBlueLight"} onClick={()=> this.setState({list:true})}>
+              Top ten
+            </button>
+            <button className={!this.state.list?"buttonBlue": "buttonBlueLight"} onClick={()=> this.setState({list:false})}>
+              Dynamic map
+            </button>
+          </Row>
+
                         {/* <Animation anbefaler={80} anbefalerikke={20} /> */}
               {(this.state.list)?(<ListStat/>):(<Map/>)}
           </div>

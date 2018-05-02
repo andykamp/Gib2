@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 //CSS AND BOOTSTRAP
 import '../../App.css';
-import {Modal, Grid, Col, Row, Button} from 'react-bootstrap';
+import {Modal, Grid, Col, Row, Button, Image} from 'react-bootstrap';
 
 //IMPORT COMPOMNENTS USED IN RENDER
 import Map from '../map';

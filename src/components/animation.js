@@ -9,7 +9,7 @@ import { ascending, max } from 'd3-array';
 // **************************************************
 //  SVG Layout
 // **************************************************
-const view = [1000, 450]; // [width, height]
+const view = [1000, 550]; // [width, height]
 const trbl = [10, 10, 30, 10]; // [top, right, bottom, left] margins
 
 const dims = [ // Adjusted dimensions [width, height]
