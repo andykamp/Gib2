@@ -20,6 +20,9 @@ import thunk from 'redux-thunk';
 //IMPORT COMBINED REDUCERS
 import reducers from './reducers/index';
 
+// COOKIE
+import { CookiesProvider } from 'react-cookie';
+
 // API URL comment out the one you don't use
 const API_URL = 'https://gib2-api.herokuapp.com';
 // const API_URL = 'http://localhost:8080';
@@ -30,6 +33,7 @@ const store = createStore(reducers, middleware);
 
 const Routes = (
   <Provider store={store}>
+  <CookiesProvider>
     <Router history={browserHistory}>
       <Route path="/" component={App} >
         <IndexRoute component={Home} />
@@ -40,6 +44,7 @@ const Routes = (
 
       </Route>
     </Router>
+    </CookiesProvider>
   </Provider>
 
 )

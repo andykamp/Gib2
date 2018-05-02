@@ -1,9 +1,9 @@
 "use strict"
 import React from 'react';
 import {connect} from 'react-redux';
-import {Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label} from 'react-bootstrap';
+import {Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label, Glyphicon} from 'react-bootstrap';
 import {bindActionCreators} from 'redux';
-import {getProfileUniversity, setInfo} from '../../actions/profileActions';
+import {getProfileUniversity, getProfileNotesAndLinks,setInfo, deleteUniversity} from '../../actions/profileActions';
 import {Link} from 'react-router';
 import { BeatLoader } from 'react-spinners';
 
@@ -28,8 +28,9 @@ class Cart extends React.Component{
     }, 2000);
   }
 
- handleClick(uni){
+ handleClick(uni, notes, links){
    this.props.getProfileUniversity(uni)
+   this.props.getProfileNotesAndLinks(notes, links)
  }
 
 
@@ -41,6 +42,9 @@ class Cart extends React.Component{
      <h6 style={{textAlign: 'center'}}>Du har ikke lagt til noen universiteter enda...</h6>
    </Row>
  );
+ }
+ deleteUn(mail, id){
+   this.props.deleteUniversity(mail, id)
  }
 
  renderScreen(){
@@ -58,7 +62,9 @@ class Cart extends React.Component{
        return(
 
          <Col xs={12} sm={6} md={3} className="cartList">
-           <Link  to="/universitet" onClick={this.handleClick.bind(this, uniArr.university)} className="collegeItem" >
+
+            <Glyphicon glyph="glyphicon glyphicon-remove" style={{position: 'absolute',zIndex: 100, top:-15, right:-15, fontSize:50}} onClick={this.deleteUn.bind(this,this.props.mail,uniArr.university._id)}/>
+            <Link  to="/universitet" onClick={this.handleClick.bind(this, uniArr.university, uniArr.notes, uniArr.links)} className="collegeItem">
              <Row style={{flex: 2, width: '100%', heigth: 200, }}>
                <img src={require('../../images/placeholder.png')} style={{width:'100%', height:150}} />
              </Row>
@@ -97,12 +103,15 @@ class Cart extends React.Component{
 function mapStateToProps(state){
   return{
     uni: state.profile.uni,
+    mail:state.login.mail
   }
 }
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
     getProfileUniversity: getProfileUniversity,
+    getProfileNotesAndLinks:getProfileNotesAndLinks,
     setInfo: setInfo,
+    deleteUniversity:deleteUniversity,
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Cart);

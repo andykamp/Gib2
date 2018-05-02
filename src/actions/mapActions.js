@@ -2,7 +2,13 @@
 import fetch from 'cross-fetch';
 import API_URL from '../index';
 
-
+export const get_all_choropleth = () => {
+  return (dispatch) => {
+    fetch(`${API_URL}/get_choropleth_countries`)
+      .then(response => response.json())
+      .then(json => dispatch({ type: 'ALL_CHOROPLETH_RETIREVED', payload: json }));
+  };
+};
 export const get_all_GEOJSON = () => {
   const id= '5a59f39098c056e100406ac4'
   return (dispatch) => {

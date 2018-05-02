@@ -28,7 +28,7 @@ class Review extends React.Component{
 
   render() {
     const tilbakemelding = "Godt universitet med gode forelesninger og godt studiemiljø for utenlandske studenter. Mye interessante fag."
-
+    console.log('JSDHFGKJBSNALJS', this.props.summary);
     return(
       <div>
       <div className="infoRowPointer" onClick={()=> this.setState({showModal:true})}>
@@ -36,9 +36,9 @@ class Review extends React.Component{
         <div className="infoCol">
           <div className="infoRow">
             <h6 style={{marginRight: 5}}>MTING</h6>
-            <h6>18.02.2017</h6>
+            <h6>{this.props.date}</h6>
           </div>
-          <p>{tilbakemelding.substring(0,50) + "..."}</p>
+          <p>{this.props.summary.substring(0,50) + "..."}</p>
         </div>
       </div>
         {/* Review modal */}
@@ -54,15 +54,16 @@ class Review extends React.Component{
                 <div className="infoCol">
                   <div className="infoRow">
                     <h6 style={{marginRight: 5}}>MTING</h6>
-                    <h6>18.02.2017</h6>
+                    <h6>{this.props.date}</h6>
                   </div>
-                  <p>{tilbakemelding}</p>
+                  <p>{this.props.summary}</p>
                 </div>
               </div>
             </FormGroup>
 
           </Modal.Body>
           <Modal.Footer>
+            <Button><a href={this.props.link} target="_blank">Se full</a></Button>
             <Button onClick={this.close.bind(this)}>Close</Button>
           </Modal.Footer>
         </Modal>
