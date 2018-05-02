@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import {Tabs, Tab,ProgressBar,Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label, FormGroup, ControlLabel, FormControl, HelpBlock} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {getUniversities, add_favorite_university} from '../actions/mapInfoActions';
+import {getReports,getUniversities, add_favorite_university} from '../actions/mapInfoActions';
 import {Link} from 'react-router';
 import Animation from './animation'
 import Review from './review';
+import NotLoggedIn from './notLoggedIn'
 
 class mapInfo extends React.Component {
   constructor(props, context) {
@@ -31,8 +32,12 @@ close(){
   this.setState({showModal: false})
 }
 
-addFavorite(){
-this.props.add_favorite_university()
+addFavorite(email,id){
+console.log("sending fav uni", email, id);
+if(email.length<11){
+  this.setState({showModel:true})
+}
+this.props.add_favorite_university(email, id)
 }
 
 
@@ -50,11 +55,28 @@ this.props.add_favorite_university()
     //     </Link>
     //   )
     // })
+    console.log('sdnkjbfanjbgredvsnfkergdjks', typeof(this.props.report));
+    let reports = "No available reports on this university"
+    if (this.props.report !== null){
+      reports = this.props.reports.map(function(report){
+          return(
+            <Review
+              date={report.Rapportdato}
+              thumb={report["Vil du anbefale andre å reise til studiestedet?"]}
+              link={report.url}
+              summary={report["Hva er begrunnelsen for anbefalingen?"].replace("_", ".")}
+            />
+          )
+      }
+
+      )
+  }
+
     return (
       <div style={{flex: 1, width: '100%', minHeight: '90vh', color:'#2a3446'}}>
         <Row className="topSearched" style={{paddingLeft: 50, paddingRight: 50, paddingTop: 20 }}>
           {/* <img src={require('../images/arrowDown.png')} style={{height: 20, marginTop: 5, marginBottom: 20}} /> */}
-          <h2 onClick={this.addFavorite.bind(this, this.props.login, this.props.uni._id)}>{this.props.uni.universitet}</h2>
+          <h2 onClick={this.addFavorite.bind(this, this.props.mail, this.props.uni._id)}>{this.props.uni.universitet}</h2>
           <img src={require('../images/line.png')} style={{width: 300}} />
 
           <Row className="mapInfo">
@@ -154,9 +176,7 @@ this.props.add_favorite_university()
 
               <Row style={{height: 20}}/>
 
-              <Review/>
-              <Review/>
-              <Review/>
+            {reports}
 
 
               <div className="infoRowHeader">
@@ -187,13 +207,15 @@ this.props.add_favorite_university()
 function mapStateToProps(state){
   return {
     uni:state.university.university,
-    login:state.login.mail
+    mail:state.login.mail,
+    reports: state.map.reports
   }
 }
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
     add_favorite_university:add_favorite_university,
-    getUniversities:getUniversities
+    getUniversities:getUniversities,
+    getReports: getReports
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(mapInfo)
