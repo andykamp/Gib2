@@ -78,6 +78,11 @@ this.props.add_favorite_university(email, id)
   }else{
     reports = "Ingen tilgjengelige rapporter"
   }
+//{this.props.my_unis.indexOf(this.props.uni._id) === -1 ? "Legg til i min profil" : "Allerede lagt til i min profil"}
+  const add_university = this.props.my_unis.indexOf(this.props.uni._id) === -1 ? (
+  <Button className="button" onClick={this.addFavorite.bind(this, this.props.mail, this.props.uni._id)}>Legg til i min profil</Button>) : 
+  <Button className="button" >Allerede lagt til i min profil</Button> 
+
     return (
       <div  style={{flex: 1, width: '100%', minHeight: '90vh', color:'#2a3446'}}>
         <Row className="topSearched" style={{paddingLeft: 50, paddingRight: 50, paddingTop: 20 }}>
@@ -113,6 +118,8 @@ this.props.add_favorite_university(email, id)
                       {/* <img src={require('../images/marker.png')} style={{height: 20,marginBottom: 0, marginRight: 5}}/> */}
                       <h4>Avstand fra ntnu:</h4>
                       <p>{ Math.round(this.props.uni.meters_from_ntnu)} meter</p>
+                      <h4>Min/Maks teperatur i dag:</h4>
+                      <p>{ this.props.uni.weather.min + '/' + this.props.uni.weather.high} grader</p>
 
                     <h4>Hvem kan søke?</h4>
                     <p>{this.props.uni["Hvem kan søke"]}</p>
@@ -136,11 +143,7 @@ this.props.add_favorite_university(email, id)
                           Hvordan søker jeg?
 
                         </Button>
-                        <Button className="button" onClick={this.addFavorite.bind(this, this.props.mail, this.props.uni._id)}>
-
-                            {this.props.my_unis.indexOf(this.props.uni._id) === -1 ? "Legg til i min profil" : "Allerede lagt til"}
-
-                          </Button>
+                        {add_university}
                   </div>
 
 
