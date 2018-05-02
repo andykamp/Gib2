@@ -166,8 +166,7 @@ renderinfo(){
             <div style={{
               position: 'absolute',
               right:'1vw',
-              top:intViewportHeight + scroll-80,
-              height: 70,
+              top:intViewportHeight + scroll-130,
               width: 300,
               display: 'flex',
               flexDirection: 'column',
@@ -183,7 +182,8 @@ renderinfo(){
               <div className="tutorialPopupExit">
                 <a className='exitTutorial' onClick={()=> this.setState({showInfo:false})}><Glyphicon style = {{color:'white'}} glyph="glyphicon glyphicon-remove" /></a>
               </div>
-              <p style= {{marginTop:13}}>Use the searchbar or the dynamic map to find your university.</p>
+              <p style= {{marginTop:10}}>Use the searchbar or the dynamic map to find your university.
+                                        The coloured areas displayed on a country clicked indicate how many universities is inside the hovered polygon.</p>
 
             </div>
           ):("")}

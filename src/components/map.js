@@ -21,7 +21,7 @@ import orangeMarker from '../images/map_marker-orange.png'
 import L from 'leaflet';
 
 //Global variables
-const outer = [[-65, -163], [85, 175]];
+const outer = [[-60, -170], [80, 170]];
 
 function getColor (d) {
   return '#2a3446'
@@ -79,19 +79,18 @@ function onEachFeature (component, feature, layer) {
     mouseover: highlightFeature.bind(null, component,feature),
     mouseout: resetHighlight.bind(null, component,feature),
     click: function(){
-          console.log('comp',component);
           // console.log(layer);
           var init_bounds = layer.getBounds();
           var name = feature.properties.name;
           var tile_layer = 'https://api.mapbox.com/styles/v1/kristogs/cjee2fy4u00jb2ro1kwgrex8w/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia3Jpc3RvZ3MiLCJhIjoiY2pjdWlrbHhjMGt3YzJ3cW9sNm5xODc1dSJ9.Nvgmd0tPcaQWPgoUk2DISA';
+
           // var tile_layer = 'mapbox://styles/mapbox/streets-v9';
           component.setState({countryName: name})
           console.log('name',name);
           component.refs.geojson.leafletElement.clearLayers();
           component.refs.geojson.leafletElement.addData(world_countries);
           component.setState({bounds: init_bounds})
-          component.setState({country_clicked: true})
-          component.props.getGEOJSON(component.state.countryName);
+          component.props.getGEOJSON(name);
       },
   });
 }
@@ -120,10 +119,11 @@ function onEachPopUp(component, feature, layer) {
 
 function resetButton(component, feature, layer){
     // component.setState({zoom: 1})
+    component.setState({markers:[]})
     component.setState({countryName:''});
     component.setState({bounds:outer});
     component.setState({custom_marker_pos:[]})
-    component.refs.map.leafletElement.setZoom(1)
+    component.refs.map.leafletElement.setZoom(2)
     component.clearSearch.bind(this)
     component.refs.popjson.leafletElement.clearLayers();
     component.refs.geojson.leafletElement.clearLayers();
@@ -180,41 +180,14 @@ function isMarkerInsidePolygon(marker, poly) {
     return inside;
 };
 
-function createAndSendMarkerCluster(component, nextProp){
-  var country_feat = nextProp.geojson.features;
-
-  var uni=''
-  var coords = []
-  for (var i = 0; i < country_feat.length; i++){
-    uni = country_feat[i].properties.universitet;
-    coords = country_feat[i].geometry.coordinates;
-    console.log(uni, coords);
-    var element = document.createElement('p')
-    element.innerHTML = '<Marker position={coords}/>'
-    console.log(element.innerHTML);
-    // document.getElementById('cluster').appendChild(element)
-  }
-
-}
-
-// function clusterMarkers(){
-//   var countryMarkers = [[8,13],[10,12],[11,12], [12,12]]
-//   var mcg = L.markerClusterGroup();
-//
-//   for (var i = 0; i < countryMarkers.length; i++) {
-//     var a = countryMarkers[i];
-//     var marker = L.marker(new L.LatLng(a[0], a[1]));
-//   }
-// }
-
 
 class MapContainer extends Component {
   constructor() {
     super()
 
     this.state = {
-      zoom: 1,
-      bounds: outer,
+      zoom: 2,
+      bounds:outer,
       custom_marker_pos: [],
       uni_name:'',
       scale:1,
@@ -226,8 +199,7 @@ class MapContainer extends Component {
       scrollWheelZoom: false,
       countryName: '',
       searched:false,
-      showSearchedMarker:false,
-      country_clicked:false,
+      markers: {},
     }
   }
   componentDidMount(){
@@ -240,11 +212,6 @@ class MapContainer extends Component {
 
       console.log('nextProp',nextProp);
       this.refs.popjson.leafletElement.addData(nextProp.geojson);
-
-      if (this.state.country_clicked){
-        createAndSendMarkerCluster(this,nextProp)
-      }
-
 
       // is inside polygon when clicked in the searchbar
       console.log('readytosearch',this.state.searched);
@@ -306,8 +273,16 @@ class MapContainer extends Component {
           document.getElementById('top3uni').appendChild(element);
         }
       }
-      // console.log('map_zoom', this.refs.map.leafletElement.getZoomLevel());
-      console.log('map_zoom_scale', this.refs.map.leafletElement.getScaleZoom());
+      // add markers to the map for each country clicked
+      var markers = []
+      for (var i = 0; i < nextProp.geojson.features.length; i++) {
+        var coord = [nextProp.geojson.features[i].geometry.coordinates[1],nextProp.geojson.features[i].geometry.coordinates[0]]
+        markers.push({position: coord,
+                      popup:'<div className="popUp">'+nextProp.geojson.features[i].properties.universitet+'</div>',
+                      options:{onmouseover: console.log('click marker')},
+                      })
+      }
+      this.setState({markers:markers})
   }
 
   onScale(){
@@ -339,7 +314,11 @@ class MapContainer extends Component {
   updateSearched(id){
     this.setState({searched:true})
     this.goToSearch(id)
-    this.setState({showSearchedMarker:true})
+  }
+
+  setMarkerToBounds(marker){
+    var marker_bounds = [[marker._latlng.lat-0.1,marker._latlng.lng-0.1],[marker._latlng.lat+0.1,marker._latlng.lng+0.1]]
+    this.setState({bounds:marker_bounds})
   }
 
   pointToLayer = (feature, latlng) => {
@@ -365,8 +344,9 @@ class MapContainer extends Component {
       console.log('wasequalposcustommarker');
       return L.marker(latlng, {icon:custom_icon, zIndexOffset: 2000})
     }
-    else{
-      return L.marker(latlng, {icon: default_icon})
+
+    else if(latlng.lat == this.state.markers[0] && latlng.lng==this.state.markers[1]){
+      return
     }
   }
 
@@ -432,11 +412,15 @@ class MapContainer extends Component {
 
               <KeyHandler keyEventName={KEYDOWN} keyValue="z" onKeyHandle={zDown.bind(null,this)} />
               <KeyHandler keyEventName={KEYUP} keyValue="z" onKeyHandle={zUp.bind(null,this)} />
-
-              <MarkerClusterGroup id="cluster"></MarkerClusterGroup>
-
-
-
+              <MarkerClusterGroup
+                markers={this.state.markers}
+                onMarkerClick={(marker) => {console.log(this.state, marker._latlng),this.setMarkerToBounds(marker)}}
+                onClusterClick={(cluster) => console.log('clusterclick',cluster)}
+                onPopupClose={(popup) => console.log('popupclose',popup)}
+                showCoverageOnHover={true}
+                zoomToBoundsOnClick={true}
+                animate={true}
+              />
               {}
 
 
