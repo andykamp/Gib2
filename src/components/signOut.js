@@ -5,7 +5,7 @@ import {bindActionCreators} from 'redux';
 import {setLoginInfo, ContinueWithoutLogin} from '../actions/loginActions';
 import { withCookies } from 'react-cookie';
 
-class SignIn extends React.Component {
+class SignOut extends React.Component {
   constructor(props, context) {
     super(props, context);
 
@@ -30,7 +30,7 @@ class SignIn extends React.Component {
   handleLogin(){
     if(this.state.value.includes('@stud.ntnu.no')) {
     this.props.setLoginInfo(this.state.value);
-    this.props.cookies.set('hasLogin', this.state.value) 
+    this.props.cookies.set('hasLogin', this.state.value)
   }
   }
   handleContinueWithoutLogin(){
@@ -74,4 +74,4 @@ function mapDispatchToProps(dispatch){
     ContinueWithoutLogin: ContinueWithoutLogin
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(withCookies(SignIn));
+export default connect(mapStateToProps, mapDispatchToProps)(withCookies(SignOut));
