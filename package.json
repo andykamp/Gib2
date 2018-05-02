@@ -16,6 +16,7 @@
     "react": "^16.2.0",
     "react-alert": "^2.2.0",
     "react-bootstrap": "^0.32.0",
+    "react-cookie": "^2.1.4",
     "react-dom": "^16.2.0",
     "react-key-handler": "^1.0.1",
     "react-keydown": "^1.9.7",

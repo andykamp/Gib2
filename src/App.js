@@ -9,7 +9,9 @@ import Footer from './components/footer';
 import Menu from './components/menu';
 import SignIn from './components/signIn';
 import {Glyphicon,FormGroup, form, FormControl, Grid, Col, Row, Button} from 'react-bootstrap';
-
+import { setLoginInfo } from './actions/loginActions'
+import { withCookies, Cookies } from 'react-cookie';
+import { instanceOf } from 'prop-types';
 
 //costum class for Modal
 const customStyles = {
@@ -78,16 +80,27 @@ class App extends Component {
   constructor() {
     super()
     this.state = {
+      cookies: instanceOf(Cookies).isRequired,
       scrolly: 0,
       firstTime: true,
-      showModal: false,
       loadSpinner:true,
       animatePlane:true,
       showInfo: false,
     }
-  }
+    };
+  
+  static propTypes = {
+    cookies: instanceOf(Cookies).isRequired
+  };
+
 
   componentWillMount(){
+    const { cookies } = this.props;
+
+    this.setState({
+      hasLogin: (cookies.get("hasLogin")) || false,
+      showModal: (cookies.get("hasLogin")) != null?false:true,
+    })
   }
 
   componentDidMount(){
@@ -96,10 +109,13 @@ class App extends Component {
       //sets timeout for loadingscreen
       setTimeout(function() { this.setState({firstTime: false}); }.bind(this), 2000);
 
-      //if we are not logged in open login
-      if(!this.props.loggedIn){
-        this.setState({showModal:true});
-      }
+      const that=this;
+         setTimeout(function(){
+          if(that.state.hasLogin !== false){
+            that.props.setLoginInfo(that.state.hasLogin)
+           };
+       }, 100);
+      
   }
   componentWillReceiveProps(nextProps){
     //if user is logged in--> set timer for the modal to close
@@ -109,7 +125,7 @@ class App extends Component {
            that.setState({showModal: false, showInfo:true});
        }, 1000);    }
    // this.setState({showModal: false});
-
+   
   }
 
   componentWillUnmount(){
@@ -130,7 +146,6 @@ renderinfo(){
   render() {
     const intViewportHeight = window.innerHeight;
     let scroll = window.scrollY;
-
       return (
         <div className="wholescreenApp" >
           {/* Renders startupscreen if first time enterin */}
@@ -141,7 +156,7 @@ renderinfo(){
            >
             <div className='login'>
 
-              <SignIn/>
+              <SignIn cookie={this.props.cookies}/>
             </div>
           </Modal>
           {(this.state.showInfo) ? (
@@ -185,7 +200,7 @@ function mapStateToProps(state){
 }
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-
+    setLoginInfo: setLoginInfo,
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(withCookies(App));

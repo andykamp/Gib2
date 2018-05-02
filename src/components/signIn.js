@@ -3,6 +3,7 @@ import {Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label, FormGrou
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {setLoginInfo, ContinueWithoutLogin} from '../actions/loginActions';
+import { withCookies } from 'react-cookie';
 
 class SignIn extends React.Component {
   constructor(props, context) {
@@ -29,6 +30,7 @@ class SignIn extends React.Component {
   handleLogin(){
     if(this.state.value.includes('@stud.ntnu.no')) {
     this.props.setLoginInfo(this.state.value);
+    this.props.cookies.set('hasLogin', this.state.value) 
   }
   }
   handleContinueWithoutLogin(){
@@ -72,4 +74,4 @@ function mapDispatchToProps(dispatch){
     ContinueWithoutLogin: ContinueWithoutLogin
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SignIn)
+export default connect(mapStateToProps, mapDispatchToProps)(withCookies(SignIn));
