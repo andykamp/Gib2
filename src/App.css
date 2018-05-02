@@ -210,7 +210,6 @@ h4{
 
  }
  .searchform{
-
  }
  .searchform:focus {
     border-color:  #aaa;
@@ -371,9 +370,9 @@ h4{
 
 .mapbox{
   left: 0;
-  right:0;
+  right:3vw;
   height: 85vh;
-  margin-top: 10vh;
+  margin-top: 1vh;
 }
 .map{
   position: absolute;
@@ -628,7 +627,7 @@ margin: 20px
 .legend {
     position: absolute;
     bottom: 100px;
-    right: 100px;
+    right: 3vw;
     border-radius: 10px;
     border: 2px solid #dcdcdc;
     padding: 3px;

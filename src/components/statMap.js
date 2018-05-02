@@ -286,6 +286,7 @@ pointToLayer = (feature, latlng) => {
               bounds={this.state.bounds}
               fillOpacity = {this.state.fillOpacity}
               maxBounds = {this.state.maxBounds}
+              style = {{marginTop:0}}
             >
 
             <div className = 'legend'>
@@ -300,7 +301,7 @@ pointToLayer = (feature, latlng) => {
             </div>
 
 
-            <div className="btn-group" style={{position: 'absolute', right:'100px', top: '10px'}}>
+            <div className="btn-group" style={{position: 'absolute', right:'3vw', top: '10px'}}>
             <button id ='rapStat' onClick ={this.handleClick.bind(this)}>Studenter</button>
             <button id = 'uniStat'onClick ={this.handleClick.bind(this)}>Universiteter </button>
             <button id = 'sosStat' onClick ={this.handleClick.bind(this)}>Sosial</button>
