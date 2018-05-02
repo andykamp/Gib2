@@ -1,61 +1,52 @@
-
-import React, { PureComponent } from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import React, { PureComponent, Component } from 'react';
 import NodeGroup from 'react-move/NodeGroup';
 import Surface from './surface'; // this is just a responsive SVG
 import { scaleLinear, scaleBand } from 'd3-scale';
 import { easeExpInOut } from 'd3-ease';
 import { ascending, max } from 'd3-array';
+import '../App.css';
+import {get_all_money} from '../actions/mapActions';
 
 // **************************************************
 //  SVG Layout
 // **************************************************
 const view = [1000, 450]; // [width, height]
-const trbl = [10, 10, 30, 10]; // [top, right, bottom, left] margins
+const trbl = [10, 20, 30, 10]; // [top, right, bottom, left] margins
 
 const dims = [ // Adjusted dimensions [width, height]
   view[0] - trbl[1] - trbl[3],
   view[1] - trbl[0] - trbl[2],
 ];
 
-// **************************************************
-//  Mock Data
-// **************************************************
-const letters = [
-  { letter: 'Asia', frequency: 0.08167 },
-  { letter: 'B', frequency: 0.01492 },
-  { letter: 'C', frequency: 0.02780 },
-  { letter: 'D', frequency: 0.04253 },
-  { letter: 'E', frequency: 0.12702 },
-  { letter: 'F', frequency: 0.02288 },
-  { letter: 'G', frequency: 0.02022 },
-  { letter: 'H', frequency: 0.06094 },
-  { letter: 'I', frequency: 0.06973 },
-  { letter: 'J', frequency: 0.00153 },
-  { letter: 'K', frequency: 0.00747 },
-  { letter: 'L', frequency: 0.04025 },
-  { letter: 'M', frequency: 0.02517 },
-  { letter: 'N', frequency: 0.06749 },
-  { letter: 'O', frequency: 0.07507 },
-  { letter: 'P', frequency: 0.01929 },
-  { letter: 'Q', frequency: 0.00098 },
-  { letter: 'R', frequency: 0.05987 },
-  { letter: 'S', frequency: 0.06333 },
-  { letter: 'T', frequency: 0.09056 },
-  { letter: 'U', frequency: 0.02758 },
-  { letter: 'V', frequency: 0.01037 },
-  { letter: 'W', frequency: 0.02465 },
-  { letter: 'X', frequency: 0.00150 },
-  { letter: 'Y', frequency: 0.01971 },
-  { letter: 'Z', frequency: 0.00074 },
-];
 
-const y = scaleLinear()
-  .range([dims[1], 0])
-  .domain([0, max(letters, (d) => d.frequency)]);
+class Example extends Component {
+  constructor(){
+    super()
 
-class Example extends PureComponent {
-  state = {
-    sortAlpha: true,
+    this.state = {
+      sortAlpha: true,
+      statType: "moneySkole",
+    }
+    this.handleClick = this.handleClick.bind(this);
+  }
+  componentWillMount(){
+    this.props.get_all_money()
+  }
+  handleClick(e){
+
+    var varListe;
+    if(e.target.id=='ekstraBtn'){
+        this.setState({statType: "moneyEkstra"});
+  }
+    else if(e.target.id=='boBtn'){
+        this.setState({statType: "moneyBolig"});
+    }
+
+    else if(e.target.id=='skoleBtn'){
+        this.setState({statType: "moneySkole"});
+    }
   }
 
   update = () => {
@@ -66,17 +57,22 @@ class Example extends PureComponent {
 
   render() {
     const { sortAlpha } = this.state;
+    console.log('this.props.money', this.props.money)
+    try {
 
-    const sorted = letters.sort(sortAlpha ?
-      (a, b) => ascending(a.letter, b.letter) :
-      (a, b) => b.frequency - a.frequency,
+
+      const sorted = this.props[this.state.statType].sort(sortAlpha ?
+      (a, b) => ascending(a.key, b.key) :
+      (a, b) => b.val - a.val,
     ).slice(0);
 
     const scale = scaleBand()
-      .rangeRound([0, dims[0]])
-      .domain(sorted.map((d) => d.letter))
+      .rangeRound([0, 250])
+      .domain(sorted.map((d) => d.key))
       .padding(0.1);
-
+    const y = scaleLinear()
+      .range([dims[1], 0])
+      .domain([0, max(this.props[this.state.statType], (d) => d.val)]);
     return (
       <div style={{marginTop: '10vh'}}>
         <button onClick={this.update} className="sortButton">
@@ -85,23 +81,23 @@ class Example extends PureComponent {
         <Surface view={view} trbl={trbl}>
           <NodeGroup
             data={sorted}
-            keyAccessor={(d) => d.letter}
+            keyAccessor={(d) => d.key}
 
             start={() => ({
               opacity: 1e-6,
               y: 1e-6,
-              height: scale.bandwidth(),
+              height: scale.bandwidth()/2,
             })}
 
             enter={(d) => ({
               opacity: [0.7],
-              y: [scale(d.letter)],
+              y: [scale(d.key)],
               timing: { duration: 750, ease: easeExpInOut },
             })}
 
             update={(d, i) => ({
               opacity: [0.7],
-              y: [scale(d.letter)],
+              y: [scale(d.key)],
               height: [scale.bandwidth()],
               timing: { duration: 750, delay: i * 50, ease: easeExpInOut },
             })}
@@ -120,29 +116,31 @@ class Example extends PureComponent {
                   return (
                     <g key={key}>
                       <rect
-                        width={dims[1] - y(data.frequency)}
-                        x={100}
-                        fill="#00a7d8"
+                        width={dims[1] - y(data.val)}
+                        x={300}
+                        fill="#ffa500"
                         {...rest}
                       />
                       <text
                         // y={-100}
                         x={0}
                         dy="20"
-                        fill="#333"
+                        fill="black"
+                        font-weight="bold"
                         {...rest}
 
 
-                      >{data.letter}</text>
+                      >{data.key.split(',')[0]}</text>
                       <text
                         // y={-100}
-                        x={100}
+
+                        x={305}
                         dy="20"
                         fill="#333"
                         {...rest}
 
 
-                      >{data.letter}</text>
+                      >{data.val} NOK</text>
                     </g>
                   );
                 })}
@@ -150,9 +148,71 @@ class Example extends PureComponent {
             )}
           </NodeGroup>
         </Surface>
+        <div class="btn-group" style={{position: 'absolute', right:'100px', top: '150px'}}>
+        <button id ='ekstraBtn' onClick={this.handleClick.bind(this)}>Ekstrakostnader</button>
+        <button id = 'boBtn' onClick={this.handleClick.bind(this)}>Bokostnader </button>
+        <button id = 'skoleBtn' onClick={this.handleClick.bind(this)}>Skolekostnader </button>
+
+        </div>
       </div>
     );
-  }
+
+} catch (e) {
+  return (<div style={{marginTop: '10vh'}}>laster</div>)
+} finally {
+
+}
+}
 }
 
-export default Example;
+function mapStateToProps(state){
+  var a = state.map.money
+  // if (a.features){
+  //   console.log('obj', a)
+  // } else {
+  //   console.log('n-obj', a)
+  //   a = a.slice(0, 10)
+  // }
+
+  var listeSkole= [];
+  var listeEkstra= [];
+  var listeBolig= [];
+  var i;
+
+  for (i = 0; i < a.length; i++) {
+      var key = a[i].universitet;
+      var val1 = a[i].money_stats.skolepenger;
+      var val2 = a[i].money_stats.ekstra;
+      var val3 = a[i].money_stats.boligutgifter;
+      listeEkstra.push({'key':key, 'val':val2});
+      listeSkole.push({'key':key, 'val':val1});
+      listeBolig.push({'key':key, 'val':val3});
+  }
+  function getTop10(list) {
+    return list.sort(function(a, b) {
+      return a.val < b.val ? 1 : a.val > b.val ? -1 : 0
+    }).slice(0, 10)
+  }
+  listeSkole = getTop10(listeSkole)
+  listeEkstra = getTop10(listeEkstra)
+  listeBolig = getTop10(listeBolig)
+  console.log('list skole',listeSkole )
+  console.log('list bolig', listeBolig)
+  console.log('list ekstra', listeEkstra)
+
+  return{
+
+    money: a,
+    moneySkole: listeSkole,
+    moneyBolig: listeBolig,
+    moneyEkstra: listeEkstra
+
+}
+}
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    get_all_money,
+
+  },dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Example);
