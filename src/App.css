@@ -78,6 +78,14 @@
   background-color: #2a3446;
 
 }
+
+.leaflet-bottom{
+  position:absolute;
+  left: 10px;
+  top: -100px;
+  z-index: 0;
+}
+
 .coloredText{
   color: red;
 }

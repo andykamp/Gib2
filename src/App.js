@@ -147,7 +147,7 @@ renderinfo(){
           {(this.state.showInfo) ? (
             <div style={{
               position: 'absolute',
-              right:'50vw',
+              right:'1vw',
               top:intViewportHeight + scroll-80,
               height: 70,
               width: 300,

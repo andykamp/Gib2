@@ -175,7 +175,6 @@ this.props.add_favorite_university()
   }
 
   render() {
-    console.log("jfdsgkjfsnlajrkgdblrnsei", this.props.uni.by);
 
     return (
       <div id="mapInfo">
