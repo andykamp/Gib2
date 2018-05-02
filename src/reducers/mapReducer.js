@@ -9,6 +9,7 @@ const INITIAL_STATE = {
 geojson: geo,
 searchResult: geo,
 uni_all:geo,
+reports:[],
 };
 
 export function mapReducer(state = INITIAL_STATE, action) {
@@ -24,6 +25,9 @@ export function mapReducer(state = INITIAL_STATE, action) {
         break;
       case 'SEARCH_EMPTY':
         return {...state, searchResult: geo}
+        break;
+      case 'FETCHED_REPORTS':
+        return {...state, reports: action.payload}
         break;
       default:
         return state;
