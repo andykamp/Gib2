@@ -21,14 +21,14 @@ import orangeMarker from '../images/map_marker-orange.png'
 import L from 'leaflet';
 
 //Global variables
-const outer = [[-60, -170], [80, 170]];
+const outer = [[-80,-175],[80,175]];
 
 function getColor (d) {
   return '#2a3446'
 
 }
 function getOpacity(d, component) {
-  let opacity=0.8;
+  let opacity=1;
   if(d === component.state.countryName){
     opacity = 0;
   }
@@ -38,7 +38,7 @@ function style (component,feature) {
   return {
     fillColor: getColor(feature.properties.name),
     weight: 2,
-    opacity: 0.8,
+    opacity: 0.9,
     color: '#2a3446',
     dashArray: '1',
     fillOpacity: getOpacity(feature.properties.name, component),
@@ -54,7 +54,7 @@ function highlightFeature (component, feature, e) {
     color: '#2a3446',
     dashArray: '',
     fillOpacity: (feature.properties.name === component.state.countryName)?('0'):('0.4'),
-    opacity:0.8,
+    opacity:0.9,
   });
   // this.setState({countryDisplayed:feature.properties.name})
 }
@@ -66,10 +66,10 @@ function resetHighlight (component, feature, e) {
   layer.setStyle({
     fillColor: getColor(feature.properties.name, component),
     weight: 2,
-    opacity: 0.8,
+    opacity: 0.9,
     color: '#2a3446',
     dashArray: '1',
-    fillOpacity: (feature.properties.name === component.state.countryName)?('0'):('0.8')
+    fillOpacity: (feature.properties.name === component.state.countryName)?('0'):('1')
   });
 }
 
@@ -154,7 +154,7 @@ function resetButton(component, feature, layer){
     component.setState({countryName:''});
     component.setState({bounds:outer});
     component.setState({custom_marker_pos:[]})
-    component.refs.map.leafletElement.setZoom(2)
+    component.refs.map.leafletElement.setZoom(0)
     component.clearSearch.bind(this)
     component.refs.popjson.leafletElement.clearLayers();
     component.refs.geojson.leafletElement.clearLayers();
@@ -217,7 +217,7 @@ class MapContainer extends Component {
     super()
 
     this.state = {
-      zoom: 2,
+      zoom: 0,
       bounds:outer,
       custom_marker_pos: [],
       uni_name:'',
@@ -271,7 +271,7 @@ class MapContainer extends Component {
             }
         }
         if (this.state.countryName != country_name){
-          this.setState({bounds: outer})
+          this.setState({bounds: [[-69,-165],[70,165]]})
         }
         this.setState({uni_names:uni_names})
         this.setState({countryName: country_name})
@@ -416,7 +416,7 @@ updateWindowDimensions() {
     );
     }, this)
       return (
-        <div className="mapbox">
+        <div className="mapbox" style={{marginTop:'10vh'}}>
           <Image responsive  src={require('../images/ad.png')} className={this.state.scroll ? "buttonDownAnimation" : "buttonDown"} />
           <div className="map">
 
@@ -451,7 +451,6 @@ updateWindowDimensions() {
               bounds={this.state.bounds}
               fillOpacity = {this.state.fillOpacity}
               maxBounds = {this.state.maxBounds}
-
               zoomDelta={0.5}
               zoomSnap={0}
             >
