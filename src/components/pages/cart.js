@@ -50,26 +50,28 @@ class Cart extends React.Component{
  renderScreen(){
    if(this.state.loader){
      return(
+       <Row className="loadingContainer">
        <BeatLoader
          color={'#2a3446'}
          loading={this.state.loader}
 
        />
+       </Row>
      );
    }
    else {
      const universities= this.props.uni.my_universities.map(function(uniArr){
        return(
 
-         <Col xs={12} sm={6} md={3} className="cartList">
+         <Col xs={12} sm={6} md={4} className=" cartList">
 
-            <Glyphicon glyph="glyphicon glyphicon-remove" style={{position: 'absolute',zIndex: 100, top:-15, right:-15, fontSize:50}} onClick={this.deleteUn.bind(this,this.props.mail,uniArr.university._id)}/>
+            <Glyphicon id="delete" glyph="glyphicon glyphicon-remove" onClick={this.deleteUn.bind(this,this.props.mail,uniArr.university._id)}/>
             <Link  to="/universitet" onClick={this.handleClick.bind(this, uniArr.university, uniArr.notes, uniArr.links)} className="collegeItem">
              <Row style={{flex: 2, width: '100%', heigth: 200, }}>
-               <img src={require('../../images/placeholder.png')} style={{width:'100%', height:150}} />
+               <img src={require('../../images/university.png')} style={{width:'100%', height:150}} />
              </Row>
-             <Row style={{flex: 1, height: 70}}>
-             <h3 >{uniArr.university.universitet}</h3>
+             <Row style={{flex: 1, textAlign: 'center', color: '#2a3446', textDecorationColor: 'white', padding: 10}}>
+             <h3 >{uniArr.university.universitet.split(',')[0]}</h3>
              </Row>
 
            </Link>
@@ -82,7 +84,7 @@ class Cart extends React.Component{
      return(
        <div>
        {(!universities.length) ? (this.renderEmpty()):
-         (<Row >
+         (<Row className="centerRowRow" >
          {universities}
        </Row>)}
      </div>
@@ -94,6 +96,8 @@ class Cart extends React.Component{
     return(
       <Grid className="cart">
         <h1>Universiteter du har lagt til</h1>
+        <img src={require('../../images/line.png')} style={{width: 300}} />
+
         {this.renderScreen()}
       </Grid>
     )

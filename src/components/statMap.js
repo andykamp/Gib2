@@ -290,7 +290,7 @@ pointToLayer = (feature, latlng) => {
 
             <div className = 'legend'>
             <p> {name}</p>
-            <ul class = 'list-unstyled'>
+            <ul className = 'list-unstyled'>
             <li><span className= 'colorBox' style = {{background:'#ffeac4'}}></span><p> {list[0]}-{list[1]} </p> </li>
             <li><span className= 'colorBox' style = {{background:'#ffcf76'}}></span><p> {list[1]}-{list[2]}</p> </li>
             <li><span className= 'colorBox' style = {{background:'#ffba3b'}}></span><p> {list[2]}-{list[3]}</p> </li>
@@ -300,7 +300,7 @@ pointToLayer = (feature, latlng) => {
             </div>
 
 
-            <div class="btn-group" style={{position: 'absolute', right:'100px', top: '10px'}}>
+            <div className="btn-group" style={{position: 'absolute', right:'100px', top: '10px'}}>
             <button id ='rapStat' onClick ={this.handleClick.bind(this)}>Studenter</button>
             <button id = 'uniStat'onClick ={this.handleClick.bind(this)}>Universiteter </button>
             <button id = 'sosStat' onClick ={this.handleClick.bind(this)}>Sosial</button>

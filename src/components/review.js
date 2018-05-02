@@ -32,13 +32,13 @@ class Review extends React.Component{
     return(
       <div>
       <div className="infoRowPointer" onClick={()=> this.setState({showModal:true})}>
-        <img src={require('../images/profil.png')} style={{height: 60,marginBottom: 0, marginRight: 5}}/>
+        <img src={require('../images/chat.png')} style={{height: 30,marginBottom: 0, marginRight: 5}}/>
         <div className="infoCol">
           <div className="infoRow">
-            <h6 style={{marginRight: 5}}>MTING</h6>
+            <h6 style={{marginRight: 5}}>{this.props.stud_dir}</h6>
             <h6>{this.props.date}</h6>
           </div>
-          <p>{this.props.summary.substring(0,50) + "..."}</p>
+          <p>{this.props.summary.length >0 ?this.props.summary.substring(0,50) + "..." : '...'}</p>
         </div>
       </div>
         {/* Review modal */}
@@ -53,7 +53,7 @@ class Review extends React.Component{
                 <img src={require('../images/profil.png')} style={{height: 60,marginBottom: 0, marginRight: 5}}/>
                 <div className="infoCol">
                   <div className="infoRow">
-                    <h6 style={{marginRight: 5}}>MTING</h6>
+                    <h6 style={{marginRight: 5}}>{this.props.stud_dir}</h6>
                     <h6>{this.props.date}</h6>
                   </div>
                   <p>{this.props.summary}</p>
