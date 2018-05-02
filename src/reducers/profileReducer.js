@@ -2,7 +2,9 @@
 
 const INITIAL_STATE = {
 uni:{},
-uni_name:''
+uni_name:'',
+notes:[],
+links:[],
 };
 
 export function profileReducer(state = INITIAL_STATE, action) {
@@ -10,8 +12,22 @@ export function profileReducer(state = INITIAL_STATE, action) {
       case "FETCHED_USER_PROFILE":
         return  {...state, uni: action.payload}
         break;
+      case "NOTES_RETIREVED":
+        return  {...state, notes: action.payload}
+        break;
+      case "LINKS_RETIREVED":
+        return  {...state, links: action.payload}
+        break;
       case "INFO_RETIREVED":
         return {...state, [action.payload.prop]: action.payload.value}
+      case 'ADD_TO_CART':
+        return {...state, notes: action.payload}
+      case 'DELETE_FROM_CART':
+        return {...state, notes: action.payload}
+      case 'ADD_LINK_TO_CART':
+        return {...state, links: action.payload}
+      case 'DELETE_LINK_FROM_CART':
+        return {...state, links: action.payload}
       default:
         return state;
     }

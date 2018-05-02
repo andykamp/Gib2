@@ -39,17 +39,20 @@ class NoteItem extends React.Component{
 
   //deletes note
   onDeleteNote(_id){
+
     const currentCartToDelete = this.props.cart
     //Determine at wich index in books array is the book to be deleted
     const indexToDelete = currentCartToDelete.findIndex(
       function(cart){
-        return cart._id === _id
+        return cart[0] === _id
       }
     )
+    console.log('indexToDelete',indexToDelete)
     //uses slice to remove the book at the specified indexToDelete
     let cartAfterDelete = [...currentCartToDelete.slice(0,indexToDelete), ...currentCartToDelete.slice(indexToDelete + 1)];
     //returns the new array to reducer
-    this.props.deleteCartItem(cartAfterDelete);
+    console.log('cartAfterDelete', cartAfterDelete);
+    this.props.deleteCartItem(_id, cartAfterDelete, this.props.mail, this.props.uni._id );
   }
 
   handleTextChange(event){
@@ -71,7 +74,7 @@ class NoteItem extends React.Component{
               </btton>
             </p>
             <Button onClick={this.onDeleteNote.bind(this, this.props._id)} bsStyle="danger" bsSize="small">Slett</Button>
-            <Button onClick={this.open.bind(this)} bsStyle="danger" bsSize="small">endre...</Button>
+            {/* <Button onClick={this.open.bind(this)} bsStyle="danger" bsSize="small">endre...</Button> */}
         </Row>
         {/* Note modal */}
         <Modal show={this.state.showModal} onHide={this.close.bind(this)}>
@@ -87,7 +90,7 @@ class NoteItem extends React.Component{
 
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.handleNoteEdit.bind(this)}>Legg til</Button>
+            {/* <Button onClick={this.handleNoteEdit.bind(this)}>Legg til</Button> */}
             <Button onClick={this.close.bind(this)}>Close</Button>
           </Modal.Footer>
         </Modal>
@@ -97,7 +100,9 @@ class NoteItem extends React.Component{
 }
 function mapStateToProps(state){
   return {
-    cart: state.cart.cart
+    cart:state.profile.notes,
+    uni: state.university.university,
+    mail: state.login.mail,
   }
 }
 function mapDispatchToProps(dispatch){

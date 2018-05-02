@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label, FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
 import {bindActionCreators} from 'redux';
-import {deleteCartItem, addToCart, updateCart, addLinkToCart, deleteLinkItem} from '../../actions/cartActions';
+import {deleteCartItem, addToCart, updateCart, addLinkToCart} from '../../actions/cartActions';
 
 import NoteItem from '../noteItem';
 import LinkItem from '../linkItem';
@@ -24,34 +24,25 @@ class University extends React.Component{
 //-----adding cart tobject
 //handles adding to note to cart
 handleNoteAdd(){
-  const item = [...this.props.cart, {
-    _id: 1,
-    title: 'title',
-    note: this.state.form.note,
-  }]
-  if(this.state.form){
-    //CHECK IF CART IS renderEmpty
-    if(this.props.cart.length > 0){
-      //CART IS NOT EMPTY
-      let _id= this.props._id;
-      //checks if item exist from before
-      let cartIndex = this.props.cart.findIndex(function(cart){
-        return cart._id === _id;
-      })
-      //IF RETURNS -1 THERE AR ENO ITEMS ITH SAME ID
-      //then we add to cart
-      if(cartIndex === -1){
-        this.props.addToCart(item);
-      } else {
-        //WE NEED TO UPDATE QUANTITY
-        this.props.updateCart(_id, 1);
-
+  let max_id = 0
+  const id = this.props.cart.map(
+    function(item){
+      if (parseInt(item[0]) > max_id){
+          max_id = parseInt(item[0])
       }
-    } else {
-      //cart is empty so its safe to post the item
-      this.props.addToCart(item);
 
     }
+  )
+  const note = [(this.props.cart.length>0)?(max_id+1):(0),{
+    head: 'Note',
+    note: this.state.form.note,
+  }]
+  const item = [...this.props.cart, note ]
+  if(this.state.form){
+      //cart is empty so its safe to post the item
+      this.props.addToCart(note, item, this.props.mail, this.props.uni._id);
+
+
   }
   //close modal
   this.close();
@@ -59,35 +50,27 @@ handleNoteAdd(){
 //-----link funcitons
   //handle link adding to cart
   handleLinkAdd(){
-    const item = [...this.props.link, {
-      _id: 1,
-      title: 'Title',
-      url: this.state.form.link,
-    }]
-    if(this.state.form){
-
-    //CHECK IF link IS renderEmpty
-    if(this.props.link.length > 0){
-      //CART IS NOT EMPTY
-      let _id= this.props._id;
-      //checks if item exist from before
-      let cartIndex = this.props.link.findIndex(function(cart){
-        return cart._id === _id;
-      })
-      //IF RETURNS -1 THERE AR ENO ITEMS ITH SAME ID
-      //then we add to cart
-      if(cartIndex === -1){
-        this.props.addLinkToCart(item);
-      } else {
-        //do we need to handle this?
+    let max_id = 0
+    const id = this.props.link.map(
+      function(item){
+        if (parseInt(item[0]) > max_id){
+            max_id = parseInt(item[0])
+        }
 
       }
-    } else {
-      //cart is empty so its safe to post the item
-      this.props.addLinkToCart(item);
+    )
+    const link = [(this.props.link.length>0)?(max_id+1):(0),{
+      head: 'Link',
+      link: this.state.form.link,
+    }]
+    const item = [...this.props.link, link ]
+    if(this.state.form){
+        //cart is empty so its safe to post the item
+        this.props.addLinkToCart(link, item, this.props.mail, this.props.uni._id);
+
 
     }
-  }
+
     //close Modal
     this.closeLinkModal();
 
@@ -129,11 +112,11 @@ handleNoteAdd(){
     //renders the cartitem list from reducer
     const noteList = this.props.cart.map(function(noteArr){
       return(
-        <Col xs={12} sm={12} md={12} key={noteArr._id}>
+        <Col xs={12} sm={12} md={12} key={noteArr[0]}>
           <NoteItem
-            _id={noteArr._id}
-            title={noteArr.title}
-            note={noteArr.note}
+            _id={noteArr[0]}
+            title={noteArr[1]['head']}
+            note={noteArr[1]['note']}
           />
         </Col>
       )
@@ -143,11 +126,11 @@ handleNoteAdd(){
 
     const linkList = this.props.link.map(function(linkArr){
       return(
-        <Col xs={12} sm={12} md={12} key={linkArr._id}>
+        <Col xs={12} sm={12} md={12} key={linkArr[0]}>
           <LinkItem
-            _id={linkArr._id}
-            title={linkArr.title}
-            url={linkArr.url}
+            _id={linkArr[0]}
+            title={linkArr[1]['head']}
+            url={linkArr[1]['link']}
           />
         </Col>
       )
@@ -220,14 +203,15 @@ handleNoteAdd(){
 }
 function mapStateToProps(state){
   return{
-    link: state.cart.link,
-    cart:state.cart.cart,
+    link: state.profile.links,
+    cart:state.profile.notes,
     uni: state.university.university,
+    mail: state.login.mail,
   }
 }
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
-    deleteLinkItem:deleteLinkItem,
+
     deleteCartItem: deleteCartItem,
     addToCart: addToCart,
     updateCart: updateCart,
