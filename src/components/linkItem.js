@@ -38,10 +38,9 @@ class LinkItem extends React.Component{
 
   render() {
     return(
-        <Row style={{width: '40vw'}}>
-            <h6>{this.props.title}</h6>
+        <Row style={{width: '40vw', margin: 20}}>
             <p>{(this.props.url.length> 50 && !this.state.isClicked)?(this.props.url.substring(0,50)):(this.props.url)}
-              <btton className="link" onClick={this.onReadMore.bind(this)}>
+              <btton className="link" onClick={this.onReadMore.bind(this)} style={{fontWeight: 'bold'}}>
                 {(!this.state.isClicked && this.props.url !== null && this.props.url.length > 50)?('...read more'):('')}
               </btton>
             </p>

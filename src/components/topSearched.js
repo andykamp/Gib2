@@ -25,10 +25,14 @@ class topSearched extends Component {
       return (
         <Col xs={12} sm={6} md={3} className="topSearchedCol">
           <Row style={{flex: 2 }} className="topSearched">
-            <h3 style={{textAlign: 'center'}}>{item.universitet}</h3>
+            <h3 style={{textAlign: 'center'}}>{item.universitet.split(',')[0]}</h3>
           </Row>
+          <div className="infoRow">
+            <img src={require('../images/marker.png')} style={{height: 15,marginBottom: 0, marginRight: 5}}/>
+            <h5>{item.by}, {item.land}</h5>
+          </div>
           <Row style={{flex: 1, height: 70}}>
-            <button className='button' onClick={this.onTopClick.bind(this, item._id)} style={{textAlign: 'center'}}>Mer info</button>
+            <button className='buttonSmall' onClick={this.onTopClick.bind(this, item._id)} style={{textAlign: 'center'}}>Mer info</button>
           </Row>
         </Col>
       )

@@ -73,12 +73,12 @@ class Example extends PureComponent {
     ).slice(0);
 
     const scale = scaleBand()
-      .rangeRound([0, dims[0]])
+      .rangeRound([0, 400])
       .domain(sorted.map((d) => d.letter))
       .padding(0.1);
 
     return (
-      <div style={{marginTop: '10vh'}}>
+      <div style={{marginTop: '10vh', minHeight: 1}}>
         <button onClick={this.update} className="sortButton">
           {`Sort ${sortAlpha ? 'Value' : 'Alpha'}`}
         </button>
@@ -123,12 +123,13 @@ class Example extends PureComponent {
                         width={dims[1] - y(data.frequency)}
                         x={100}
                         fill="#00a7d8"
+                        y={10}
                         {...rest}
                       />
                       <text
                         // y={-100}
                         x={0}
-                        dy="20"
+                        dy="10"
                         fill="#333"
                         {...rest}
 
@@ -137,7 +138,7 @@ class Example extends PureComponent {
                       <text
                         // y={-100}
                         x={100}
-                        dy="20"
+                        dy="10"
                         fill="#333"
                         {...rest}
 
