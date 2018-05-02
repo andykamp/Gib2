@@ -20,6 +20,15 @@ const dims = [ // Adjusted dimensions [width, height]
   view[1] - trbl[0] - trbl[2],
 ];
 
+function numberToSpan(number) {
+  switch(number) {
+    case 1: return <span><b>Statistikk om ekstrakostnader</b><br/><br/>Hvor mye ekstrakostnader er det til de forskjellige universitetene?</span>;
+    case 2: return <span><b>Statistikk om bokostnader</b><br/><br/>Hvor mye koster det å bo når man studerer ved de forskjellige universitetene?</span>;
+    case 3: return <span><b>Statistikk om skolekostnader</b><br/><br/>Hvor mye koster de forskjellige universitetene i skolepenger?</span>;
+    default: return <span></span>;
+  }
+}
+
 
 class Example extends Component {
   constructor(){
@@ -28,12 +37,33 @@ class Example extends Component {
     this.state = {
       sortAlpha: true,
       statType: "moneySkole",
+      showStatType:0,
     }
     this.handleClick = this.handleClick.bind(this);
   }
   componentWillMount(){
     this.props.get_all_money()
   }
+
+  handleLeave(e) {
+    if (e.target.id.includes('Btn')) {
+      this.setState({showStatType:0})
+    }
+  }
+
+  handleHover(e) {
+    if(e.target.id=='ekstraBtn'){
+      this.setState({showStatType:1})
+    }
+    else if(e.target.id=='boBtn'){
+      this.setState({showStatType:2})
+    }
+    else if(e.target.id=='skoleBtn'){
+      this.setState({showStatType:3})
+    }
+
+  }
+
   handleClick(e){
 
     var varListe;
@@ -148,10 +178,15 @@ class Example extends Component {
             )}
           </NodeGroup>
         </Surface>
+
+        <div class = 'animStatInfo'>
+        {(!this.state.showStatType) ? '' : (numberToSpan(this.state.showStatType))}
+        </div>
+
         <div class="btn-group" style={{position: 'absolute', right:'100px', top: '150px'}}>
-        <button id ='ekstraBtn' onClick={this.handleClick.bind(this)}>Ekstrakostnader</button>
-        <button id = 'boBtn' onClick={this.handleClick.bind(this)}>Bokostnader </button>
-        <button id = 'skoleBtn' onClick={this.handleClick.bind(this)}>Skolekostnader </button>
+        <button id ='ekstraBtn' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick={this.handleClick.bind(this)}>Ekstrakostnader</button>
+        <button id = 'boBtn' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick={this.handleClick.bind(this)}>Bokostnader </button>
+        <button id = 'skoleBtn' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick={this.handleClick.bind(this)}>Skolekostnader </button>
 
         </div>
       </div>

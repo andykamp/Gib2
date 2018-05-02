@@ -30,25 +30,25 @@ function getColor (component,p) {
 
 
     if (component.state.mapType==="report_rating"){
-      return p > repList[4]? '#ff6500' :
-             p > repList[3]? '#ffa500' :
-             p > repList[2]? '#ffba3b' :
-             p > repList[1]? '#ffcf76' :
-                            '#ffeac4';
+      return p > repList[4]? '#FF3700' :
+             p > repList[3]? '#FF6500' :
+             p > repList[2]? '#FFA500' :
+             p > repList[1]? '#FFCF76' :
+                            '#FFEAC4';
     }
     else if(component.state.mapType==="university_rating"){
-      return p > uniList[4]? '#ff6500' :
-             p > uniList[3]? '#ffa500' :
-             p > uniList[2]? '#ffba3b' :
-             p > uniList[1]? '#ffcf76' :
-                            '#ffeac4';
+      return p > uniList[4]? '#FF3700' :
+             p > uniList[3]? '#FF6500' :
+             p > uniList[2]? '#FFA500' :
+             p > uniList[1]? '#FFCF76' :
+                            '#FFEAC4';
     }
     else{
-      return p >= 5? '#ff6500' :
-             p >= 4? '#ffa500' :
-             p >= 3 ? '#ffba3b' :
-             p >= 2? '#ffcf76' :
-                    '#ffeac4';
+      return p >= 5? '#FF3700' :
+             p >= 4? '#FF6500' :
+             p >= 3 ? '#FFA500' :
+             p >= 2? '#FFCF76' :
+                    '#FFEAC4';
     }
 
 }
@@ -96,7 +96,7 @@ function onEachFeature (component, feature, layer) {
               // component.props.getGEOJSON(countryNameDisplayed);
               // component.refs.geojson.leafletElement.clearLayers();
               // component.refs.geojson.leafletElement.addData(world_countries);
-              component.setState({bounds: init_bounds})
+              // component.setState({bounds: init_bounds})
               // component.setState({tile_layer_url: tile_layer})
               // num_countryuni = component.props.num_uni;
               // console.log('num_uni map',num_countryuni);
@@ -114,6 +114,18 @@ function numberToSpan(number) {
     case 4: return <span><b>Informasjon om det akademiske</b><br/><br/>Den akademiske kvaliteten ved de forskjellige universitetene, rangert fra 1 til 5, der 5 er best</span>;
     default: return <span></span>;
   }
+}
+
+function resetButton(component, feature, layer){
+    component.setState({countryName:''});
+    component.setState({bounds:outer});
+    component.refs.map.leafletElement.setZoom(1)
+    // component.props.top3 = '';
+    //component.refs.popjson.leafletElement.clearLayers();
+    //component.refs.geojson.leafletElement.clearLayers();
+    console.log('reset component',component);
+    // component.refs.geojson.leafletElement.addData(world_countries);
+
 }
 
 class MapContainer extends Component {
@@ -299,14 +311,13 @@ pointToLayer = (feature, latlng) => {
             <div className = 'legend'>
             <p> {name}</p>
             <ul class = 'list-unstyled'>
-            <li><span className= 'colorBox' style = {{background:'#ffeac4'}}></span><p> {list[0]}-{list[1]} </p> </li>
-            <li><span className= 'colorBox' style = {{background:'#ffcf76'}}></span><p> {list[1]}-{list[2]}</p> </li>
-            <li><span className= 'colorBox' style = {{background:'#ffba3b'}}></span><p> {list[2]}-{list[3]}</p> </li>
-            <li><span className= 'colorBox' style = {{background:'#ffa500'}}></span><p> {list[3]}-{list[4]}</p> </li>
-            <li><span className= 'colorBox' style = {{background:'#ff6500'}}></span><p> {list[4]}-</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FFEAC4'}}></span><p> {list[0]}-{list[1]} </p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FFCF76'}}></span><p> {list[1]}-{list[2]}</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FFA500'}}></span><p> {list[2]}-{list[3]}</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FF6500'}}></span><p> {list[3]}-{list[4]}</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FF3700'}}></span><p> {list[4]}-</p> </li>
             </ul>
             </div>
-
 
             <div class="btn-group" style={{position: 'absolute', right:'100px', top: '10px'}}>
             <button id ='rapStat'  onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Studenter</button>
@@ -321,7 +332,7 @@ pointToLayer = (feature, latlng) => {
               {/* <a onClick={this.resetButton.bind(this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>*/}
 
            <GeoJSON ref="geojson" data={this.props.choropleth} style={style.bind(null, this)} onEachFeature={onEachFeature.bind(null, this)}/>
-
+           <a onClick={resetButton.bind(null,this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>
             </Map>
           </div>
         </div>
