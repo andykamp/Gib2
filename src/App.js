@@ -173,7 +173,6 @@ renderinfo(){
               right:'1vw',
               top:intViewportHeight + scroll-130,
               right:'10px',
-              height: 70,
               width: 300,
               display: 'flex',
               flexDirection: 'column',
@@ -189,8 +188,8 @@ renderinfo(){
               <div className="tutorialPopupExit">
                 <a className='exitTutorial' onClick={()=> this.setState({showInfo:false})}><Glyphicon style = {{color:'white'}} glyph="glyphicon glyphicon-remove" /></a>
               </div>
-              <p style= {{marginTop:10}}>Use the searchbar or the dynamic map to find your university.
-                                        The coloured areas displayed on a country clicked indicate how many universities is inside the hovered polygon.</p>
+              <p style= {{marginTop:10}}>Bruke søkebaren og det dynamiske kartet til å finne ditt universitet.
+                                          </p>
 
             </div>
           ):("")}
