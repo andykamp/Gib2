@@ -10,7 +10,6 @@ export const get_all_choropleth = () => {
   };
 };
 export const get_all_GEOJSON = () => {
-  console.log('GET_ALL_GEOJSON');
   const id= '5a59f39098c056e100406ac4'
   return (dispatch) => {
     fetch(`${API_URL}/list_all_uni_as_geo_json`)
@@ -19,7 +18,7 @@ export const get_all_GEOJSON = () => {
   };
 };
 export const getGEOJSON = (name) => {
-  
+
   return (dispatch) => {
     fetch(`${API_URL}/uni_in_country/${name}`)
       .then(response => response.json())

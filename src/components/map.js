@@ -3,6 +3,8 @@ import keydown from 'react-keydown';
 import KeyHandler, {KEYPRESS, KEYDOWN, KEYUP} from 'react-key-handler';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import { icon } from 'leaflet';
+import MarkerClusterGroup from 'react-leaflet-markercluster';
 
 import {getGEOJSON, getSearchResult,getGEOJSONbyID, emptySeachResult, get_all_GEOJSON} from '../actions/mapActions';
 import {getUniversities} from '../actions/mapInfoActions';
@@ -19,7 +21,7 @@ import orangeMarker from '../images/map_marker-orange.png'
 import L from 'leaflet';
 
 //Global variables
-const outer = [[-69.005769, -172.923439], [70, 140.295311]];
+const outer = [[-60, -170], [80, 170]];
 
 function getColor (d) {
   return '#2a3446'
@@ -35,7 +37,7 @@ function getOpacity(d, component) {
 function style (component,feature) {
   return {
     fillColor: getColor(feature.properties.name),
-    weight: 1,
+    weight: 2,
     opacity: 0.8,
     color: '#2a3446',
     dashArray: '1',
@@ -63,7 +65,7 @@ function resetHighlight (component, feature, e) {
   var layer = e.target;
   layer.setStyle({
     fillColor: getColor(feature.properties.name, component),
-    weight: 1,
+    weight: 2,
     opacity: 0.8,
     color: '#2a3446',
     dashArray: '1',
@@ -77,17 +79,18 @@ function onEachFeature (component, feature, layer) {
     mouseover: highlightFeature.bind(null, component,feature),
     mouseout: resetHighlight.bind(null, component,feature),
     click: function(){
-          console.log(layer);
+          // console.log(layer);
           var init_bounds = layer.getBounds();
           var name = feature.properties.name;
           var tile_layer = 'https://api.mapbox.com/styles/v1/kristogs/cjee2fy4u00jb2ro1kwgrex8w/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia3Jpc3RvZ3MiLCJhIjoiY2pjdWlrbHhjMGt3YzJ3cW9sNm5xODc1dSJ9.Nvgmd0tPcaQWPgoUk2DISA';
+
           // var tile_layer = 'mapbox://styles/mapbox/streets-v9';
           component.setState({countryName: name})
           console.log('name',name);
           component.refs.geojson.leafletElement.clearLayers();
           component.refs.geojson.leafletElement.addData(world_countries);
           component.setState({bounds: init_bounds})
-          component.props.getGEOJSON(component.state.countryName);
+          component.props.getGEOJSON(name);
       },
   });
 }
@@ -135,19 +138,24 @@ function onEachPopUp(component, feature, layer) {
       //get coordinates of uni
       var temp_pos = feature.geometry.coordinates;
       var init_bounds = [[temp_pos[1]-0.1,temp_pos[0]-0.1],[temp_pos[1]+0.1,temp_pos[0]+0.1]];
+      component.setState({custom_marker_pos: temp_pos})
       component.setState({bounds: init_bounds})
-      // console.log('LAYER', layer.properties)
-      component.props.getUniversities(feature.properties._id)
+      component.refs.popjson.leafletElement.clearLayers();
+      component.refs.popjson.leafletElement.addData(component.props.geojson);
+      // component.props.getUniversities(feature.properties._id)
 
     }
   });
 }
 
 function resetButton(component, feature, layer){
+    // component.setState({zoom: 1})
+    component.setState({markers:[]})
     component.setState({countryName:''});
     component.setState({bounds:outer});
+    component.setState({custom_marker_pos:[]})
+    component.refs.map.leafletElement.setZoom(2)
     component.clearSearch.bind(this)
-    // component.props.top3 = '';
     component.refs.popjson.leafletElement.clearLayers();
     component.refs.geojson.leafletElement.clearLayers();
     console.log('reset component',component);
@@ -200,7 +208,6 @@ function isMarkerInsidePolygon(marker, poly) {
         }
       }
 
-    console.log(inside);
     return inside;
 };
 
@@ -210,18 +217,20 @@ class MapContainer extends Component {
     super()
 
     this.state = {
-      zoom: 0.7,
-      bounds: outer,
-      custom_marker_pos: [60,8],
+      zoom: 2,
+      bounds:outer,
+      custom_marker_pos: [],
+      uni_name:'',
       scale:1,
       tile_layer_url: 'https://api.mapbox.com/styles/v1/kristogs/cjee2fy4u00jb2ro1kwgrex8w/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoia3Jpc3RvZ3MiLCJhIjoiY2pjdWlrbHhjMGt3YzJ3cW9sNm5xODc1dSJ9.Nvgmd0tPcaQWPgoUk2DISA',
       show_tileLayer: false,
       fillOpacity:1,
-      maxBounds: [[-70,-180],[180,180]],
+      maxBounds: [[-70,-180],[90,180]],
       value: '',
       scrollWheelZoom: false,
       countryName: '',
       searched:false,
+      markers: {},
       showSearchedMarker:false,
       scroll: false,
     }
@@ -237,17 +246,16 @@ class MapContainer extends Component {
       console.log('nextProp',nextProp);
       this.refs.popjson.leafletElement.addData(nextProp.geojson);
 
-      // is inside
+      // is inside polygon when clicked in the searchbar
       console.log('readytosearch',this.state.searched);
       if(this.state.searched){
-        var position = nextProp.geojson.features[0].geometry.coordinates;
-        console.log(position);
-        this.setState({custom_marker_pos: [60,8]})
         var inside = false;
         var country_name = '';
+        var uni_names = nextProp.geojson.features[0].properties.universitet;
+        var uni_coords = nextProp.geojson.features[0].geometry.coordinates;
         var country_polygon = [];
         for(var i=0; i<world_countries.features.length;i++){
-            inside = isMarkerInsidePolygon(nextProp.geojson.features[0].geometry.coordinates,world_countries.features[i].geometry.coordinates);
+            inside = isMarkerInsidePolygon(uni_coords,world_countries.features[i].geometry.coordinates);
             if(inside){
               country_polygon = world_countries.features[i].geometry.coordinates;
               country_name = world_countries.features[i].properties.name;
@@ -255,13 +263,13 @@ class MapContainer extends Component {
               break;
             }
         }
-        console.log('inside',inside);
-        console.log('country',country_name);
-        console.log('new_bounds',country_polygon);
-
+        if (this.state.countryName != country_name){
+          this.setState({bounds: outer})
+        }
+        this.setState({uni_names:uni_names})
         this.setState({countryName: country_name})
         this.setState({searched:false})
-        this.setState({bounds: country_polygon})
+        this.setState({custom_marker_pos: uni_coords})
         // console.log(this.refs.map.leafletElement.getBounds());
 
       }
@@ -297,8 +305,17 @@ class MapContainer extends Component {
           element.innerHTML = 'This country has no univerities';
           document.getElementById('top3uni').appendChild(element);
         }
-        console.log(this);
       }
+      // add markers to the map for each country clicked
+      var markers = []
+      for (var i = 0; i < nextProp.geojson.features.length; i++) {
+        var coord = [nextProp.geojson.features[i].geometry.coordinates[1],nextProp.geojson.features[i].geometry.coordinates[0]]
+        markers.push({position: coord,
+                      popup:'<div className="popUp">'+nextProp.geojson.features[i].properties.universitet+'</div>',
+                      options:{onmouseover: console.log('click marker')},
+                      })
+      }
+      this.setState({markers:markers})
   }
 
   onScale(){
@@ -325,29 +342,48 @@ class MapContainer extends Component {
   goToSearch(id){
     this.props.getGEOJSONbyID(id);
 
-    // world_countries.foreach()
   }
 
   updateSearched(id){
     this.setState({searched:true})
     this.goToSearch(id)
-    this.setState({showSearchedMarker:true})
   }
 
-pointToLayer = (feature, latlng) => {
-  return L.circleMarker(latlng, {
-    radius: 5,
-    fillColor: "orange",
-    color: "orange",
-    weight: 0.5,
-    opacity: 1,
-    fillOpacity: 0.5
-})
-}
+  setMarkerToBounds(marker){
+    var marker_bounds = [[marker._latlng.lat-0.1,marker._latlng.lng-0.1],[marker._latlng.lat+0.1,marker._latlng.lng+0.1]]
+    this.setState({bounds:marker_bounds})
+  }
+
+  pointToLayer = (feature, latlng) => {
+    var icon_url = 'https://unpkg.com/leaflet@1.2.0/dist/images/marker-icon-2x.png'
+    var shadow_url = 'https://unpkg.com/leaflet@1.2.0/dist/images/marker-shadow.png'
+    let custom_icon = icon({iconUrl:icon_url,
+                            iconSize: [30,50],
+                            iconAnchor: [15, 50],
+                            popupAnchor: [0, -39],
+                            shadowUrl: shadow_url,
+                            shadowSize: [50,50],
+                            shadowAnchor: [15,50],
+                            })
+    let default_icon = icon({iconUrl:icon_url,
+                            iconSize: [20,30],
+                            iconAnchor: [10, 30],
+                            popupAnchor: [0, -22],
+                            shadowUrl: shadow_url,
+                            shadowSize: [30,30],
+                            shadowAnchor: [10,30],
+                            })
+    if(latlng.lat == this.state.custom_marker_pos[1] && latlng.lng==this.state.custom_marker_pos[0]){
+      console.log('wasequalposcustommarker');
+      return L.marker(latlng, {icon:custom_icon, zIndexOffset: 2000})
+    }
+
+    else if(latlng.lat == this.state.markers[0] && latlng.lng==this.state.markers[1]){
+      return
+    }
+  }
 
   render() {
-
-    console.log(this.state.searched);
 
     let result = this.props.searchResult.features.map(function(result){
       return(
@@ -371,9 +407,10 @@ pointToLayer = (feature, latlng) => {
                   placeholder="Search"
                   onChange={this.handleChange.bind(this)}
                   className="searchform"
+                  id="searchForm"
                 />
                 <div className="search-btn" onClick={this.goToSearch.bind(this)}>
-                  {(!this.props.searchResult.features.length)?(<Glyphicon glyph="glyphicon glyphicon-search" />):(<Glyphicon glyph="glyphicon glyphicon-remove" onClick={this.clearSearch.bind(this)}/>)}
+                  {(this.props.searchResult.features.length==0)?(<Glyphicon glyph="glyphicon glyphicon-search" />):(<Glyphicon glyph="glyphicon glyphicon-remove" onClick={this.clearSearch.bind(this)}/>)}
                 </div>
               { !this.props.searchResult.features.length?(''):(
                   <div style={{backgroundColor: 'white', borderRadius: 2, padding:2, marginTop: 2}}>
@@ -385,9 +422,11 @@ pointToLayer = (feature, latlng) => {
 
             <Map
               id="mapid"
-              zoom={this.state.zoom}
+              minZoom={1}
               onMoveend={this.handleMoveend}
               ref="map"
+              zoomAnimation='true'
+              markerZoomAnimation='true'
               scrollWheelZoom={this.state.scrollWheelZoom}
               bounds={this.state.bounds}
               fillOpacity = {this.state.fillOpacity}
@@ -407,23 +446,21 @@ pointToLayer = (feature, latlng) => {
 
               <KeyHandler keyEventName={KEYDOWN} keyValue="z" onKeyHandle={zDown.bind(null,this)} />
               <KeyHandler keyEventName={KEYUP} keyValue="z" onKeyHandle={zUp.bind(null,this)} />
-
-              {(this.state.showSearchedMarker)?(
-                <Marker position={this.state.custom_marker_pos}>
-                  <Popup className='customMarkerText' >
-                    <span>A pretty CSS3 popup.<br/>Easily customizable.</span>
-                  </Popup>
-                </Marker>):('')
-              }
-
-
-
+              <MarkerClusterGroup
+                markers={this.state.markers}
+                onMarkerClick={(marker) => {console.log(this.state, marker._latlng),this.setMarkerToBounds(marker)}}
+                onClusterClick={(cluster) => console.log('clusterclick',cluster)}
+                onPopupClose={(popup) => console.log('popupclose',popup)}
+                showCoverageOnHover={true}
+                zoomToBoundsOnClick={true}
+                animate={true}
+              />
               {}
 
 
 
-              <GeoJSON ref="geojson" data={world_countries} style={style.bind(null,this)} onEachFeature={onEachFeature.bind(null, this)}/>
-              <GeoJSON ref="popjson" data={this.props.geojson} style={style.bind(null,this)} onEachFeature={onEachPopUp.bind(null,this)}/>
+              <GeoJSON ref="geojson" data={world_countries} pointToLayer={this.pointToLayer} style={style.bind(null,this)} onEachFeature={onEachFeature.bind(null, this)}/>
+              <GeoJSON ref="popjson" data={this.props.geojson} pointToLayer={this.pointToLayer} style={style.bind(null,this)} onEachFeature={onEachPopUp.bind(null,this)}/>
 
               <a onClick={resetButton.bind(null,this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>
 
