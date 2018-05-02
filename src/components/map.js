@@ -15,6 +15,7 @@ import universities from '../geoJson/uni';
 import Searchbar from './searchbar'
 
 import orangeMarker from '../images/map_marker-orange.png'
+import logo from '../images/logo.png';
 
 import L from 'leaflet';
 
@@ -96,8 +97,43 @@ function onEachPopUp(component, feature, layer) {
     layer.on({
     mouseover: function(){
 
+      var university_info = feature.properties
       var content = feature.properties.universitet
-      layer.bindPopup(content)
+      var div = document.createElement("div");
+      div.setAttribute("id", "popUpDiv")
+
+      var infoButton = document.createElement("text");
+      infoButton.setAttribute("id", "infoButton")
+      infoButton.innerHTML = "<br> Mer info...";
+      infoButton.onclick = function() {
+        document.getElementById('mapInfo').scrollIntoView({behavior:'smooth', block:'start'});
+        component.props.getUniversities(feature.properties._id)
+      }
+      var starButton = document.createElement("image");
+      starButton.setAttribute("id", "starButton")
+      starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="20" height="20">';
+      console.log(starButton.innerHTML)
+      starButton.onclick = function() {
+        if (!component.state.starred) {
+          starButton.innerHTML = '<img src="' + 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/256/star-icon.png" width="20" height="20">';
+          component.setState({starred:true});
+        } else {
+          starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="20" height="20">';
+          component.setState({starred:false});
+        }
+        //Legg til universitetet som har aktiv popUp i "favorittlista" til brukeren
+        //Gjør om til gul/checked stjerne
+        console.log(starButton.innerHTML);
+      }
+
+      var divText = document.createElement("div");
+      divText.setAttribute("id", "divText")
+      divText.innerHTML = content
+      div.appendChild(divText)
+      div.appendChild(infoButton)
+      div.appendChild(starButton)
+
+      layer.bindPopup(div)
       layer.openPopup()
     },
     click: function(){
@@ -192,6 +228,7 @@ class MapContainer extends Component {
       countryName: '',
       searched:false,
       showSearchedMarker:false,
+      starred:false,
     }
   }
   componentDidMount(){
@@ -219,7 +256,7 @@ class MapContainer extends Component {
             if(inside){
               country_polygon = world_countries.features[i].geometry.coordinates;
               country_name = world_countries.features[i].properties.name;
-              this.props.getGEOJSON(country_name)
+              //this.props.getGEOJSON(country_name)
               break;
             }
         }
@@ -229,7 +266,7 @@ class MapContainer extends Component {
 
         this.setState({countryName: country_name})
         this.setState({searched:false})
-        this.setState({bounds: country_polygon})
+        //this.setState({bounds: country_polygon})
         // console.log(this.refs.map.leafletElement.getBounds());
 
       }
