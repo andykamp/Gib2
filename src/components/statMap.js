@@ -30,25 +30,25 @@ function getColor (component,p) {
 
 
     if (component.state.mapType==="report_rating"){
-      return p > repList[4]? '#ff6500' :
-             p > repList[3]? '#ffa500' :
-             p > repList[2]? '#ffba3b' :
-             p > repList[1]? '#ffcf76' :
-                            '#ffeac4';
+      return p > repList[4]? '#FF3700' :
+             p > repList[3]? '#FF6500' :
+             p > repList[2]? '#FFA500' :
+             p > repList[1]? '#FFCF76' :
+                            '#FFEAC4';
     }
     else if(component.state.mapType==="university_rating"){
-      return p > uniList[4]? '#ff6500' :
-             p > uniList[3]? '#ffa500' :
-             p > uniList[2]? '#ffba3b' :
-             p > uniList[1]? '#ffcf76' :
-                            '#ffeac4';
+      return p > uniList[4]? '#FF3700' :
+             p > uniList[3]? '#FF6500' :
+             p > uniList[2]? '#FFA500' :
+             p > uniList[1]? '#FFCF76' :
+                            '#FFEAC4';
     }
     else{
-      return p >= 5? '#ff6500' :
-             p >= 4? '#ffa500' :
-             p >= 3 ? '#ffba3b' :
-             p >= 2? '#ffcf76' :
-                    '#ffeac4';
+      return p >= 5? '#FF3700' :
+             p >= 4? '#FF6500' :
+             p >= 3 ? '#FFA500' :
+             p >= 2? '#FFCF76' :
+                    '#FFEAC4';
     }
 
 }
@@ -96,7 +96,7 @@ function onEachFeature (component, feature, layer) {
               // component.props.getGEOJSON(countryNameDisplayed);
               // component.refs.geojson.leafletElement.clearLayers();
               // component.refs.geojson.leafletElement.addData(world_countries);
-              component.setState({bounds: init_bounds})
+              // component.setState({bounds: init_bounds})
               // component.setState({tile_layer_url: tile_layer})
               // num_countryuni = component.props.num_uni;
               // console.log('num_uni map',num_countryuni);
@@ -106,31 +106,26 @@ function onEachFeature (component, feature, layer) {
   });
 }
 
-function onEachPopUp(component, feature, layer) {
-    layer.on({
-    mouseover: function(){
-      change_zoom = false;
-//"<img style='height:15px;width:15px;margin-bottom:2px' src="+require('../images/exit.png')+"/>"+ "<br>"+
-      // var content = feature.properties.universitet
-      // layer.bindPopup(content)
-      // //hvis vi vil begrense popupen
-      // //layer.bindPopup(content, {maxWidth: 100, maxHeight: 100})
-      // layer.openPopup()
-    },
-    mouseout: function(){
-      change_zoom = true;
-    },
-    click: function(){
-      //get coordinates of uni
-      var temp_pos = feature.geometry.coordinates;
+function numberToSpan(number) {
+  switch(number) {
+    case 1: return <span><b>Informasjon om studentandel</b><br/><br/>Andelen av studenter i forskjellige land. Eksempel:<br/> 12% av utvekslingsstudentene på NTNU har dratt til USA ifølge antallet rapporter</span>;
+    case 2: return <span><b>Informasjon om universiteter</b><br/><br/>Andelen av universitetene som NTNU har utvekslingsavtale med. Eksempel:<br/> Frankrike har 14% av universitetene som har avtale med NTNU</span>;
+    case 3: return <span><b>Informasjon om det sosiale</b><br/><br/>Den sosiale kvaliteten ved de forskjellige universitetene, rangert fra 1 til 5, der 5 er best</span>;
+    case 4: return <span><b>Informasjon om det akademiske</b><br/><br/>Den akademiske kvaliteten ved de forskjellige universitetene, rangert fra 1 til 5, der 5 er best</span>;
+    default: return <span></span>;
+  }
+}
 
-      var init_bounds = [[temp_pos[1]-0.1,temp_pos[0]-0.1],[temp_pos[1]+0.1,temp_pos[0]+0.1]];
-      component.setState({bounds: init_bounds})
-      // console.log('LAYER', layer.properties)
-      // component.props.getUniversities(feature.properties._id)
+function resetButton(component, feature, layer){
+    component.setState({countryName:''});
+    component.setState({bounds:outer});
+    component.refs.map.leafletElement.setZoom(1)
+    // component.props.top3 = '';
+    //component.refs.popjson.leafletElement.clearLayers();
+    //component.refs.geojson.leafletElement.clearLayers();
+    console.log('reset component',component);
+    // component.refs.geojson.leafletElement.addData(world_countries);
 
-    }
-  });
 }
 
 class MapContainer extends Component {
@@ -152,11 +147,34 @@ class MapContainer extends Component {
       maxBounds: [[-70,-180],[180,180]],
       value: '',
       mapType: "report_rating",
+      showMapType: 0,
     }
   this.handleClick = this.handleClick.bind(this);
   }
-  handleClick(e){
 
+  handleLeave(e) {
+    if (e.target.id.includes('Stat')) {
+      this.setState({showMapType:0})
+    }
+  }
+
+  handleHover(e) {
+    if(e.target.id=='rapStat'){
+      this.setState({showMapType:1})
+    }
+    else if(e.target.id=='uniStat'){
+      this.setState({showMapType:2})
+    }
+    else if(e.target.id=='sosStat'){
+      this.setState({showMapType:3})
+    }
+    else if (e.target.id=='akaStat'){
+      this.setState({showMapType:4})
+    }
+
+  }
+
+  handleClick(e){
     if(e.target.id=='rapStat'){
         this.setState({mapType: "report_rating"})
     }
@@ -254,13 +272,11 @@ pointToLayer = (feature, latlng) => {
       list = this.props.choropleth.report_rating_groups;
       list = list.map(a => a.toFixed(2));
       name = "Studentandel"
-
     }
     else if(this.state.mapType ==="university_rating"){
       list = this.props.choropleth.university_rating_groups;
       list = list.map(a => a.toFixed(2));
       name = "Universiteter";
-
     }
     else if (this.state.mapType ==="social_rating"){
       name = "Sosialt";
@@ -288,32 +304,36 @@ pointToLayer = (feature, latlng) => {
               maxBounds = {this.state.maxBounds}
             >
 
+            <div class = 'statInfo'>
+            {(!this.state.showMapType) ? '' : (numberToSpan(this.state.showMapType))}
+            </div>
+
             <div className = 'legend'>
             <p> {name}</p>
-            <ul className = 'list-unstyled'>
-            <li><span className= 'colorBox' style = {{background:'#ffeac4'}}></span><p> {list[0]}-{list[1]} </p> </li>
-            <li><span className= 'colorBox' style = {{background:'#ffcf76'}}></span><p> {list[1]}-{list[2]}</p> </li>
-            <li><span className= 'colorBox' style = {{background:'#ffba3b'}}></span><p> {list[2]}-{list[3]}</p> </li>
-            <li><span className= 'colorBox' style = {{background:'#ffa500'}}></span><p> {list[3]}-{list[4]}</p> </li>
-            <li><span className= 'colorBox' style = {{background:'#ff6500'}}></span><p> {list[4]}-</p> </li>
+            <ul class = 'list-unstyled'>
+            <li><span className= 'colorBox' style = {{background:'#FFEAC4'}}></span><p> {list[0]}-{list[1]} </p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FFCF76'}}></span><p> {list[1]}-{list[2]}</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FFA500'}}></span><p> {list[2]}-{list[3]}</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FF6500'}}></span><p> {list[3]}-{list[4]}</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FF3700'}}></span><p> {list[4]}-</p> </li>
             </ul>
             </div>
 
+            <div class="btn-group" style={{position: 'absolute', right:'100px', top: '10px'}}>
+            <button id ='rapStat'  onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Studenter</button>
+            <button id = 'uniStat' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Universiteter </button>
+            <button id = 'sosStat' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Sosial</button>
+            <button id = 'akaStat' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Akademisk</button>
 
-            <div className="btn-group" style={{position: 'absolute', right:'100px', top: '10px'}}>
-            <button id ='rapStat' onClick ={this.handleClick.bind(this)}>Studenter</button>
-            <button id = 'uniStat'onClick ={this.handleClick.bind(this)}>Universiteter </button>
-            <button id = 'sosStat' onClick ={this.handleClick.bind(this)}>Sosial</button>
-            <button id = 'akaStat' onClick ={this.handleClick.bind(this)}>Akademisk</button>
             </div>
 
               {/* <GeoJSON ref="geojson" data={world_countries} style={style} onEachFeature={onEachFeature.bind(null, this)}/>*/}
-              {/* <GeoJSON ref="popjson" data={this.props.geojson} style={style} onEachFeature={onEachPopUp.bind(null,this)}/> */}
             {/*   <GeoJSON ref="popjson" data={universities} pointToLayer={this.pointToLayer.bind(this)}/>*/}
             {/*   <GeoJSON ref="geojson" data={clor} style={style} />*/}
               {/* <a onClick={this.resetButton.bind(this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>*/}
-           <GeoJSON ref="geojson" data={this.props.choropleth} style={style.bind(null, this)} onEachFeature={onEachFeature.bind(null, this)}/>
 
+           <GeoJSON ref="geojson" data={this.props.choropleth} style={style.bind(null, this)} onEachFeature={onEachFeature.bind(null, this)}/>
+           <a onClick={resetButton.bind(null,this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>
             </Map>
           </div>
         </div>

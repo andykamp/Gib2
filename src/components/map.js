@@ -17,6 +17,7 @@ import universities from '../geoJson/uni';
 import Searchbar from './searchbar'
 
 import orangeMarker from '../images/map_marker-orange.png'
+import logo from '../images/logo.png';
 
 import L from 'leaflet';
 
@@ -100,6 +101,7 @@ function onEachPopUp(component, feature, layer) {
     mouseover: function(){
 
       var university_info = feature.properties
+
         var content = feature.properties.universitet
         var div = document.createElement("div");
         div.setAttribute("id", "popUpDiv")
@@ -115,15 +117,22 @@ function onEachPopUp(component, feature, layer) {
           //document.getElementById("mapInfo").scrollTop += 59;
         }
 
-        var starButton = document.createElement("button");
-        starButton.setAttribute("id", "starButton")
-        starButton.innerHTML = "<img src={require('../images/logo.png')}>";
-        console.log(starButton.innerHTML)
-        starButton.onclick = function() {
-          //Legg til universitetet som har aktiv popUp i "favorittlista" til brukeren
-          //Gjør om til gul/checked stjerne
-          starButton.innerHTML = "<img src={require('../images/starYellow.png')}>";
+        var starButton = document.createElement("image");
+      starButton.setAttribute("id", "starButton")
+      starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="20" height="20">';
+      console.log(starButton.innerHTML)
+      starButton.onclick = function() {
+        if (!component.state.starred) {
+          starButton.innerHTML = '<img src="' + 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/256/star-icon.png" width="20" height="20">';
+          component.setState({starred:true});
+        } else {
+          starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="20" height="20">';
+          component.setState({starred:false});
         }
+        //Legg til universitetet som har aktiv popUp i "favorittlista" til brukeren
+        //Gjør om til gul/checked stjerne
+        console.log(starButton.innerHTML);
+      }
 
         var divText = document.createElement("div");
         divText.setAttribute("id", "divText")
@@ -232,6 +241,7 @@ class MapContainer extends Component {
       searched:false,
       markers: {},
       showSearchedMarker:false,
+      starred:false,
       scroll: false,
       width: 0,
       height: 0
@@ -266,7 +276,7 @@ class MapContainer extends Component {
             if(inside){
               country_polygon = world_countries.features[i].geometry.coordinates;
               country_name = world_countries.features[i].properties.name;
-              this.props.getGEOJSON(country_name)
+              //this.props.getGEOJSON(country_name)
               break;
             }
         }

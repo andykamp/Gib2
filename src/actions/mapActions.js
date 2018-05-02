@@ -1,4 +1,3 @@
-
 import fetch from 'cross-fetch';
 import API_URL from '../index';
 
@@ -9,6 +8,15 @@ export const get_all_choropleth = () => {
       .then(json => dispatch({ type: 'ALL_CHOROPLETH_RETIREVED', payload: json }));
   };
 };
+
+export const get_all_money = () => {
+  return (dispatch) => {
+    fetch(`${API_URL}/get_money_for_uni/all`)
+      .then(response => response.json())
+      .then(json => dispatch({ type: 'ALL_MONEY_RETIREVED', payload: json }));
+  };
+};
+
 export const get_all_GEOJSON = () => {
   const id= '5a59f39098c056e100406ac4'
   return (dispatch) => {
