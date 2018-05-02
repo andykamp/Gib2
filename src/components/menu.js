@@ -5,7 +5,7 @@ import '../App.css';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {setLoginInfo} from '../actions/loginActions';
+import {setLoginInfo, setLoginFalse} from '../actions/loginActions';
 import NotLoggedIn from './notLoggedIn'
 class Menu extends React.Component{
   constructor() {
@@ -30,6 +30,10 @@ class Menu extends React.Component{
   }
   onPressNav4(){
     this.setState({from:4})
+  }
+  logOut(){
+    this.props.setLoginFalse()
+    this.props.cookie.remove("hasLogin")
   }
 
   render(){
@@ -86,6 +90,16 @@ class Menu extends React.Component{
 
       				</NavItem>
 
+              <NavItem eventKey={4}  onSelect={this.onPressNav4.bind(this)} className="headerItem">
+                <Link to="/">
+                  {/* <img src={require('../images/profile.png')} style={{height: 30}} /> */}
+                  <h4 style={{color: 'white'}} onClick={this.logOut.bind(this)}>Logg ut</h4>
+
+                {this.state.from === 4 ? (this.renderLine()):('')}
+              </Link>
+
+      				</NavItem>
+
     			</Nav>
 
 
@@ -100,4 +114,9 @@ function mapStateToProps(state){
     mail: state.login.mail
   }
 }
-export default connect(mapStateToProps, null)(Menu);
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({
+    setLoginFalse: setLoginFalse,
+  }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Menu);

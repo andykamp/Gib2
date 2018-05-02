@@ -88,7 +88,7 @@ class App extends Component {
       showInfo: false,
     }
     };
-  
+
   static propTypes = {
     cookies: instanceOf(Cookies).isRequired
   };
@@ -115,7 +115,7 @@ class App extends Component {
             that.props.setLoginInfo(that.state.hasLogin)
            };
        }, 100);
-      
+
   }
   componentWillReceiveProps(nextProps){
     //if user is logged in--> set timer for the modal to close
@@ -125,7 +125,9 @@ class App extends Component {
            that.setState({showModal: false, showInfo:true});
        }, 1000);    }
    // this.setState({showModal: false});
-   
+   if(nextProps.loggedIn == false){
+     this.setState({showModal: true})
+   }
   }
 
   componentWillUnmount(){
@@ -146,6 +148,7 @@ renderinfo(){
   render() {
     const intViewportHeight = window.innerHeight;
     let scroll = window.scrollY;
+    console.log("SHOWMODAL", this.state.showModal);
       return (
         <div className="wholescreenApp" >
           {/* Renders startupscreen if first time enterin */}
@@ -184,7 +187,7 @@ renderinfo(){
 
             </div>
           ):("")}
-          <Menu scrollY={this.state.scrolly}/>
+          <Menu scrollY={this.state.scrolly} cookie={this.props.cookies}/>
             {this.props.children}
           <Footer />
         </div>

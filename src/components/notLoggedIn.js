@@ -113,7 +113,7 @@ login(){
       <div>
         <Link onClick={this.open.bind(this)}>
           {/* <img src={require('../images/profile.png')} style={{height: 30}} /> */}
-          <h4 style={{color: 'white'}}>Min profil</h4>
+          <h4 style={{color: 'white'}}>Login</h4>
 
         </Link>
 
