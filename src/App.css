@@ -320,6 +320,18 @@ h4{
    width: 300px;
    margin-top: 10px;
 }
+
+.buttonSmall{
+  border-style: solid;
+   border-width: medium;
+   border-radius: 3px;
+   color: #2a3446;
+   background-color: white;
+   border-color: #2a3446;
+   font-weight: bold;
+   width: 100px;
+   margin-top: 10px;
+}
 /*resetzoom*/
 .resetZoomButton{
   position: absolute;
@@ -516,6 +528,22 @@ margin: 20px
   background-color: white;
   color: #2a3446
 }
+.topSearchedCol:hover{
+  box-shadow: 10px 10px #d8dfe2;
+  text-decoration: none;
+  text-decoration-color: #2a3446;
+  cursor: pointer;
+}
+.shadow{
+  box-shadow: 5px 5px 5px rgba(0,0,0,.13) ,1px 2px 2px rgba(0,0,0,.1) , -1px -2px 2px rgba(0,0,0,.1);
+
+}
+.shadowed {
+  -webkit-filter: drop-shadow(35px 35px 35px rgba(0,0,0,0.5));
+  filter: drop-shadow(0px 10px 10px rgba(0,0,0,.5));
+  -ms-filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=12, OffY=12, Color='#444')";
+  filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=12, OffY=12, Color='#444')";
+}
 /*  */
 /* footer */
 
@@ -696,4 +724,23 @@ font-size:40px;
 a:link, a:visited {
     text-decoration: none;
     /* display: inline-block; */
+}
+
+.mapInfoId{
+
+}
+
+.bottomImg{
+  border-style: solid;
+   border-width: medium;
+   border-radius: 3px;
+   height: 40px;
+   width: 200;
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+   justify-content: center;
+}
+.pointerhover:hover{
+  cursor: pointer;
 }

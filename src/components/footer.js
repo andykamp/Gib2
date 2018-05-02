@@ -6,7 +6,11 @@ class Footer extends React.Component{
   render(){
     return(
         <div className="footer">
-          <h1> Copyright  </h1>
+          <img classname="shadowed" src={require('../images/logo.png')} style={{height: 100}} />
+
+          <h1>Laget av studenter ved Geomatikk, I&IKT</h1>
+          <h4>Anders Kampenes, Carl Emil Hattestad, Anna Kjæmpenes, Jørgen Mortensen</h4>
+
         </div>
     );
   }

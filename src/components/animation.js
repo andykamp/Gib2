@@ -10,7 +10,7 @@ import { ascending, max } from 'd3-array';
 //  SVG Layout
 // **************************************************
 const view = [1000, 550]; // [width, height]
-const trbl = [10, 10, 30, 10]; // [top, right, bottom, left] margins
+const trbl = [20, 20, 40, 20]; // [top, right, bottom, left] margins
 
 const dims = [ // Adjusted dimensions [width, height]
   view[0] - trbl[1] - trbl[3],
@@ -36,21 +36,24 @@ class Example extends PureComponent {
   }
 
   update = () => {
-    this.setState((state) => ({
-      sortAlpha: !state.sortAlpha,
-    }));
+
   }
   componentWillMount(){
-    letters[0]["frequency"] = this.props.anbefaler
-    letters[1]["frequency"] = this.props.anbefalerikke
+    letters[0]["frequency"] = this.props.anbefalerikke
+    letters[1]["frequency"] = this.props.anbefaler
+
+  }
+  componentWillReceiveProps(){
+    setTimeout(function() {
+      letters[0]["frequency"] = this.props.anbefalerikke
+      letters[1]["frequency"] = this.props.anbefaler}.bind(this), 100);
 
   }
   render() {
     const { sortAlpha } = this.state;
 
-    const sorted = letters.sort(sortAlpha ?
-      (a, b) => ascending(a.letter, b.letter) :
-      (a, b) => b.frequency - a.frequency,
+    const sorted = letters.sort(
+      (a, b) => ascending(a.letter, b.letter)
     ).slice(0);
 
     const scale = scaleBand()

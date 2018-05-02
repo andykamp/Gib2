@@ -110,6 +110,9 @@ class App extends Component {
   }
 
   componentDidMount(){
+    browserHistory.push('/')
+    window.scrollTo(0,0);
+
       //------listener for scroll used in header ect----------
       window.addEventListener('scroll', this.handleScroll.bind(this));
       //sets timeout for loadingscreen
@@ -129,7 +132,11 @@ class App extends Component {
        const that=this;
          setTimeout(function(){
            that.setState({showModal: false, showInfo:true});
-       }, 1000);    }
+       }, 1000);
+       setTimeout(function(){
+         that.setState({ showInfo:false});
+     }, 10000);
+        }
    // this.setState({showModal: false});
    if(nextProps.loggedIn == false){
      this.setState({showModal: true})

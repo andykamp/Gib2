@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Tabs, Tab,ProgressBar,Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label, FormGroup, ControlLabel, FormControl, HelpBlock} from 'react-bootstrap';
+import {Tabs, Tab,ProgressBar,Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label, FormGroup, ControlLabel, FormControl, HelpBlock, Image, Glyphicon} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {getReports,getUniversities, add_favorite_university} from '../actions/mapInfoActions';
@@ -80,18 +80,27 @@ this.props.add_favorite_university(email, id)
     reports = "Ingen tilgjengelige rapporter"
   }
 
-
+  console.log("RATING", this.props.uni.rating['positive']*100,this.props.uni.rating['negative']);
 
     return (
-      <div style={{flex: 1, width: '100%', minHeight: '90vh', color:'#2a3446'}}>
+      <div  style={{flex: 1, width: '100%', minHeight: '90vh', color:'#2a3446'}}>
         <Row className="topSearched" style={{paddingLeft: 50, paddingRight: 50, paddingTop: 20 }}>
           {/* <img src={require('../images/arrowDown.png')} style={{height: 20, marginTop: 5, marginBottom: 20}} /> */}
           <h2>{this.props.uni.universitet}</h2>
           <img src={require('../images/line.png')} style={{width: 300}} />
+          {/* <Row className="bottomImg" style={{width: 200}}>
+            <Col xs={2} sm={2} md={2} style={{width: '100%',backgroundColor: '#2a3446', height: '100%', alignItems: 'left'}}>
+              <Glyphicon style = {{color:'white', margin: 0, padding: 0, fontSize:30}} glyph="glyphicon glyphicon-star-empty" />
 
-          <Row className="mapInfo">
+            </Col>
 
-            <Col xs={12} sm={6} md={6} style={{flex:1, minHeight: '90vh', backgroundColor: 'white', margin:10}}>
+            <Col xs={10} sm={10} md={10}>
+              Legg til din profil
+            </Col>
+          </Row> */}
+          <Row className="mapInfo" style={{width: '80vw'}}>
+
+            <Col xs={12} sm={6} md={6} style={{flex:1, minHeight: '90vh', backgroundColor: 'white', margin:10, width: '50%'}}>
               <Tabs defaultActiveKey={1} id="uncontrolled-tab-example" style={{marginTop: 10}}>
                 <Tab eventKey={1} title="Informasjon" style={{width: '100%'}}>
 
@@ -104,6 +113,10 @@ this.props.add_favorite_university(email, id)
                       <img src={require('../images/marker.png')} style={{height: 20,marginBottom: 0, marginRight: 5}}/>
                       <h4>{this.props.uni.by}, {this.props.uni.land}</h4>
                     </div>
+
+                      {/* <img src={require('../images/marker.png')} style={{height: 20,marginBottom: 0, marginRight: 5}}/> */}
+                      <h4>Avstand fra ntnu:</h4>
+                      <p>{ Math.round(this.props.uni.meters_from_ntnu)} meter</p>
 
                     <h4>Hvem kan søke?</h4>
                     <p>{this.props.uni["Hvem kan søke"]}</p>
@@ -121,8 +134,9 @@ this.props.add_favorite_university(email, id)
                     <p>{this.props.uni.Avtaletype}</p>
 
                     <div className="infoColHeader">
-                      <Button className="button" href="http://www.ntnu.no/studier/studier_i_utlandet/prosedyrer">
 
+
+                      <Button className="button" href="http://www.ntnu.no/studier/studier_i_utlandet/prosedyrer">
                           Hvordan søker jeg?
 
                         </Button>
@@ -187,7 +201,7 @@ this.props.add_favorite_university(email, id)
                 <ProgressBar bsStyle="danger" now={thumbsDown} label={`${thumbsDown}%`}  style={{width: '70%', marginBottom: 0}}/>
               </div> */}
               <div className="infoRowHeader">
-                <Animation anbefaler={80} anbefalerikke={20} />
+                <Animation anbefaler={this.props.uni.rating['negative']+2} anbefalerikke={this.props.uni.rating['positive']+2} />
               </div>
 
               <Row style={{height: 20}}/>
@@ -221,7 +235,7 @@ this.props.add_favorite_university(email, id)
     console.log("jfdsgkjfsnlajrkgdblrnsei", this.props.uni.by);
 
     return (
-      <div id="mapInfo">
+      <div id="mapInfoId">
         {(this.props.uni.by) ? (this.renderInfo()) : ("")}
       </div>
     )
