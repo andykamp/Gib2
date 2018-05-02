@@ -1,5 +1,5 @@
 import React from 'react';
-import {Nav, NavItem, Navbar, Badge} from 'react-bootstrap';
+import {Nav, NavItem, Navbar, Badge, OverlayTrigger, Popover} from 'react-bootstrap';
 // import {LinkContainer} from 'react-router-bootstrap';
 import '../App.css';
 import {Link} from 'react-router';
@@ -37,6 +37,12 @@ class Menu extends React.Component{
   }
 
   render(){
+    const popoverHoverFocus = (
+  <Popover id="popover-trigger-hover-focus">
+    View your stated universities.
+  </Popover>
+
+);
     return(
       <Navbar inverse fixedTop className={(this.props.scrollY===0)?("headerOnTop"):("header")}>
     		<Navbar.Header className="headerLogo">
@@ -65,12 +71,12 @@ class Menu extends React.Component{
                 {this.state.from == 2 ? (this.renderLine()):('')}
               </Link>
       				</NavItem>
-      				<NavItem eventKey={2}  onSelect={this.onPressNav3.bind(this)} className="headerItem">
+      				{/* <NavItem eventKey={2}  onSelect={this.onPressNav3.bind(this)} className="headerItem">
 
                 <h4 style={{color: 'white'}}>Kontakt oss</h4>
                 {this.state.from === 3 ? (this.renderLine()):('')}
 
-      				</NavItem>
+      				</NavItem> */}
 
 
     			</Nav>
@@ -80,16 +86,22 @@ class Menu extends React.Component{
                 {(this.props.mail.length > 0)?(
                 <Link to="/cart">
                   {/* <img src={require('../images/profile.png')} style={{height: 30}} /> */}
+                  <OverlayTrigger
+                      trigger={['hover', 'focus']}
+                      placement="bottom"
+                      overlay={popoverHoverFocus}
+                    >
                   <h4 style={{color: 'white'}}>Min profil</h4>
-
+                </OverlayTrigger>
                 {this.state.from === 4 ? (this.renderLine()):('')}
                 </Link>
               ):(
                 <NotLoggedIn />
               )}
 
-      				</NavItem>
 
+      				</NavItem>
+  {(this.props.mail.length > 1)?(
               <NavItem eventKey={4}  onSelect={this.onPressNav4.bind(this)} className="headerItem">
                 <Link to="/">
                   {/* <img src={require('../images/profile.png')} style={{height: 30}} /> */}
@@ -98,7 +110,7 @@ class Menu extends React.Component{
                 {this.state.from === 4 ? (this.renderLine()):('')}
               </Link>
 
-      				</NavItem>
+            </NavItem>):('')}
 
     			</Nav>
 

@@ -143,24 +143,25 @@ handleNoteAdd(){
         <Row>
           <MapInfo />
         </Row>
-        <Row>
-          <Col xs={12} sm={6} className="cartItem">
-            <Well style={{width: '40vw'}}>
+        <Row className="topSearched" style={{paddingLeft: 50, paddingRight: 50 }}>
+
+
+          <Row className="mapInfo" style={{width: '80vw'}}>
+          <Col xs={12} sm={6} className="cartItem" style={{flex:1, backgroundColor: 'white', margin:10, width: '50%', paddingBottom: 20}}>
               <h1>Notater</h1>
               {this.props.cart[0] ? (noteList):('Du har ingen notater enda')}
-            </Well>
+
+            <Button className="buttonSmall" onClick={this.open.bind(this)} >Legg til notat</Button>
           </Col>
-          <Col xs={12} sm={6} className="cartItem">
-            <Well style={{width: '40vw'}}>
+          <Col xs={12} sm={6} className="cartItem" style={{flex:1, backgroundColor: 'white', margin:10, width: '50%',  paddingBottom: 20}}>
               <h1>Linker</h1>
               {this.props.link[0] ? (linkList):('Du har ingen notater enda')}
-            </Well>
+            <Button  className="buttonSmall"  onClick={this.openLinkModal.bind(this)}>Legg til link</Button>
+
           </Col>
         </Row>
-        <Row className="cartbuttons">
-          <Button onClick={this.open.bind(this)} bsStyle='primary'>Legg til notat</Button>
-          <Button onClick={this.openLinkModal.bind(this)} bsStyle='primary'>Legg til link</Button>
-        </Row>
+      </Row>
+
         {/* Note modal */}
         <Modal show={this.state.showModal} onHide={this.close.bind(this)}>
           <Modal.Header closeButton>
@@ -197,6 +198,7 @@ handleNoteAdd(){
             <Button onClick={this.closeLinkModal.bind(this)}>Close</Button>
           </Modal.Footer>
         </Modal>
+
       </Grid>
     )
   }

@@ -66,12 +66,10 @@ class NoteItem extends React.Component{
 
     return(
       <div>
-        <Row style={{width: '40vw'}}>
-            <h6>{this.props.title}</h6>
+        <Row style={{width: '100%', margin: 20}}>
             <p>{(this.props.note.length> 50 && !this.state.isClicked)?(this.props.note.substring(0,50)):(this.props.note)}
-              <btton className="link" onClick={this.onReadMore.bind(this)}>
-                {(!this.state.isClicked && this.props.note !== null && this.props.note.length > 50)?('...read more'):('')}
-              </btton>
+                {(!this.state.isClicked && this.props.note !== null && this.props.note.length > 50)?(<strong clasname="pointerhover" style={{fontWeight: 'bold'}} onClick={this.onReadMore.bind(this)}>...read more</strong>):('')}
+
             </p>
             <Button onClick={this.onDeleteNote.bind(this, this.props._id)} bsStyle="danger" bsSize="small">Slett</Button>
             {/* <Button onClick={this.open.bind(this)} bsStyle="danger" bsSize="small">endre...</Button> */}

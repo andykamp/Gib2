@@ -108,7 +108,7 @@ function onEachPopUp(component, feature, layer) {
         infoButton.setAttribute("id", "infoButton")
         infoButton.innerHTML = "<br> Mer info...";
         infoButton.onclick = function() {
-          document.getElementById('mapInfo').scrollIntoView({behavior:'smooth', block:'start'});
+          window.scrollTo(0,component.state.height - component.state.height*0.1);
           component.setState({scroll:true})
           component.props.getUniversities(feature.properties._id)
 
@@ -233,9 +233,16 @@ class MapContainer extends Component {
       markers: {},
       showSearchedMarker:false,
       scroll: false,
+      width: 0,
+      height: 0
     }
+
+    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+
   }
   componentDidMount(){
+    this.updateWindowDimensions();
+ window.addEventListener('resize', this.updateWindowDimensions);
     this.props.get_all_GEOJSON()
   }
   componentWillReceiveProps(nextProp){
@@ -317,7 +324,13 @@ class MapContainer extends Component {
       }
       this.setState({markers:markers})
   }
+  componentWillUnmount() {
+  window.removeEventListener('resize', this.updateWindowDimensions);
+}
 
+updateWindowDimensions() {
+  this.setState({ width: window.innerWidth, height: window.innerHeight });
+}
   onScale(){
     this.setState({
       scale: this.state.scale < 1 ? 1:0
