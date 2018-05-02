@@ -10,7 +10,7 @@ export default function Surface(props) {
   return (
     <div
       className={className}
-      style={{ ...style, position: 'relative', width: '100%', height: '0px', paddingBottom }}
+      style={{ ...style, position: 'relative', width: '100%', minHeight: '1px', paddingBottom }}
       {...other}
     >
       <svg

@@ -104,7 +104,7 @@ class Example extends Component {
       .range([dims[1], 0])
       .domain([0, max(this.props[this.state.statType], (d) => d.val)]);
     return (
-      <div style={{marginTop: '10vh'}}>
+      <div style={{marginTop: '10vh', minHeight: 1}}>
         <button onClick={this.update} className="sortButton">
           {`Sort ${sortAlpha ? 'Value' : 'Alpha'}`}
         </button>
@@ -146,6 +146,7 @@ class Example extends Component {
                   return (
                     <g key={key}>
                       <rect
+
                         width={dims[1] - y(data.val)}
                         x={300}
                         fill="#ffa500"
@@ -166,6 +167,7 @@ class Example extends Component {
 
                         x={305}
                         dy="20"
+
                         fill="#333"
                         {...rest}
 

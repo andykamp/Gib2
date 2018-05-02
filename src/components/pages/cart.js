@@ -1,9 +1,10 @@
 "use strict"
 import React from 'react';
 import {connect} from 'react-redux';
-import {Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label, Glyphicon} from 'react-bootstrap';
+import {Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label, Glyphicon, OverlayTrigger, Popover, Image} from 'react-bootstrap';
 import {bindActionCreators} from 'redux';
 import {getProfileUniversity, getProfileNotesAndLinks,setInfo, deleteUniversity} from '../../actions/profileActions';
+import {setLoginInfo}  from '../../actions/loginActions'
 import {Link} from 'react-router';
 import { BeatLoader } from 'react-spinners';
 
@@ -19,7 +20,11 @@ class Cart extends React.Component{
     }
   }
   componentWillMount(){
-    // this.props.getProfileUniversity();
+    this.props.setLoginInfo(this.props.mail);
+    console.log('HAHAHAHA');
+  }
+  componentWillReceiveProps(){
+
   }
   componentDidMount(){
     const that=this;
@@ -50,26 +55,43 @@ class Cart extends React.Component{
  renderScreen(){
    if(this.state.loader){
      return(
+       <div className="centerCol" style={{height: '80vh'}}>
        <BeatLoader
          color={'#2a3446'}
          loading={this.state.loader}
 
        />
+       Loading universities...
+     </div>
      );
    }
    else {
-     const universities= this.props.uni.my_universities.map(function(uniArr){
+     const popoverHoverFocus = (
+     <Popover id="popover-trigger-hover-focus">
+       Delete this university from your profile.
+     </Popover>);
+     let universities = ''
+     if (this.props.uni.my_universities.length>0){
+
+
+     universities= this.props.uni.my_universities.map(function(uniArr){
        return(
 
-         <Col xs={12} sm={6} md={3} className="cartList">
+         <Col xs={12} sm={6} md={4} className=" cartList">
+           <OverlayTrigger
+               trigger={['hover', 'focus']}
+               placement="bottom"
+               overlay={popoverHoverFocus}
+             >
+            <Glyphicon id="delete" glyph="glyphicon glyphicon-remove" onClick={this.deleteUn.bind(this,this.props.mail,uniArr.university._id)}/>
+          </OverlayTrigger>
 
-            <Glyphicon glyph="glyphicon glyphicon-remove" style={{position: 'absolute',zIndex: 100, top:-15, right:-15, fontSize:50}} onClick={this.deleteUn.bind(this,this.props.mail,uniArr.university._id)}/>
             <Link  to="/universitet" onClick={this.handleClick.bind(this, uniArr.university, uniArr.notes, uniArr.links)} className="collegeItem">
-             <Row style={{flex: 2, width: '100%', heigth: 200, }}>
-               <img src={require('../../images/placeholder.png')} style={{width:'100%', height:150}} />
+             <Row className="centerRow" style={{flex: 2, width: '100%', heigth: 200, padding: 20}}>
+               <Image responsive src={require('../../images/courthouse.png')} style={{ height:150}} />
              </Row>
-             <Row style={{flex: 1, height: 70}}>
-             <h3 >{uniArr.university.universitet}</h3>
+             <Row style={{flex: 1, textAlign: 'center', color: '#2a3446', textDecorationColor: 'white', padding: 10}}>
+             <h3 >{uniArr.university.universitet.split(',')[0]}</h3>
              </Row>
 
            </Link>
@@ -78,11 +100,14 @@ class Cart extends React.Component{
 
        )
      },this)
+   }
+
+
 
      return(
        <div>
        {(!universities.length) ? (this.renderEmpty()):
-         (<Row >
+         (<Row className="centerRowRow" >
          {universities}
        </Row>)}
      </div>
@@ -94,6 +119,8 @@ class Cart extends React.Component{
     return(
       <Grid className="cart">
         <h1>Universiteter du har lagt til</h1>
+        <img src={require('../../images/line.png')} style={{width: 300}} />
+
         {this.renderScreen()}
       </Grid>
     )
@@ -112,6 +139,7 @@ function mapDispatchToProps(dispatch){
     getProfileNotesAndLinks:getProfileNotesAndLinks,
     setInfo: setInfo,
     deleteUniversity:deleteUniversity,
+    setLoginInfo: setLoginInfo,
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Cart);

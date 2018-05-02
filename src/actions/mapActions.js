@@ -18,7 +18,6 @@ export const get_all_money = () => {
 };
 
 export const get_all_GEOJSON = () => {
-  console.log('GET_ALL_GEOJSON');
   const id= '5a59f39098c056e100406ac4'
   return (dispatch) => {
     fetch(`${API_URL}/list_all_uni_as_geo_json`)

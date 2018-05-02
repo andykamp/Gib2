@@ -12,7 +12,13 @@ import {Glyphicon,FormGroup, form, FormControl, Grid, Col, Row, Button} from 're
 import { setLoginInfo } from './actions/loginActions'
 import { withCookies, Cookies } from 'react-cookie';
 import { instanceOf } from 'prop-types';
-
+import {browserHistory} from 'react-router';
+import ReallySmoothScroll from 'really-smooth-scroll';
+browserHistory.listen(()=>{
+  console.log('browserHistory',browserHistory);
+  window.scrollTo(0,0);
+});
+ReallySmoothScroll.shim()
 //costum class for Modal
 const customStyles = {
   overlay : {
@@ -104,6 +110,9 @@ class App extends Component {
   }
 
   componentDidMount(){
+    browserHistory.push('/')
+    window.scrollTo(0,0);
+
       //------listener for scroll used in header ect----------
       window.addEventListener('scroll', this.handleScroll.bind(this));
       //sets timeout for loadingscreen
@@ -123,7 +132,11 @@ class App extends Component {
        const that=this;
          setTimeout(function(){
            that.setState({showModal: false, showInfo:true});
-       }, 1000);    }
+       }, 1000);
+       setTimeout(function(){
+         that.setState({ showInfo:false});
+     }, 10000);
+        }
    // this.setState({showModal: false});
    if(nextProps.loggedIn == false){
      this.setState({showModal: true})
@@ -148,7 +161,6 @@ renderinfo(){
   render() {
     const intViewportHeight = window.innerHeight;
     let scroll = window.scrollY;
-    console.log("SHOWMODAL", this.state.showModal);
       return (
         <div className="wholescreenApp" >
           {/* Renders startupscreen if first time enterin */}
@@ -165,9 +177,9 @@ renderinfo(){
           {(this.state.showInfo) ? (
             <div style={{
               position: 'absolute',
-              right:'50vw',
-              top:intViewportHeight + scroll-80,
-              height: 70,
+              right:'1vw',
+              top:intViewportHeight + scroll-130,
+              right:'10px',
               width: 300,
               display: 'flex',
               flexDirection: 'column',
@@ -183,7 +195,8 @@ renderinfo(){
               <div className="tutorialPopupExit">
                 <a className='exitTutorial' onClick={()=> this.setState({showInfo:false})}><Glyphicon style = {{color:'white'}} glyph="glyphicon glyphicon-remove" /></a>
               </div>
-              <p style= {{marginTop:13}}>Use the searchbar or the dynamic map to find your university.</p>
+              <p style= {{marginTop:10}}>Bruke søkebaren og det dynamiske kartet til å finne ditt universitet.
+                                          </p>
 
             </div>
           ):("")}

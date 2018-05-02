@@ -1,5 +1,5 @@
 import React from 'react';
-import {Glyphicon,Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label, FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
+import {Glyphicon,Grid, Modal, Panel, Col, Row, Well, Button, ButtonGroup, Label, FormGroup, ControlLabel, FormControl, OverlayTrigger, Popover} from 'react-bootstrap';
 import {Link} from 'react-router';
 import ReactModal from 'react-modal';
 
@@ -108,13 +108,22 @@ login(){
 
   render() {
     console.log('note', this.state.form.note);
-
+    const popoverHoverFocusLogin = (
+  <Popover id="popover-trigger-hover-focus">
+    Login to view your stated universities!
+  </Popover>
+  );
     return(
       <div>
         <Link onClick={this.open.bind(this)}>
           {/* <img src={require('../images/profile.png')} style={{height: 30}} /> */}
+          <OverlayTrigger
+              trigger={['hover', 'focus']}
+              placement="bottom"
+              overlay={popoverHoverFocusLogin}
+            >
           <h4 style={{color: 'white'}}>Login</h4>
-
+        </OverlayTrigger>
         </Link>
 
 

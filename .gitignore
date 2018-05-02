@@ -22,6 +22,7 @@ yarn-error.log*
 
 # es lint
 .eslintrc.js
+.eslintrc.json
 
 # vs code
 .vscode/
