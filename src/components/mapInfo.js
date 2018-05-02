@@ -78,7 +78,6 @@ this.props.add_favorite_university(email, id)
   }else{
     reports = "Ingen tilgjengelige rapporter"
   }
-
     return (
       <div  style={{flex: 1, width: '100%', minHeight: '90vh', color:'#2a3446'}}>
         <Row className="topSearched" style={{paddingLeft: 50, paddingRight: 50, paddingTop: 20 }}>
@@ -139,7 +138,7 @@ this.props.add_favorite_university(email, id)
                         </Button>
                         <Button className="button" onClick={this.addFavorite.bind(this, this.props.mail, this.props.uni._id)}>
 
-                            Legg til i min profil
+                            {this.props.my_unis.indexOf(this.props.uni._id) === -1 ? "Legg til i min profil" : "Allerede lagt til"}
 
                           </Button>
                   </div>
@@ -238,10 +237,17 @@ this.props.add_favorite_university(email, id)
   }
 }
 function mapStateToProps(state){
+  var my_uni = [];
+  if (state.profile.uni.my_universities) {
+  state.profile.uni.my_universities.map(item => {
+    my_uni.push(item.university._id)
+  })
+}
   return {
     uni:state.university.university,
     mail:state.login.mail,
-    reports: state.map.reports
+    reports: state.map.reports,
+    my_unis: my_uni,
   }
 }
 function mapDispatchToProps(dispatch){
