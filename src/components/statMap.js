@@ -11,6 +11,7 @@ import world_countries from '../geoJson/world_countries';
 import universities from '../geoJson/uni';
 import Searchbar from './searchbar'
 import L from 'leaflet';
+
 //Global variables
 let tile_layer ='';
 let temp_bound = [[81, 180], [41, -180]];
@@ -22,14 +23,40 @@ let new_fillOpacity = 1;
 let new_Opacity = 1;
 var change_zoom = true;
 
-function getColor (d) {
-  return '#2a3446'
+
+function getColor (component,p) {
+    var repList= component.props.choropleth.report_rating_groups;
+    var uniList= component.props.choropleth.university_rating_groups;
+
+
+    if (component.state.mapType==="report_rating"){
+      return p > repList[4]? '#ff6500' :
+             p > repList[3]? '#ffa500' :
+             p > repList[2]? '#ffba3b' :
+             p > repList[1]? '#ffcf76' :
+                            '#ffeac4';
+    }
+    else if(component.state.mapType==="university_rating"){
+      return p > uniList[4]? '#ff6500' :
+             p > uniList[3]? '#ffa500' :
+             p > uniList[2]? '#ffba3b' :
+             p > uniList[1]? '#ffcf76' :
+                            '#ffeac4';
+    }
+    else{
+      return p >= 5? '#ff6500' :
+             p >= 4? '#ffa500' :
+             p >= 3 ? '#ffba3b' :
+             p >= 2? '#ffcf76' :
+                    '#ffeac4';
+    }
 
 }
 
-function style (feature) {
+function style (component,feature) {
+
   return {
-    fillColor: getColor(feature.properties.name),
+    fillColor: getColor(component,feature.properties[component.state.mapType]),
     weight: 2,
     opacity: 1,
     color: '#2a3446',
@@ -42,13 +69,7 @@ function style (feature) {
 function highlightFeature (feature, e) {
   var layer = e.target;
 
-  layer.setStyle({
-    weight: 2,
-    color: '#2a3446',
-    dashArray: '',
-    fillOpacity: 1,
-    opacity:1,
-  });
+
   // this.setState({countryDisplayed:feature.properties.name})
   countryNameDisplayed= feature.properties.name;
 }
@@ -57,14 +78,7 @@ function highlightFeature (feature, e) {
 function resetHighlight (feature, e) {
   // component.refs.geojson.leafletElement.resetStyle(e.target);
   var layer = e.target;
-  layer.setStyle({
-    fillColor: getColor(feature.properties.name),
-    weight: 2,
-    opacity: 1,
-    color: '#2a3446',
-    dashArray: '1',
-    fillOpacity: (feature.properties.name === countryClicked)?('0'):('1')
-  });
+
 }
 
 
@@ -119,7 +133,6 @@ function onEachPopUp(component, feature, layer) {
   });
 }
 
-
 class MapContainer extends Component {
   constructor() {
     super()
@@ -138,20 +151,43 @@ class MapContainer extends Component {
       fillOpacity:1,
       maxBounds: [[-70,-180],[180,180]],
       value: '',
+      mapType: "report_rating",
     }
+  this.handleClick = this.handleClick.bind(this);
   }
+  handleClick(e){
+
+    if(e.target.id=='rapStat'){
+        this.setState({mapType: "report_rating"})
+    }
+    else if(e.target.id=='uniStat'){
+        this.setState({mapType: "university_rating"})
+    }
+    else if(e.target.id=='sosStat'){
+        this.setState({mapType: "social_rating"})
+    }
+    else if (e.target.id=='akaStat'){
+        this.setState({mapType: "academic_rating"})
+    }
+
+    this.refs.geojson.leafletElement.clearLayers();
+    this.refs.geojson.leafletElement.addData(this.props.choropleth);
+
+
+  }
+
   componentDidMount(){
-    this.props.get_all_GEOJSON()
+    //this.props.get_all_GEOJSON()
   }
   componentWillReceiveProps(nextProp){
 
-    if(nextProp.geojson !== this.props.geojson){
-      this.refs.popjson.leafletElement.clearLayers();
-
-        console.log('nextProp',nextProp);
-      this.refs.popjson.leafletElement.addData(nextProp.geojson);
-
-    }
+    // if(nextProp.geojson !== this.props.geojson){
+    //   this.refs.popjson.leafletElement.clearLayers();
+    //
+    //     console.log('nextProp',nextProp);
+    //   this.refs.popjson.leafletElement.addData(nextProp.geojson);
+    //
+    // }
   }
 
   setBounds(){
@@ -200,7 +236,6 @@ url="https://api.mapbox.com/styles/v1/kampenes/cjckg518s27a72rnroccgk5rv/tiles/2
 attribution="<attribution>" />
 */
 
-
 pointToLayer = (feature, latlng) => {
   return L.circleMarker(latlng, {
     radius: 5,
@@ -213,16 +248,36 @@ pointToLayer = (feature, latlng) => {
 }
 
   render() {
+    var list=[];
+    var name;
+    if(this.state.mapType ==="report_rating"){
+      list = this.props.choropleth.report_rating_groups;
+      list = list.map(a => a.toFixed(2));
+      name = "Studentandel"
+
+    }
+    else if(this.state.mapType ==="university_rating"){
+      list = this.props.choropleth.university_rating_groups;
+      list = list.map(a => a.toFixed(2));
+      name = "Universiteter";
+
+    }
+    else if (this.state.mapType ==="social_rating"){
+      name = "Sosialt";
+      list= [0,1,2,3,4];
+    }
+    else{
+      name = "Akademisk";
+      list= [0,1,2,3,4];
+
+    }
 
 
       return (
         <div className="mapbox">
           <div className="map">
 
-
-
             <Map
-
               id="mapid"
               zoom={this.state.zoom}
               onMoveend={this.handleMoveend}
@@ -233,25 +288,35 @@ pointToLayer = (feature, latlng) => {
               maxBounds = {this.state.maxBounds}
             >
 
+            <div className = 'legend'>
+            <p> {name}</p>
+            <ul class = 'list-unstyled'>
+            <li><span className= 'colorBox' style = {{background:'#ffeac4'}}></span><p> {list[0]}-{list[1]} </p> </li>
+            <li><span className= 'colorBox' style = {{background:'#ffcf76'}}></span><p> {list[1]}-{list[2]}</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#ffba3b'}}></span><p> {list[2]}-{list[3]}</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#ffa500'}}></span><p> {list[3]}-{list[4]}</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#ff6500'}}></span><p> {list[4]}-</p> </li>
+            </ul>
+            </div>
 
-              {}
 
+            <div class="btn-group" style={{position: 'absolute', right:'100px', top: '10px'}}>
+            <button id ='rapStat' onClick ={this.handleClick.bind(this)}>Studenter</button>
+            <button id = 'uniStat'onClick ={this.handleClick.bind(this)}>Universiteter </button>
+            <button id = 'sosStat' onClick ={this.handleClick.bind(this)}>Sosial</button>
+            <button id = 'akaStat' onClick ={this.handleClick.bind(this)}>Akademisk</button>
+            </div>
 
-              <GeoJSON ref="geojson" data={world_countries} style={style} onEachFeature={onEachFeature.bind(null, this)}/>
-                {/* <GeoJSON ref="popjson" data={this.props.geojson} style={style} onEachFeature={onEachPopUp.bind(null,this)}/> */}
-              <GeoJSON ref="popjson" data={universities} pointToLayer={this.pointToLayer.bind(this)}/>
-
-              <a onClick={this.resetButton.bind(this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>
-
-
+              {/* <GeoJSON ref="geojson" data={world_countries} style={style} onEachFeature={onEachFeature.bind(null, this)}/>*/}
+              {/* <GeoJSON ref="popjson" data={this.props.geojson} style={style} onEachFeature={onEachPopUp.bind(null,this)}/> */}
+            {/*   <GeoJSON ref="popjson" data={universities} pointToLayer={this.pointToLayer.bind(this)}/>*/}
+            {/*   <GeoJSON ref="geojson" data={clor} style={style} />*/}
+              {/* <a onClick={this.resetButton.bind(this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>*/}
+           <GeoJSON ref="geojson" data={this.props.choropleth} style={style.bind(null, this)} onEachFeature={onEachFeature.bind(null, this)}/>
 
             </Map>
           </div>
-
         </div>
-
-
-
     );
   }
 }
@@ -260,6 +325,7 @@ function mapStateToProps(state){
     geojson: state.map.geojson,
     searchResult: state.map.searchResult,
     uni_all: state.map.uni_all,
+    choropleth: state.map.choropleth
   }
 }
 function mapDispatchToProps(dispatch){

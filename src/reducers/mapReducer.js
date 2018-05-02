@@ -10,6 +10,8 @@ geojson: geo,
 searchResult: geo,
 uni_all:geo,
 reports:[],
+choropleth: geo,
+
 };
 
 export function mapReducer(state = INITIAL_STATE, action) {
@@ -29,6 +31,9 @@ export function mapReducer(state = INITIAL_STATE, action) {
       case 'FETCHED_REPORTS':
         return {...state, reports: action.payload}
         break;
+      case 'ALL_CHOROPLETH_RETIREVED':
+      return {...state, choropleth: action.payload}
+      break;
       default:
         return state;
     }
