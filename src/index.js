@@ -24,7 +24,7 @@ import reducers from './reducers/index';
 import { CookiesProvider } from 'react-cookie';
 
 // API URL comment out the one you don't use
-const API_URL = 'https://gib2-api.herokuapp.com';
+export const API_URL = 'https://gib2-api.herokuapp.com';
 // const API_URL = 'http://localhost:8080';
 
 //STEP 1 create the store

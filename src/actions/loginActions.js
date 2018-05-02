@@ -3,9 +3,6 @@ import API_URL from '../index';
 export const setLoginInfo = (mail) => {
   //sets info from different student-scenes in reducer.
   //a combined way of writhing one actioncreater for different instances.
-
-  
-  console.log(API_URL + '/create_or_get_user/' + mail)
   return (dispatch) => {
     fetch(API_URL + '/create_or_get_user/' + mail)
       .then(response => response.json())
