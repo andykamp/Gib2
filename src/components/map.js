@@ -276,9 +276,11 @@ class MapContainer extends Component {
         //Print top uni for a country
         var top3_uni = []
         var top3_coord = []
+        var top3_id = []
         for (var i = 0; i<nextProp.top3.length; i++){
           top3_uni.push(nextProp.top3[i].properties.universitet)
           top3_coord.push(nextProp.top3[i].geometry.coordinates)
+          top3_id.push(nextProp.top3[i].properties._id)
         }
         if(nextProp.top3.length !== 0){
           document.getElementById('country_displayed').innerHTML = this.state.countryName;
@@ -288,12 +290,14 @@ class MapContainer extends Component {
             var element = document.createElement('a')
             element.className = 'uni'
             element.uni = top3_uni[i]
+            element.id = top3_id[i]
             element.bounds = init_bounds;
             element.innerHTML = i+1+'. '+element.uni+'<br>'
 
             var component = this;
             element.onclick = function(){
               component.setState({bounds:this.bounds})
+              component.props.getUniversities(this.id)
             }
             document.getElementById('top3uni').appendChild(element)
           }
@@ -312,7 +316,7 @@ class MapContainer extends Component {
         var coord = [nextProp.geojson.features[i].geometry.coordinates[1],nextProp.geojson.features[i].geometry.coordinates[0]]
         markers.push({position: coord,
                       popup:'<div className="popUp">'+nextProp.geojson.features[i].properties.universitet+'</div>',
-                      options:{onmouseover: console.log('click marker')},
+                      options: {id: nextProp.geojson.features[i].properties._id},
                       })
       }
       this.setState({markers:markers})
@@ -341,6 +345,7 @@ class MapContainer extends Component {
   }
   goToSearch(id){
     this.props.getGEOJSONbyID(id);
+    this.props.getUniversities(id)
 
   }
 
@@ -349,9 +354,11 @@ class MapContainer extends Component {
     this.goToSearch(id)
   }
 
-  setMarkerToBounds(marker){
+  clickMarker(marker){
+    console.log('marker',marker.options.id);
     var marker_bounds = [[marker._latlng.lat-0.1,marker._latlng.lng-0.1],[marker._latlng.lat+0.1,marker._latlng.lng+0.1]]
     this.setState({bounds:marker_bounds})
+    this.props.getUniversities(marker.options.id)
   }
 
   pointToLayer = (feature, latlng) => {
@@ -448,7 +455,7 @@ class MapContainer extends Component {
               <KeyHandler keyEventName={KEYUP} keyValue="z" onKeyHandle={zUp.bind(null,this)} />
               <MarkerClusterGroup
                 markers={this.state.markers}
-                onMarkerClick={(marker) => {console.log(this.state, marker._latlng),this.setMarkerToBounds(marker)}}
+                onMarkerClick={(marker) => {console.log(this.state, marker._latlng),this.clickMarker(marker)}}
                 onClusterClick={(cluster) => console.log('clusterclick',cluster)}
                 onPopupClose={(popup) => console.log('popupclose',popup)}
                 showCoverageOnHover={true}
