@@ -12,7 +12,13 @@ import {Glyphicon,FormGroup, form, FormControl, Grid, Col, Row, Button} from 're
 import { setLoginInfo } from './actions/loginActions'
 import { withCookies, Cookies } from 'react-cookie';
 import { instanceOf } from 'prop-types';
-
+import {browserHistory} from 'react-router';
+import ReallySmoothScroll from 'really-smooth-scroll';
+browserHistory.listen(()=>{
+  console.log('browserHistory',browserHistory);
+  window.scrollTo(0,0);
+});
+ReallySmoothScroll.shim()
 //costum class for Modal
 const customStyles = {
   overlay : {
@@ -148,7 +154,6 @@ renderinfo(){
   render() {
     const intViewportHeight = window.innerHeight;
     let scroll = window.scrollY;
-    console.log("SHOWMODAL", this.state.showModal);
       return (
         <div className="wholescreenApp" >
           {/* Renders startupscreen if first time enterin */}
@@ -165,7 +170,7 @@ renderinfo(){
           {(this.state.showInfo) ? (
             <div style={{
               position: 'absolute',
-              right:'50vw',
+              right:'10px',
               top:intViewportHeight + scroll-80,
               height: 70,
               width: 300,

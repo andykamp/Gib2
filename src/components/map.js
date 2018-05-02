@@ -9,7 +9,7 @@ import {getUniversities} from '../actions/mapInfoActions';
 
 import '../App.css';
 import { Map, TileLayer, Popup, GeoJSON, CircleMarker, Marker} from 'react-leaflet'
-import {Glyphicon,FormGroup, form, FormControl, Grid, Col, Row, Button} from 'react-bootstrap';
+import {Glyphicon,FormGroup, form, FormControl, Grid, Col, Row, Button, Image} from 'react-bootstrap';
 import world_countries from '../geoJson/world_countries';
 import universities from '../geoJson/uni';
 import Searchbar from './searchbar'
@@ -96,9 +96,40 @@ function onEachPopUp(component, feature, layer) {
     layer.on({
     mouseover: function(){
 
-      var content = feature.properties.universitet
-      layer.bindPopup(content)
-      layer.openPopup()
+      var university_info = feature.properties
+        var content = feature.properties.universitet
+        var div = document.createElement("div");
+        div.setAttribute("id", "popUpDiv")
+
+        var infoButton = document.createElement("text");
+        infoButton.setAttribute("id", "infoButton")
+        infoButton.innerHTML = "<br> Mer info...";
+        infoButton.onclick = function() {
+          document.getElementById('mapInfo').scrollIntoView({behavior:'smooth', block:'start'});
+          component.setState({scroll:true})
+          component.props.getUniversities(feature.properties._id)
+
+          //document.getElementById("mapInfo").scrollTop += 59;
+        }
+
+        var starButton = document.createElement("button");
+        starButton.setAttribute("id", "starButton")
+        starButton.innerHTML = "<img src={require('../images/logo.png')}>";
+        console.log(starButton.innerHTML)
+        starButton.onclick = function() {
+          //Legg til universitetet som har aktiv popUp i "favorittlista" til brukeren
+          //Gjør om til gul/checked stjerne
+          starButton.innerHTML = "<img src={require('../images/starYellow.png')}>";
+        }
+
+        var divText = document.createElement("div");
+        divText.setAttribute("id", "divText")
+        divText.innerHTML = content
+        div.appendChild(divText)
+        div.appendChild(infoButton)
+        div.appendChild(starButton)
+        layer.bindPopup(div)
+        layer.openPopup()
     },
     click: function(){
       //get coordinates of uni
@@ -192,6 +223,7 @@ class MapContainer extends Component {
       countryName: '',
       searched:false,
       showSearchedMarker:false,
+      scroll: false,
     }
   }
   componentDidMount(){
@@ -329,6 +361,7 @@ pointToLayer = (feature, latlng) => {
     }, this)
       return (
         <div className="mapbox">
+          <Image responsive  src={require('../images/ad.png')} className={this.state.scroll ? "buttonDownAnimation" : "buttonDown"} />
           <div className="map">
 
             <form className="searchbar">
