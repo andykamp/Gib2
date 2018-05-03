@@ -1,5 +1,5 @@
 import React from 'react';
-import {Nav, NavItem, Navbar, Badge, OverlayTrigger, Popover} from 'react-bootstrap';
+import {Nav, NavItem, Navbar, Badge, OverlayTrigger, Popover, MenuItem, NavDropdown} from 'react-bootstrap';
 // import {LinkContainer} from 'react-router-bootstrap';
 import '../App.css';
 import {Link} from 'react-router';
@@ -43,6 +43,9 @@ class Menu extends React.Component{
   </Popover>
 
 );
+const title = (
+  <h4 style={{color: 'white'}}>Statistikk</h4>
+);
     return(
       <Navbar inverse fixedTop className={(this.props.scrollY===0)?("headerOnTop"):("header")}>
     		<Navbar.Header className="headerLogo">
@@ -64,10 +67,18 @@ class Menu extends React.Component{
                 </Link>
 
       				</NavItem>
+
+              <NavItem eventKey={1} onSelect={this.onPressNav2.bind(this)} className="headerItem">
+                <Link to="/kor" onClick={this.onPressNav1.bind(this)}>
+
+                <h4 style={{color: 'white'}}>Koroplet kart</h4>
+                {this.state.from == 2 ? (this.renderLine()):('')}
+              </Link>
+      				</NavItem>
               <NavItem eventKey={1} onSelect={this.onPressNav2.bind(this)} className="headerItem">
                 <Link to="/stat" onClick={this.onPressNav1.bind(this)}>
 
-                <h4 style={{color: 'white'}}>Statistikk</h4>
+                <h4 style={{color: 'white'}}>Kostnadsanalyse</h4>
                 {this.state.from == 2 ? (this.renderLine()):('')}
               </Link>
       				</NavItem>

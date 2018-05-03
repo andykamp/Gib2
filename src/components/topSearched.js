@@ -18,6 +18,7 @@ class topSearched extends Component {
   onTopClick(uniId) {
     this.props.getUniversities(uniId);
     this.props.getGEOJSONbyID(uniId);
+    document.getElementsByClassName("topSearched")[0 ].scrollIntoView({behavior: 'smooth'})
   }
 
   render() {
@@ -38,7 +39,7 @@ class topSearched extends Component {
       )
     }, this) : null;
     return (
-      <Grid className="topSearched">
+      <Grid className="topSearched" id ="tp">
         <h1>Top søkte universiteter</h1>
         <img alt="" src={require('../images/line.png')} style={{width: 300}} />
         <Row style={{ marginTop: 10 }}>

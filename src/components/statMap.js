@@ -110,8 +110,8 @@ function numberToSpan(number) {
   switch(number) {
     case 1: return <span><b>Informasjon om studentandel</b><br/><br/>Andelen av studenter i forskjellige land. Eksempel:<br/> 12% av utvekslingsstudentene på NTNU har dratt til USA ifølge antallet rapporter</span>;
     case 2: return <span><b>Informasjon om universiteter</b><br/><br/>Andelen av universitetene som NTNU har utvekslingsavtale med. Eksempel:<br/> Frankrike har 14% av universitetene som har avtale med NTNU</span>;
-    case 3: return <span><b>Informasjon om det sosiale</b><br/><br/>Den sosiale kvaliteten ved de forskjellige universitetene, rangert fra 1 til 5, der 5 er best</span>;
-    case 4: return <span><b>Informasjon om det akademiske</b><br/><br/>Den akademiske kvaliteten ved de forskjellige universitetene, rangert fra 1 til 5, der 5 er best</span>;
+    case 3: return <span><b>Sosial tilbakemelding fra tidligere studenter</b><br/><br/>Den sosiale kvaliteten ved de forskjellige universitetene, rangert fra 1 til 5, der 5 er best. Basert på tilbakemelding fra tidligere studenter.</span>;
+    case 4: return <span><b>Akademisk tilbakemelding fra tidligere studenter</b><br/><br/>Den akademiske kvaliteten ved de forskjellige universitetene, rangert fra 1 til 5, der 5 er best. Basert på tilbakemelding fra tidligere studenter.</span>;
     default: return <span></span>;
   }
 }
@@ -147,45 +147,45 @@ class MapContainer extends Component {
       maxBounds: [[-70,-180],[180,180]],
       value: '',
       mapType: "report_rating",
-      showMapType: 0,
+      showMapType: 1,
     }
   this.handleClick = this.handleClick.bind(this);
   }
 
   handleLeave(e) {
     if (e.target.id.includes('Stat')) {
-      this.setState({showMapType:0})
+      // this.setState({showMapType:0})
     }
   }
 
   handleHover(e) {
-    if(e.target.id=='rapStat'){
-      this.setState({showMapType:1})
-    }
-    else if(e.target.id=='uniStat'){
-      this.setState({showMapType:2})
-    }
-    else if(e.target.id=='sosStat'){
-      this.setState({showMapType:3})
-    }
-    else if (e.target.id=='akaStat'){
-      this.setState({showMapType:4})
-    }
+    // if(e.target.id=='rapStat'){
+    //   this.setState({showMapType:1})
+    // }
+    // else if(e.target.id=='uniStat'){
+    //   this.setState({showMapType:2})
+    // }
+    // else if(e.target.id=='sosStat'){
+    //   this.setState({showMapType:3})
+    // }
+    // else if (e.target.id=='akaStat'){
+    //   this.setState({showMapType:4})
+    // }
 
   }
 
   handleClick(e){
     if(e.target.id=='rapStat'){
-        this.setState({mapType: "report_rating"})
+        this.setState({mapType: "report_rating", showMapType:1})
     }
     else if(e.target.id=='uniStat'){
-        this.setState({mapType: "university_rating"})
+        this.setState({mapType: "university_rating", showMapType:2})
     }
     else if(e.target.id=='sosStat'){
-        this.setState({mapType: "social_rating"})
+        this.setState({mapType: "social_rating", showMapType:3})
     }
     else if (e.target.id=='akaStat'){
-        this.setState({mapType: "academic_rating"})
+        this.setState({mapType: "academic_rating", showMapType:4})
     }
 
     this.refs.geojson.leafletElement.clearLayers();
@@ -292,6 +292,17 @@ pointToLayer = (feature, latlng) => {
       return (
         <div className="mapbox">
           <div className="map">
+           <Col className="centerCol" style={{marginTop: 20}}>
+            <h1>Koroplet kart</h1>
+            <h4>Under kan du velge mellom et utvalg koropletkart for å få en global oversikt.</h4>
+          </Col>
+          <Row style={{}} className="centerRowRow" >
+          <button id ='rapStat'  className={this.state.showMapType==1 ? "buttonBlueLight2": "buttonBlue2"} onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Hvor har folk vært?</button>
+          <button id = 'uniStat' className={this.state.showMapType==2 ? "buttonBlueLight2": "buttonBlue2"} onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Antall universiteter i hvert land </button>
+          <button id = 'sosStat' className={this.state.showMapType==3 ? "buttonBlueLight2": "buttonBlue2"} onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Sosial tilbakemelding</button>
+          <button id = 'akaStat' className={this.state.showMapType==4 ? "buttonBlueLight2": "buttonBlue2"} onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Akademisk tilbakemelding</button>
+
+        </Row>
 
             <Map
               id="mapid"
@@ -319,13 +330,7 @@ pointToLayer = (feature, latlng) => {
             </ul>
             </div>
 
-            <div class="btn-group" style={{position: 'absolute', right:'100px', top: '10px'}}>
-            <button id ='rapStat'  onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Studenter</button>
-            <button id = 'uniStat' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Universiteter </button>
-            <button id = 'sosStat' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Sosial</button>
-            <button id = 'akaStat' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Akademisk</button>
 
-            </div>
 
               {/* <GeoJSON ref="geojson" data={world_countries} style={style} onEachFeature={onEachFeature.bind(null, this)}/>*/}
             {/*   <GeoJSON ref="popjson" data={universities} pointToLayer={this.pointToLayer.bind(this)}/>*/}

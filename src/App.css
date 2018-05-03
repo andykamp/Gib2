@@ -65,7 +65,7 @@ h4{
   align-items: center;
   justify-content: center;
 }
-.centerRow{
+.centerCol{
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -294,7 +294,20 @@ h4{
   font-size: 20px;
 }
 
-
+.buttonAnim{
+  position: absolute;
+  z-index: 10;
+  left: 22vw;
+  top:90vh;
+    border-style: solid;
+     border-width: medium;
+     border-radius: 3px;
+     color: #2a3446;
+     border-color: #2a3446;
+     font-weight: bold;
+     width: 300px;
+     margin-top: 10px;
+  }
 .buttonBlue{
   border-style: solid;
    border-width: medium;
@@ -305,6 +318,31 @@ h4{
    font-weight: bold;
    width: 300px;
    margin-top: 10px;
+}
+
+.buttonBlue2{
+  border-style: solid;
+   border-width: medium;
+   /* border-radius: 3px; */
+   color: white;
+   background-color: #2a3446;
+   border-color: #2a3446;
+   font-weight: bold;
+   width: 230px;
+   margin: 10px;
+}
+.buttonBlueLight2{
+  border-style: solid;
+   border-width: medium;
+   /* border-radius: 3px; */
+   color: white;
+   background-color: #7f8590;
+   border-color: #7f8590;
+   font-weight: bold;
+   width: 230px;
+   margin-top: 10px;
+   margin: 10px;
+
 }
 .buttonBlueLight{
   border-style: solid;
@@ -668,6 +706,7 @@ margin: 20px
   background: #fafafa;
   line-height:15px;
   color: #555;
+  z-index: 1000;
 }
 
 .colorBox {
@@ -682,8 +721,8 @@ margin: 20px
   text-align: center;
   position: absolute;
   display: inline-block;
-  top: 200px;
-  left: 20px;
+  bottom: 100px;
+  left: 100px;
   word-wrap:break-word;
   border-radius: 10px;
   border: 2px solid #dcdcdc;
@@ -693,6 +732,9 @@ margin: 20px
   background: #fafafa;
   line-height:15px;
   color: #555;
+  height: 170px;
+  z-index: 1000;
+
 }
 
 .statInfo:empty {
@@ -700,26 +742,31 @@ margin: 20px
 }
 
 .animStatInfo {
-  opacity: 0.85;
+  /* opacity: 0.85; */
   text-align: center;
-  position: absolute;
+
   display: inline-block;
-  top: 300px;
-  right: 60px;
+  /* top: 300px;
+  right: 60px; */
   word-wrap:break-word;
   border-radius: 10px;
-  border: 2px solid #dcdcdc;
+  /* border: 2px solid #dcdcdc; */
   padding: 10px;
   padding-top: 7.5px;
-  width: 210px;
-  background: #fafafa;
-  line-height:15px;
+  /* width: 210px; */
+  /* background: #fafafa; */
+  /* line-height:15px; */
   color: #555;
+  width: 100vw;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
-.animStatInfo:empty {
+/* .animStatInfo:empty {
   opacity:0;
-}
+} */
 
 .btn-group button {
   background-color: #fafafa;

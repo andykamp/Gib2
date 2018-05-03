@@ -42,7 +42,7 @@ class Stat extends Component {
           loading={this.state.loader}
 
         />
-        Laster inn kostnadsstatestikk...
+        Laster inn kart...
       </div>
       );
     }
@@ -64,8 +64,7 @@ class Stat extends Component {
         </Row> */}
 
                       {/* <Animation anbefaler={80} anbefalerikke={20} /> */}
-                <ListStat/>
-
+            <Map/>
         </div>
       )
     }
