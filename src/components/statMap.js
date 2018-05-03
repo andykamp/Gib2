@@ -302,39 +302,33 @@ pointToLayer = (feature, latlng) => {
               bounds={this.state.bounds}
               fillOpacity = {this.state.fillOpacity}
               maxBounds = {this.state.maxBounds}
-            >
+              style = {{marginTop:0}}
+              >
 
-            <div class = 'statInfo'>
-            {(!this.state.showMapType) ? '' : (numberToSpan(this.state.showMapType))}
-            </div>
+                  <div class = 'statInfo'>
+                    {(!this.state.showMapType) ? '' : (numberToSpan(this.state.showMapType))}
+                  </div>
 
-            <div className = 'legend'>
-            <p> {name}</p>
-            <ul class = 'list-unstyled'>
-            <li><span className= 'colorBox' style = {{background:'#FFEAC4'}}></span><p> {list[0]}-{list[1]} </p> </li>
-            <li><span className= 'colorBox' style = {{background:'#FFCF76'}}></span><p> {list[1]}-{list[2]}</p> </li>
-            <li><span className= 'colorBox' style = {{background:'#FFA500'}}></span><p> {list[2]}-{list[3]}</p> </li>
-            <li><span className= 'colorBox' style = {{background:'#FF6500'}}></span><p> {list[3]}-{list[4]}</p> </li>
-            <li><span className= 'colorBox' style = {{background:'#FF3700'}}></span><p> {list[4]}-</p> </li>
-            </ul>
-            </div>
+                  <div className = 'legend'>
+                    <p> {name}</p>
+                    <ul class = 'list-unstyled'>
+                      <li><span className= 'colorBox' style = {{background:'#FFEAC4'}}></span><p> {list[0]}-{list[1]} </p> </li>
+                      <li><span className= 'colorBox' style = {{background:'#FFCF76'}}></span><p> {list[1]}-{list[2]}</p> </li>
+                      <li><span className= 'colorBox' style = {{background:'#FFA500'}}></span><p> {list[2]}-{list[3]}</p> </li>
+                      <li><span className= 'colorBox' style = {{background:'#FF6500'}}></span><p> {list[3]}-{list[4]}</p> </li>
+                      <li><span className= 'colorBox' style = {{background:'#FF3700'}}></span><p> {list[4]}-</p> </li>
+                    </ul>
+                  </div>
 
-            <div class="btn-group" style={{position: 'absolute', right:'100px', top: '10px'}}>
-            <button id ='rapStat'  onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Studenter</button>
-            <button id = 'uniStat' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Universiteter </button>
-            <button id = 'sosStat' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Sosial</button>
-            <button id = 'akaStat' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Akademisk</button>
-
-            </div>
-
-              {/* <GeoJSON ref="geojson" data={world_countries} style={style} onEachFeature={onEachFeature.bind(null, this)}/>*/}
-            {/*   <GeoJSON ref="popjson" data={universities} pointToLayer={this.pointToLayer.bind(this)}/>*/}
-            {/*   <GeoJSON ref="geojson" data={clor} style={style} />*/}
-              {/* <a onClick={this.resetButton.bind(this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>*/}
-
-           <GeoJSON ref="geojson" data={this.props.choropleth} style={style.bind(null, this)} onEachFeature={onEachFeature.bind(null, this)}/>
-           <a onClick={resetButton.bind(null,this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>
-            </Map>
+                  <div class="btn-group" style={{position: 'absolute', right:'100px', top: '10px'}}>
+                    <button id ='rapStat'  onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Studenter</button>
+                    <button id = 'uniStat' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Universiteter </button>
+                    <button id = 'sosStat' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Sosial</button>
+                    <button id = 'akaStat' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Akademisk</button>
+                  </div>
+                  <GeoJSON ref="geojson" data={this.props.choropleth} style={style.bind(null, this)} onEachFeature={onEachFeature.bind(null, this)}/>
+                  <a onClick={resetButton.bind(null,this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>
+                </Map>
           </div>
         </div>
     );

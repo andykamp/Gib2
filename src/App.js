@@ -128,7 +128,7 @@ class App extends Component {
   }
   componentWillReceiveProps(nextProps){
     //if user is logged in--> set timer for the modal to close
-    if(nextProps.loggedIn == true){
+    if(nextProps.loggedIn == true && this.props.loggedIn!= nextProps.loggedIn){
        const that=this;
          setTimeout(function(){
            that.setState({showModal: false, showInfo:true});
