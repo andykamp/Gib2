@@ -30,7 +30,7 @@ class SignIn extends React.Component {
   handleLogin(){
     if(this.state.value.includes('@stud.ntnu.no')) {
     this.props.setLoginInfo(this.state.value);
-    this.props.cookies.set('hasLogin', this.state.value) 
+    this.props.cookies.set('hasLogin', this.state.value)
   }
   }
   handleContinueWithoutLogin(){
