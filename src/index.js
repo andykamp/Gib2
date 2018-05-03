@@ -5,6 +5,7 @@ import App from './App';
 import Home from './components/pages/home';
 import Cart from './components/pages/cart';
 import Stat from './components/pages/stat';
+import StatMap from './components/pages/statkor';
 
 import University from './components/pages/university';
 import registerServiceWorker from './registerServiceWorker';
@@ -40,6 +41,8 @@ const Routes = (
         <Route path="/about us" component={Home} />
         <Route path="/cart" component={Cart} />
         <Route path="/universitet" component={University} />
+        <Route path="/kor" component={StatMap} />
+
         <Route path="/stat" component={Stat} />
 
       </Route>

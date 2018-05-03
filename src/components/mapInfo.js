@@ -80,8 +80,8 @@ this.props.add_favorite_university(email, id)
   }
 //{this.props.my_unis.indexOf(this.props.uni._id) === -1 ? "Legg til i min profil" : "Allerede lagt til i min profil"}
   const add_university = this.props.my_unis.indexOf(this.props.uni._id) === -1 ? (
-  <Button className="button" onClick={this.addFavorite.bind(this, this.props.mail, this.props.uni._id)}>Legg til i min profil</Button>) : 
-  <Button className="button" >Allerede lagt til i min profil</Button> 
+  <Button className="button" onClick={this.addFavorite.bind(this, this.props.mail, this.props.uni._id)}>Legg til i min profil</Button>) :
+  <Button className="button" >Allerede lagt til i min profil</Button>
 
     return (
       <div  style={{flex: 1, width: '100%', minHeight: '90vh', color:'#2a3446'}}>
@@ -118,7 +118,7 @@ this.props.add_favorite_university(email, id)
                       {/* <img src={require('../images/marker.png')} style={{height: 20,marginBottom: 0, marginRight: 5}}/> */}
                       <h4>Avstand fra ntnu:</h4>
                       <p>{ Math.round(this.props.uni.meters_from_ntnu)} meter</p>
-                      <h4>Min/Maks teperatur i dag:</h4>
+                      <h4>Min/Maks temperatur i dag:</h4>
                       <p>{ this.props.uni.weather.min + '/' + this.props.uni.weather.high} grader</p>
 
                     <h4>Hvem kan søke?</h4>
@@ -139,7 +139,7 @@ this.props.add_favorite_university(email, id)
                     <div className="infoColHeader">
 
 
-                      <Button className="button" href="http://www.ntnu.no/studier/studier_i_utlandet/prosedyrer">
+                      <Button className="button" target ="_blank" href="http://www.ntnu.no/studier/studier_i_utlandet/prosedyrer">
                           Hvordan søker jeg?
 
                         </Button>

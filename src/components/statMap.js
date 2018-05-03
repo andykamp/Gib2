@@ -66,16 +66,25 @@ function style (component,feature) {
 }
 
 // highlight on mouseOver
-function highlightFeature (feature, e) {
+function highlightFeature (component,feature, e) {
   var layer = e.target;
-
+  var country_name = feature.properties.name
+  component.setState({
+    countryCenter: layer.getCenter(),
+    countryName: country_name,
+  })
+  var div = document.createElement("div");
+  div.setAttribute("id", "popUpDiv")
+  div.innerHTML = country_name + '<br>' + feature.properties[component.state.mapType]
+  layer.bindPopup(div)
+  layer.openPopup()
 
   // this.setState({countryDisplayed:feature.properties.name})
   countryNameDisplayed= feature.properties.name;
 }
 
 // reset default style on mouseOut
-function resetHighlight (feature, e) {
+function resetHighlight (component,feature, e) {
   // component.refs.geojson.leafletElement.resetStyle(e.target);
   var layer = e.target;
 
@@ -84,8 +93,8 @@ function resetHighlight (feature, e) {
 
 function onEachFeature (component, feature, layer) {
   layer.on({
-    mouseover: highlightFeature.bind(null, feature),
-    mouseout: resetHighlight.bind(null, feature),
+    mouseover: highlightFeature.bind(null,component, feature),
+    mouseout: resetHighlight.bind(null, component, feature),
     click: function(){
           if(change_zoom){
               var init_bounds = layer.getBounds();
@@ -110,8 +119,8 @@ function numberToSpan(number) {
   switch(number) {
     case 1: return <span><b>Informasjon om studentandel</b><br/><br/>Andelen av studenter i forskjellige land. Eksempel:<br/> 12% av utvekslingsstudentene på NTNU har dratt til USA ifølge antallet rapporter</span>;
     case 2: return <span><b>Informasjon om universiteter</b><br/><br/>Andelen av universitetene som NTNU har utvekslingsavtale med. Eksempel:<br/> Frankrike har 14% av universitetene som har avtale med NTNU</span>;
-    case 3: return <span><b>Informasjon om det sosiale</b><br/><br/>Den sosiale kvaliteten ved de forskjellige universitetene, rangert fra 1 til 5, der 5 er best</span>;
-    case 4: return <span><b>Informasjon om det akademiske</b><br/><br/>Den akademiske kvaliteten ved de forskjellige universitetene, rangert fra 1 til 5, der 5 er best</span>;
+    case 3: return <span><b>Sosial tilbakemelding fra tidligere studenter</b><br/><br/>Den sosiale kvaliteten ved de forskjellige universitetene, rangert fra 1 til 5, der 5 er best. Basert på tilbakemelding fra tidligere studenter.</span>;
+    case 4: return <span><b>Akademisk tilbakemelding fra tidligere studenter</b><br/><br/>Den akademiske kvaliteten ved de forskjellige universitetene, rangert fra 1 til 5, der 5 er best. Basert på tilbakemelding fra tidligere studenter.</span>;
     default: return <span></span>;
   }
 }
@@ -147,45 +156,45 @@ class MapContainer extends Component {
       maxBounds: [[-70,-180],[180,180]],
       value: '',
       mapType: "report_rating",
-      showMapType: 0,
+      showMapType: 1,
     }
   this.handleClick = this.handleClick.bind(this);
   }
 
   handleLeave(e) {
     if (e.target.id.includes('Stat')) {
-      this.setState({showMapType:0})
+      // this.setState({showMapType:0})
     }
   }
 
   handleHover(e) {
-    if(e.target.id=='rapStat'){
-      this.setState({showMapType:1})
-    }
-    else if(e.target.id=='uniStat'){
-      this.setState({showMapType:2})
-    }
-    else if(e.target.id=='sosStat'){
-      this.setState({showMapType:3})
-    }
-    else if (e.target.id=='akaStat'){
-      this.setState({showMapType:4})
-    }
+    // if(e.target.id=='rapStat'){
+    //   this.setState({showMapType:1})
+    // }
+    // else if(e.target.id=='uniStat'){
+    //   this.setState({showMapType:2})
+    // }
+    // else if(e.target.id=='sosStat'){
+    //   this.setState({showMapType:3})
+    // }
+    // else if (e.target.id=='akaStat'){
+    //   this.setState({showMapType:4})
+    // }
 
   }
 
   handleClick(e){
     if(e.target.id=='rapStat'){
-        this.setState({mapType: "report_rating"})
+        this.setState({mapType: "report_rating", showMapType:1})
     }
     else if(e.target.id=='uniStat'){
-        this.setState({mapType: "university_rating"})
+        this.setState({mapType: "university_rating", showMapType:2})
     }
     else if(e.target.id=='sosStat'){
-        this.setState({mapType: "social_rating"})
+        this.setState({mapType: "social_rating", showMapType:3})
     }
     else if (e.target.id=='akaStat'){
-        this.setState({mapType: "academic_rating"})
+        this.setState({mapType: "academic_rating", showMapType:4})
     }
 
     this.refs.geojson.leafletElement.clearLayers();
@@ -292,6 +301,17 @@ pointToLayer = (feature, latlng) => {
       return (
         <div className="mapbox">
           <div className="map">
+           <Col className="centerCol" style={{marginTop: 20}}>
+            <h1>Koroplet kart</h1>
+            <h4>Under kan du velge mellom et utvalg koropletkart for å få en global oversikt.</h4>
+          </Col>
+          <Row style={{}} className="centerRowRow" >
+          <button id ='rapStat'  className={this.state.showMapType==1 ? "buttonBlueLight2": "buttonBlue2"} onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Hvor har folk vært?</button>
+          <button id = 'uniStat' className={this.state.showMapType==2 ? "buttonBlueLight2": "buttonBlue2"} onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Antall universiteter i hvert land </button>
+          <button id = 'sosStat' className={this.state.showMapType==3 ? "buttonBlueLight2": "buttonBlue2"} onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Sosial tilbakemelding</button>
+          <button id = 'akaStat' className={this.state.showMapType==4 ? "buttonBlueLight2": "buttonBlue2"} onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Akademisk tilbakemelding</button>
+
+        </Row>
 
             <Map
               id="mapid"
@@ -302,33 +322,34 @@ pointToLayer = (feature, latlng) => {
               bounds={this.state.bounds}
               fillOpacity = {this.state.fillOpacity}
               maxBounds = {this.state.maxBounds}
-              style = {{marginTop:0}}
-              >
 
-                  <div class = 'statInfo'>
-                    {(!this.state.showMapType) ? '' : (numberToSpan(this.state.showMapType))}
-                  </div>
+            >
 
-                  <div className = 'legend'>
-                    <p> {name}</p>
-                    <ul class = 'list-unstyled'>
-                      <li><span className= 'colorBox' style = {{background:'#FFEAC4'}}></span><p> {list[0]}-{list[1]} </p> </li>
-                      <li><span className= 'colorBox' style = {{background:'#FFCF76'}}></span><p> {list[1]}-{list[2]}</p> </li>
-                      <li><span className= 'colorBox' style = {{background:'#FFA500'}}></span><p> {list[2]}-{list[3]}</p> </li>
-                      <li><span className= 'colorBox' style = {{background:'#FF6500'}}></span><p> {list[3]}-{list[4]}</p> </li>
-                      <li><span className= 'colorBox' style = {{background:'#FF3700'}}></span><p> {list[4]}-</p> </li>
-                    </ul>
-                  </div>
+            <div class = 'statInfo'>
+            {(!this.state.showMapType) ? '' : (numberToSpan(this.state.showMapType))}
+            </div>
 
-                  <div class="btn-group" style={{position: 'absolute', right:'100px', top: '10px'}}>
-                    <button id ='rapStat'  onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Studenter</button>
-                    <button id = 'uniStat' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Universiteter </button>
-                    <button id = 'sosStat' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Sosial</button>
-                    <button id = 'akaStat' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick ={this.handleClick.bind(this)}>Akademisk</button>
-                  </div>
-                  <GeoJSON ref="geojson" data={this.props.choropleth} style={style.bind(null, this)} onEachFeature={onEachFeature.bind(null, this)}/>
-                  <a onClick={resetButton.bind(null,this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>
-                </Map>
+            <div className = 'legend'>
+            <p> {name}</p>
+            <ul class = 'list-unstyled'>
+            <li><span className= 'colorBox' style = {{background:'#FFEAC4'}}></span><p> {list[0]}-{list[1]} </p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FFCF76'}}></span><p> {list[1]}-{list[2]}</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FFA500'}}></span><p> {list[2]}-{list[3]}</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FF6500'}}></span><p> {list[3]}-{list[4]}</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FF3700'}}></span><p> {list[4]}-</p> </li>
+            </ul>
+            </div>
+
+
+
+              {/* <GeoJSON ref="geojson" data={world_countries} style={style} onEachFeature={onEachFeature.bind(null, this)}/>*/}
+            {/*   <GeoJSON ref="popjson" data={universities} pointToLayer={this.pointToLayer.bind(this)}/>*/}
+            {/*   <GeoJSON ref="geojson" data={clor} style={style} />*/}
+              {/* <a onClick={this.resetButton.bind(this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>*/}
+
+           <GeoJSON ref="geojson" data={this.props.choropleth} style={style.bind(null, this)} onEachFeature={onEachFeature.bind(null, this)}/>
+           <a onClick={resetButton.bind(null,this)} className = "resetZoomButton" href="#" title="ResetZoom" role="button" aria-label="Reset"><Glyphicon className = "resetZoom" glyph="glyphicon glyphicon-repeat" /></a>
+            </Map>
           </div>
         </div>
     );

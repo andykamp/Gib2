@@ -2,10 +2,12 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import React, { PureComponent, Component } from 'react';
 import NodeGroup from 'react-move/NodeGroup';
-import Surface from './surface'; // this is just a responsive SVG
+import Surface from './surface2'; // this is just a responsive SVG
 import { scaleLinear, scaleBand } from 'd3-scale';
 import { easeExpInOut } from 'd3-ease';
 import { ascending, max } from 'd3-array';
+import {Glyphicon,FormGroup, form, FormControl, Grid, Col, Row, Button} from 'react-bootstrap';
+
 import '../App.css';
 import {get_all_money} from '../actions/mapActions';
 
@@ -22,9 +24,9 @@ const dims = [ // Adjusted dimensions [width, height]
 
 function numberToSpan(number) {
   switch(number) {
-    case 1: return <span><b>Statistikk om ekstrakostnader</b><br/><br/>Hvor mye ekstrakostnader er det til de forskjellige universitetene?</span>;
-    case 2: return <span><b>Statistikk om bokostnader</b><br/><br/>Hvor mye koster det å bo når man studerer ved de forskjellige universitetene?</span>;
-    case 3: return <span><b>Statistikk om skolekostnader</b><br/><br/>Hvor mye koster de forskjellige universitetene i skolepenger?</span>;
+    case 1: return <span>Hvor mye ekstrakostnader er det til de forskjellige universitetene? Listen viser de 10 dyreste.</span>;
+    case 2: return <span>Hvor mye koster det å bo når man studerer ved de forskjellige universitetene? Listen viser de 10 dyreste.</span>;
+    case 3: return <span>Hvor mye koster de forskjellige universitetene i skolepenger? Listen viser de 10 dyreste.</span>;
     default: return <span></span>;
   }
 }
@@ -37,7 +39,7 @@ class Example extends Component {
     this.state = {
       sortAlpha: true,
       statType: "moneySkole",
-      showStatType:0,
+      showStatType:1,
     }
     this.handleClick = this.handleClick.bind(this);
   }
@@ -46,21 +48,21 @@ class Example extends Component {
   }
 
   handleLeave(e) {
-    if (e.target.id.includes('Btn')) {
-      this.setState({showStatType:0})
-    }
+    // if (e.target.id.includes('Btn')) {
+    //   this.setState({showStatType:0})
+    // }
   }
 
   handleHover(e) {
-    if(e.target.id=='ekstraBtn'){
-      this.setState({showStatType:1})
-    }
-    else if(e.target.id=='boBtn'){
-      this.setState({showStatType:2})
-    }
-    else if(e.target.id=='skoleBtn'){
-      this.setState({showStatType:3})
-    }
+    // if(e.target.id=='ekstraBtn'){
+    //   this.setState({showStatType:1})
+    // }
+    // else if(e.target.id=='boBtn'){
+    //   this.setState({showStatType:2})
+    // }
+    // else if(e.target.id=='skoleBtn'){
+    //   this.setState({showStatType:3})
+    // }
 
   }
 
@@ -68,14 +70,14 @@ class Example extends Component {
 
     var varListe;
     if(e.target.id=='ekstraBtn'){
-        this.setState({statType: "moneyEkstra"});
+        this.setState({statType: "moneyEkstra", showStatType:1});
   }
     else if(e.target.id=='boBtn'){
-        this.setState({statType: "moneyBolig"});
+        this.setState({statType: "moneyBolig", showStatType:2});
     }
 
     else if(e.target.id=='skoleBtn'){
-        this.setState({statType: "moneySkole"});
+        this.setState({statType: "moneySkole", showStatType:3});
     }
   }
 
@@ -105,9 +107,24 @@ class Example extends Component {
       .domain([0, max(this.props[this.state.statType], (d) => d.val)]);
     return (
       <div style={{marginTop: '10vh', minHeight: 1}}>
-        <button onClick={this.update} className="sortButton">
-          {`Sort ${sortAlpha ? 'Value' : 'Alpha'}`}
+        <button onClick={this.update} className="buttonAnim" style={{height: 30}}>
+          {`Sorter på ${sortAlpha ? 'verdi' : 'forbokstav'}`}
         </button>
+        <Col className="centerCol" style={{marginTop: 20}}>
+         <h1>Kostnadsanalyse</h1>
+         {/* <h4>Under kan du velge mellom et utvalg grafe for å få en global oversikt over kostnader.</h4> */}
+       </Col>
+        <div className="centerRowRow" style={{}}>
+        <button id ='ekstraBtn' className={this.state.showStatType==1 ? "buttonBlueLight2": "buttonBlue2"} onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick={this.handleClick.bind(this)}>Ekstrakostnader</button>
+        <button id = 'boBtn' className={this.state.showStatType==2 ? "buttonBlueLight2": "buttonBlue2"} onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick={this.handleClick.bind(this)}>Bokostnader </button>
+        <button id = 'skoleBtn'  className={this.state.showStatType==3 ? "buttonBlueLight2": "buttonBlue2"} onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick={this.handleClick.bind(this)}>Skolekostnader </button>
+
+        </div>
+
+        <div class = 'animStatInfo'>
+        {(!this.state.showStatType) ? '' : (numberToSpan(this.state.showStatType))}
+        </div>
+
         <Surface view={view} trbl={trbl}>
           <NodeGroup
             data={sorted}
@@ -181,16 +198,9 @@ class Example extends Component {
           </NodeGroup>
         </Surface>
 
-        <div class = 'animStatInfo'>
-        {(!this.state.showStatType) ? '' : (numberToSpan(this.state.showStatType))}
-        </div>
 
-        <div class="btn-group" style={{position: 'absolute', right:'100px', top: '150px'}}>
-        <button id ='ekstraBtn' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick={this.handleClick.bind(this)}>Ekstrakostnader</button>
-        <button id = 'boBtn' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick={this.handleClick.bind(this)}>Bokostnader </button>
-        <button id = 'skoleBtn' onMouseLeave={this.handleLeave.bind(this)} onMouseOver={this.handleHover.bind(this)} onClick={this.handleClick.bind(this)}>Skolekostnader </button>
 
-        </div>
+
       </div>
     );
 
