@@ -365,6 +365,7 @@ updateWindowDimensions() {
     this.props.emptySeachResult();
     this.goToSearch(id)
     this.setState({searched:false})
+    
   }
   goToSearch(id){
     this.props.getGEOJSONbyID(id);
