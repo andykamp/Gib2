@@ -33,7 +33,6 @@ close(){
 }
 
 addFavorite(email,id){
-console.log("sending fav uni", email, id);
 if(email.length<11){
   this.setState({showModel:true})
 }
@@ -62,14 +61,14 @@ this.props.add_favorite_university(email, id)
       //     "Ingen rapporter å vise"
       //   )
       // }
-      reports = this.props.reports.map(function(report){
+      reports = this.props.reports.map(function(report) {
           return(
             <Review
-              date={report.Rapportdato}
-              thumb={report["Vil du anbefale andre å reise til studiestedet?"]}
-              link={report.url}
-              summary={report["Hva er begrunnelsen for anbefalingen?"]}
-              stud_dir={report["Studieprogram ved NTNU:"]}
+              date={ report.Rapportdato }
+              thumb={ report["Vil du anbefale andre å reise til studiestedet?"].replace(/_/g, '.') }
+              link={ report.url }
+              summary={ report["Hva er begrunnelsen for anbefalingen?"].replace(/_/g, '.') }
+              stud_dir={ report["Studieprogram ved NTNU:"].replace(/_/g, '.') }
             />
           )
       }
@@ -79,8 +78,6 @@ this.props.add_favorite_university(email, id)
   }else{
     reports = "Ingen tilgjengelige rapporter"
   }
-
-  console.log("RATING", this.props.uni.rating['positive']*100,this.props.uni.rating['negative']);
 
     return (
       <div  style={{flex: 1, width: '100%', minHeight: '90vh', color:'#2a3446'}}>

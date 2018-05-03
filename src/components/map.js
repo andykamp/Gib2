@@ -17,6 +17,7 @@ import universities from '../geoJson/uni';
 import Searchbar from './searchbar'
 
 import orangeMarker from '../images/map_marker-orange.png'
+import logo from '../images/logo.png';
 
 import L from 'leaflet';
 
@@ -100,30 +101,37 @@ function onEachPopUp(component, feature, layer) {
     mouseover: function(){
 
       var university_info = feature.properties
-        var content = feature.properties.universitet
-        var div = document.createElement("div");
-        div.setAttribute("id", "popUpDiv")
+      var div = document.createElement('div');
+      div.setAttribute('id','popUpDiv')
+      var content = feature.properties.universitet
 
-        var infoButton = document.createElement("text");
-        infoButton.setAttribute("id", "infoButton")
-        infoButton.innerHTML = "<br> Mer info...";
-        infoButton.onclick = function() {
-          window.scrollTo(0,component.state.height - component.state.height*0.1);
-          component.setState({scroll:true})
-          component.props.getUniversities(feature.properties._id)
+      var infoButton = document.createElement("text");
+      infoButton.setAttribute("id", "infoButton")
+      infoButton.innerHTML = "<br> Mer info...";
+      infoButton.onclick = function() {
+        window.scrollTo(0,component.state.height - component.state.height*0.1);
+        component.setState({scroll:true})
+        component.props.getUniversities(feature.properties._id)
 
-          //document.getElementById("mapInfo").scrollTop += 59;
+        //document.getElementById("mapInfo").scrollTop += 59;
+      }
+
+      var starButton = document.createElement("image");
+      starButton.setAttribute("id", "starButton")
+      starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="20" height="20">';
+      console.log(starButton.innerHTML)
+      starButton.onclick = function() {
+        if (!component.state.starred) {
+          starButton.innerHTML = '<img src="' + 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/256/star-icon.png" width="20" height="20">';
+          component.setState({starred:true});
+        } else {
+          starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="20" height="20">';
+          component.setState({starred:false});
         }
-
-        var starButton = document.createElement("button");
-        starButton.setAttribute("id", "starButton")
-        starButton.innerHTML = "<img src={require('../images/logo.png')}>";
-        console.log(starButton.innerHTML)
-        starButton.onclick = function() {
-          //Legg til universitetet som har aktiv popUp i "favorittlista" til brukeren
-          //Gjør om til gul/checked stjerne
-          starButton.innerHTML = "<img src={require('../images/starYellow.png')}>";
-        }
+        //Legg til universitetet som har aktiv popUp i "favorittlista" til brukeren
+        //Gjør om til gul/checked stjerne
+        console.log(starButton.innerHTML);
+      }
 
         var divText = document.createElement("div");
         divText.setAttribute("id", "divText")
@@ -131,8 +139,6 @@ function onEachPopUp(component, feature, layer) {
         div.appendChild(divText)
         div.appendChild(infoButton)
         div.appendChild(starButton)
-        layer.bindPopup(div)
-        layer.openPopup()
     },
     click: function(){
       //get coordinates of uni
@@ -211,6 +217,43 @@ function isMarkerInsidePolygon(marker, poly) {
     return inside;
 };
 
+function markerPopupContent(component, marker){
+  console.log(marker);
+  var div = document.createElement('div');
+  div.setAttribute('id','popUpDiv')
+
+  var infoButton = document.createElement("text");
+  infoButton.setAttribute("id", "infoButton")
+  infoButton.innerHTML = "<br> Mer info...";
+  infoButton.onclick = function() {
+    window.scrollTo(0,this.state.height - this.state.height*0.1);
+    component.setState({scroll:true})
+    component.props.getUniversities(marker.options._id)
+  }
+
+  var starButton = document.createElement("image");
+  starButton.setAttribute("id", "starButton")
+  starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="20" height="20">';
+  starButton.onclick = function(){
+    if (!component.state.starred) {
+      starButton.innerHTML = '<img src="' + 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/256/star-icon.png" width="20" height="20">';
+      component.setState({starred:true});
+    }else {
+      starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="20" height="20">';
+      component.setState({starred:false});
+    }
+    //Legg til universitetet som har aktiv popUp i "favorittlista" til brukeren
+    //Gjør om til gul/checked stjerne
+  }
+  var divText = document.createElement("div");
+  divText.setAttribute("id", "divText")
+  divText.innerHTML = marker.options.universitet;
+  div.appendChild(divText)
+  div.appendChild(infoButton)
+  div.appendChild(starButton)
+  return div
+}
+
 
 class MapContainer extends Component {
   constructor() {
@@ -232,6 +275,7 @@ class MapContainer extends Component {
       searched:false,
       markers: {},
       showSearchedMarker:false,
+      starred:false,
       scroll: false,
       width: 0,
       height: 0
@@ -266,7 +310,7 @@ class MapContainer extends Component {
             if(inside){
               country_polygon = world_countries.features[i].geometry.coordinates;
               country_name = world_countries.features[i].properties.name;
-              this.props.getGEOJSON(country_name)
+              //this.props.getGEOJSON(country_name)
               break;
             }
         }
@@ -318,17 +362,20 @@ class MapContainer extends Component {
         }
       }
       // add markers to the map for each country clicked
+
       var markers = []
       for (var i = 0; i < nextProp.geojson.features.length; i++) {
+        var features_marker = nextProp.geojson.features[i]
         var coord = [nextProp.geojson.features[i].geometry.coordinates[1],nextProp.geojson.features[i].geometry.coordinates[0]]
         markers.push({position: coord,
-                      popup:'<div className="popUp">'+nextProp.geojson.features[i].properties.universitet+'</div>',
-                      options: {id: nextProp.geojson.features[i].properties._id},
+                      popup: markerPopupContent.bind(this,features_marker),
+                      options: {id: nextProp.geojson.features[i].properties._id, universitet: nextProp.geojson.features[i].properties.universitet},
                       })
       }
+
       this.setState({markers:markers})
-  }
-  componentWillUnmount() {
+    }
+componentWillUnmount() {
   window.removeEventListener('resize', this.updateWindowDimensions);
 }
 

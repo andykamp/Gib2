@@ -11,7 +11,7 @@ searchResult: geo,
 uni_all:geo,
 reports:[],
 choropleth: geo,
-
+money: geo,
 };
 
 export function mapReducer(state = INITIAL_STATE, action) {
@@ -32,8 +32,11 @@ export function mapReducer(state = INITIAL_STATE, action) {
         return {...state, reports: action.payload}
         break;
       case 'ALL_CHOROPLETH_RETIREVED':
-      return {...state, choropleth: action.payload}
-      break;
+        return {...state, choropleth: action.payload}
+        break;
+      case 'ALL_MONEY_RETIREVED':
+        return {...state, money: action.payload}
+        break;
       default:
         return state;
     }
