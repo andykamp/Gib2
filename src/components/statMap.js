@@ -66,16 +66,25 @@ function style (component,feature) {
 }
 
 // highlight on mouseOver
-function highlightFeature (feature, e) {
+function highlightFeature (component,feature, e) {
   var layer = e.target;
-
+  var country_name = feature.properties.name
+  component.setState({
+    countryCenter: layer.getCenter(),
+    countryName: country_name,
+  })
+  var div = document.createElement("div");
+  div.setAttribute("id", "popUpDiv")
+  div.innerHTML = country_name + '<br>' + feature.properties[component.state.mapType]
+  layer.bindPopup(div)
+  layer.openPopup()
 
   // this.setState({countryDisplayed:feature.properties.name})
   countryNameDisplayed= feature.properties.name;
 }
 
 // reset default style on mouseOut
-function resetHighlight (feature, e) {
+function resetHighlight (component,feature, e) {
   // component.refs.geojson.leafletElement.resetStyle(e.target);
   var layer = e.target;
 
@@ -84,8 +93,8 @@ function resetHighlight (feature, e) {
 
 function onEachFeature (component, feature, layer) {
   layer.on({
-    mouseover: highlightFeature.bind(null, feature),
-    mouseout: resetHighlight.bind(null, feature),
+    mouseover: highlightFeature.bind(null,component, feature),
+    mouseout: resetHighlight.bind(null, component, feature),
     click: function(){
           if(change_zoom){
               var init_bounds = layer.getBounds();
@@ -313,6 +322,7 @@ pointToLayer = (feature, latlng) => {
               bounds={this.state.bounds}
               fillOpacity = {this.state.fillOpacity}
               maxBounds = {this.state.maxBounds}
+
             >
 
             <div class = 'statInfo'>
