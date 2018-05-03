@@ -76,6 +76,7 @@ function resetHighlight (component, feature, e) {
 
 
 function onEachFeature (component, feature, layer) {
+  console.log(component);
   layer.on({
     mouseover: highlightFeature.bind(null, component,feature),
     mouseout: resetHighlight.bind(null, component,feature),
@@ -98,48 +99,6 @@ function onEachFeature (component, feature, layer) {
 
 function onEachPopUp(component, feature, layer) {
     layer.on({
-    mouseover: function(){
-
-      var university_info = feature.properties
-      var div = document.createElement('div');
-      div.setAttribute('id','popUpDiv')
-      var content = feature.properties.universitet
-
-      var infoButton = document.createElement("text");
-      infoButton.setAttribute("id", "infoButton")
-      infoButton.innerHTML = "<br> Mer info...";
-      infoButton.onclick = function() {
-        window.scrollTo(0,component.state.height - component.state.height*0.1);
-        component.setState({scroll:true})
-        component.props.getUniversities(feature.properties._id)
-
-        //document.getElementById("mapInfo").scrollTop += 59;
-      }
-
-      var starButton = document.createElement("image");
-      starButton.setAttribute("id", "starButton")
-      starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="20" height="20">';
-      console.log(starButton.innerHTML)
-      starButton.onclick = function() {
-        if (!component.state.starred) {
-          starButton.innerHTML = '<img src="' + 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/256/star-icon.png" width="20" height="20">';
-          component.setState({starred:true});
-        } else {
-          starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="20" height="20">';
-          component.setState({starred:false});
-        }
-        //Legg til universitetet som har aktiv popUp i "favorittlista" til brukeren
-        //Gjør om til gul/checked stjerne
-        console.log(starButton.innerHTML);
-      }
-
-        var divText = document.createElement("div");
-        divText.setAttribute("id", "divText")
-        divText.innerHTML = content
-        div.appendChild(divText)
-        div.appendChild(infoButton)
-        div.appendChild(starButton)
-    },
     click: function(){
       //get coordinates of uni
       var temp_pos = feature.geometry.coordinates;
@@ -148,7 +107,7 @@ function onEachPopUp(component, feature, layer) {
       component.setState({bounds: init_bounds})
       component.refs.popjson.leafletElement.clearLayers();
       component.refs.popjson.leafletElement.addData(component.props.geojson);
-      // component.props.getUniversities(feature.properties._id)
+      component.props.getUniversities(feature.properties._id)
 
     }
   });
@@ -164,6 +123,7 @@ function resetButton(component, feature, layer){
     component.clearSearch.bind(this)
     component.refs.popjson.leafletElement.clearLayers();
     component.refs.geojson.leafletElement.clearLayers();
+    component.refs.map.leafletElement.clearLayers();
     console.log('reset component',component);
     component.refs.geojson.leafletElement.addData(world_countries);
 
@@ -218,40 +178,42 @@ function isMarkerInsidePolygon(marker, poly) {
 };
 
 function markerPopupContent(component, marker){
-  console.log(marker);
   var div = document.createElement('div');
   div.setAttribute('id','popUpDiv')
+
+  var divText = document.createElement("div");
+  divText.setAttribute("id", "divText")
+  divText.innerHTML = marker.properties.universitet;
 
   var infoButton = document.createElement("text");
   infoButton.setAttribute("id", "infoButton")
   infoButton.innerHTML = "<br> Mer info...";
   infoButton.onclick = function() {
-    window.scrollTo(0,this.state.height - this.state.height*0.1);
+    window.scrollTo(0,component.state.height - component.state.height*0.1);
     component.setState({scroll:true})
-    component.props.getUniversities(marker.options._id)
+    component.props.getUniversities(marker.properties._id)
   }
 
 
   var starButton = document.createElement("image");
   starButton.setAttribute("id", "starButton")
-  starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="20" height="20">';
+  starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="15" height="15">';
   starButton.onclick = function(){
     if (!component.state.starred) {
-      starButton.innerHTML = '<img src="' + 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/256/star-icon.png" width="20" height="20">';
+      starButton.innerHTML = '<img src="' + 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/256/star-icon.png" width="15" height="15">';
       component.setState({starred:true});
     }else {
-      starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="20" height="20">';
+      starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="15" height="15">';
       component.setState({starred:false});
     }
     //Legg til universitetet som har aktiv popUp i "favorittlista" til brukeren
     //Gjør om til gul/checked stjerne
   }
-  var divText = document.createElement("div");
-  divText.setAttribute("id", "divText")
-  divText.innerHTML = marker.options.universitet;
+
+  // div.appendChild(starButton)
   div.appendChild(divText)
   div.appendChild(infoButton)
-  div.appendChild(starButton)
+
   return div
 }
 
@@ -365,11 +327,12 @@ class MapContainer extends Component {
       // add markers to the map for each country clicked
 
       var markers = []
+      var component = this;
       for (var i = 0; i < nextProp.geojson.features.length; i++) {
         var features_marker = nextProp.geojson.features[i]
         var coord = [nextProp.geojson.features[i].geometry.coordinates[1],nextProp.geojson.features[i].geometry.coordinates[0]]
         markers.push({position: coord,
-                      popup: markerPopupContent.bind(this,features_marker),
+                      popup: (markerPopupContent.bind(null,component, features_marker)),
                       options: {id: nextProp.geojson.features[i].properties._id, universitet: nextProp.geojson.features[i].properties.universitet},
                       })
       }
@@ -416,10 +379,9 @@ updateWindowDimensions() {
   }
 
   clickMarker(marker){
-    console.log('marker',marker.options.id);
     var marker_bounds = [[marker._latlng.lat-0.1,marker._latlng.lng-0.1],[marker._latlng.lat+0.1,marker._latlng.lng+0.1]]
     this.setState({bounds:marker_bounds})
-    this.props.getUniversities(marker.options.id)
+
   }
 
   pointToLayer = (feature, latlng) => {
@@ -441,12 +403,11 @@ updateWindowDimensions() {
                             shadowSize: [30,30],
                             shadowAnchor: [10,30],
                             })
-    if(latlng.lat == this.state.custom_marker_pos[1] && latlng.lng==this.state.custom_marker_pos[0]){
-      console.log('wasequalposcustommarker');
-      return L.marker(latlng, {icon:custom_icon, zIndexOffset: 2000})
-    }
-
-    else if(latlng.lat == this.state.markers[0] && latlng.lng==this.state.markers[1]){
+    // if(latlng.lat == this.state.custom_marker_pos[1] && latlng.lng==this.state.custom_marker_pos[0]){
+    //   console.log('wasequalposcustommarker');
+    //   return L.marker(latlng, {icon:custom_icon, zIndexOffset: 2000})
+    // }
+    if(latlng.lat == this.state.markers[0] && latlng.lng==this.state.markers[1]){
       return
     }
   }
@@ -515,7 +476,7 @@ updateWindowDimensions() {
               <KeyHandler keyEventName={KEYUP} keyValue="z" onKeyHandle={zUp.bind(null,this)} />
               <MarkerClusterGroup
                 markers={this.state.markers}
-                onMarkerClick={(marker) => {console.log(this.state, marker._latlng),this.clickMarker(marker)}}
+                onMarkerClick={(marker) => {this.clickMarker(marker)}}
                 onClusterClick={(cluster) => console.log('clusterclick',cluster)}
                 onPopupClose={(popup) => console.log('popupclose',popup)}
                 showCoverageOnHover={true}

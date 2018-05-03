@@ -614,7 +614,10 @@ margin: 20px
 }
 
 #starButton {
-  float:right;
+  position: absolute;
+  left: 2px;
+  top:2px;
+
 }
 
 #starButton:hover {
@@ -622,23 +625,29 @@ margin: 20px
 }
 
 #popUpDiv {
-  font-weight: bold;
-  font-size: 0.95vw;
-  /* display: inline-block; */
+  padding-left: 2px;
+  padding-right: 2px;
+  height: 20px;
 }
 
 #divText {
-  float:left;
-  left: 0%;
-  word-wrap: break-word;
-  /* display: inline-block; */
-  width:100%;
+  min-width: 10px;
+  min-height: 50;
+  display: inline-block;
+}
+
+.leaflet-popup-content-wrapper{
+  min-width: 10px;
+  min-height:  10px;
 }
 
 
 #infoButton {
-  left: -2.5%;
-  color:#3366BB;
+  position: absolute;
+  right: 6px;
+  top: 18px;
+  font-size: 10px;
+  color: blue;
 }
 
 #infoButton:hover {
@@ -761,34 +770,7 @@ margin: 20px
    100% { -webkit-transform: scale(1)   ; opacity: 0;    }
 }
 
-#popUpDiv {
-  font-weight: bold;
-  font-size: 0.95vw;
-  display: inline-block;
-}
 
-#divText {
-  float:left;
-  left: 0%;
-  word-wrap: break-word;
-  display: inline-block;
-  width:100%;
-}
-
-#starButton {
-  /* width:5%; */
-  display: inline-block;
-  float: right;
-}
-
-#infoButton {
-  left: -2.5%;
-  color:#3366BB;
-}
-
-#infoButton:hover {
-  cursor:pointer;
-}
 #delete{
 position: absolute;
 z-index: 100;
