@@ -9,7 +9,7 @@ class Footer extends React.Component{
           <img classname="shadowed" src={require('../images/logo.png')} style={{height: 100}} />
 
           <h1>Laget av studenter ved Geomatikk, I&IKT</h1>
-          <h4>Anders Kampenes, Carl Emil Hattestad, Anna Kjæmpenes, Jørgen Mortensen</h4>
+          <h4>Anders Kampenes, Carl Emil Hattestad, Anna Kjæmpenes, Jørgen Mortensen og Kristoffer Saastad</h4>
 
         </div>
     );

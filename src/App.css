@@ -295,7 +295,7 @@ h4{
 
 .buttonAnim{
   position: absolute;
-  z-index: 10;
+  z-index: 1;
   left: 22vw;
   top:90vh;
     border-style: solid;
