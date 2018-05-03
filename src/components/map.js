@@ -123,7 +123,6 @@ function resetButton(component, feature, layer){
     component.clearSearch.bind(this)
     component.refs.popjson.leafletElement.clearLayers();
     component.refs.geojson.leafletElement.clearLayers();
-    component.refs.map.leafletElement.clearLayers();
     console.log('reset component',component);
     component.refs.geojson.leafletElement.addData(world_countries);
 
