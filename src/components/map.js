@@ -22,14 +22,14 @@ import logo from '../images/logo.png';
 import L from 'leaflet';
 
 //Global variables
-const outer = [[-60, -170], [80, 170]];
+const outer = [[-80,-175],[80,175]];
 
 function getColor (d) {
   return '#2a3446'
 
 }
 function getOpacity(d, component) {
-  let opacity=0.8;
+  let opacity=1;
   if(d === component.state.countryName){
     opacity = 0;
   }
@@ -39,7 +39,7 @@ function style (component,feature) {
   return {
     fillColor: getColor(feature.properties.name),
     weight: 2,
-    opacity: 0.8,
+    opacity: 0.9,
     color: '#2a3446',
     dashArray: '1',
     fillOpacity: getOpacity(feature.properties.name, component),
@@ -55,7 +55,7 @@ function highlightFeature (component, feature, e) {
     color: '#2a3446',
     dashArray: '',
     fillOpacity: (feature.properties.name === component.state.countryName)?('0'):('0.4'),
-    opacity:0.8,
+    opacity:0.9,
   });
   // this.setState({countryDisplayed:feature.properties.name})
 }
@@ -67,10 +67,10 @@ function resetHighlight (component, feature, e) {
   layer.setStyle({
     fillColor: getColor(feature.properties.name, component),
     weight: 2,
-    opacity: 0.8,
+    opacity: 0.9,
     color: '#2a3446',
     dashArray: '1',
-    fillOpacity: (feature.properties.name === component.state.countryName)?('0'):('0.8')
+    fillOpacity: (feature.properties.name === component.state.countryName)?('0'):('1')
   });
 }
 
@@ -101,23 +101,22 @@ function onEachPopUp(component, feature, layer) {
     mouseover: function(){
 
       var university_info = feature.properties
+      var div = document.createElement('div');
+      div.setAttribute('id','popUpDiv')
+      var content = feature.properties.universitet
 
-        var content = feature.properties.universitet
-        var div = document.createElement("div");
-        div.setAttribute("id", "popUpDiv")
+      var infoButton = document.createElement("text");
+      infoButton.setAttribute("id", "infoButton")
+      infoButton.innerHTML = "<br> Mer info...";
+      infoButton.onclick = function() {
+        window.scrollTo(0,component.state.height - component.state.height*0.1);
+        component.setState({scroll:true})
+        component.props.getUniversities(feature.properties._id)
 
-        var infoButton = document.createElement("text");
-        infoButton.setAttribute("id", "infoButton")
-        infoButton.innerHTML = "<br> Mer info...";
-        infoButton.onclick = function() {
-          window.scrollTo(0,component.state.height - component.state.height*0.1);
-          component.setState({scroll:true})
-          component.props.getUniversities(feature.properties._id)
+        //document.getElementById("mapInfo").scrollTop += 59;
+      }
 
-          //document.getElementById("mapInfo").scrollTop += 59;
-        }
-
-        var starButton = document.createElement("image");
+      var starButton = document.createElement("image");
       starButton.setAttribute("id", "starButton")
       starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="20" height="20">';
       console.log(starButton.innerHTML)
@@ -140,8 +139,6 @@ function onEachPopUp(component, feature, layer) {
         div.appendChild(divText)
         div.appendChild(infoButton)
         div.appendChild(starButton)
-        layer.bindPopup(div)
-        layer.openPopup()
     },
     click: function(){
       //get coordinates of uni
@@ -163,7 +160,7 @@ function resetButton(component, feature, layer){
     component.setState({countryName:''});
     component.setState({bounds:outer});
     component.setState({custom_marker_pos:[]})
-    component.refs.map.leafletElement.setZoom(2)
+    component.refs.map.leafletElement.setZoom(0)
     component.clearSearch.bind(this)
     component.refs.popjson.leafletElement.clearLayers();
     component.refs.geojson.leafletElement.clearLayers();
@@ -220,13 +217,51 @@ function isMarkerInsidePolygon(marker, poly) {
     return inside;
 };
 
+function markerPopupContent(component, marker){
+  console.log(marker);
+  var div = document.createElement('div');
+  div.setAttribute('id','popUpDiv')
+
+  var infoButton = document.createElement("text");
+  infoButton.setAttribute("id", "infoButton")
+  infoButton.innerHTML = "<br> Mer info...";
+  infoButton.onclick = function() {
+    window.scrollTo(0,this.state.height - this.state.height*0.1);
+    component.setState({scroll:true})
+    component.props.getUniversities(marker.options._id)
+  }
+
+
+  var starButton = document.createElement("image");
+  starButton.setAttribute("id", "starButton")
+  starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="20" height="20">';
+  starButton.onclick = function(){
+    if (!component.state.starred) {
+      starButton.innerHTML = '<img src="' + 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/256/star-icon.png" width="20" height="20">';
+      component.setState({starred:true});
+    }else {
+      starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="20" height="20">';
+      component.setState({starred:false});
+    }
+    //Legg til universitetet som har aktiv popUp i "favorittlista" til brukeren
+    //Gjør om til gul/checked stjerne
+  }
+  var divText = document.createElement("div");
+  divText.setAttribute("id", "divText")
+  divText.innerHTML = marker.options.universitet;
+  div.appendChild(divText)
+  div.appendChild(infoButton)
+  div.appendChild(starButton)
+  return div
+}
+
 
 class MapContainer extends Component {
   constructor() {
     super()
 
     this.state = {
-      zoom: 2,
+      zoom: 0,
       bounds:outer,
       custom_marker_pos: [],
       uni_name:'',
@@ -281,7 +316,7 @@ class MapContainer extends Component {
             }
         }
         if (this.state.countryName != country_name){
-          this.setState({bounds: outer})
+          this.setState({bounds: [[-69,-165],[70,165]]})
         }
         this.setState({uni_names:uni_names})
         this.setState({countryName: country_name})
@@ -328,17 +363,20 @@ class MapContainer extends Component {
         }
       }
       // add markers to the map for each country clicked
+
       var markers = []
       for (var i = 0; i < nextProp.geojson.features.length; i++) {
+        var features_marker = nextProp.geojson.features[i]
         var coord = [nextProp.geojson.features[i].geometry.coordinates[1],nextProp.geojson.features[i].geometry.coordinates[0]]
         markers.push({position: coord,
-                      popup:'<div className="popUp">'+nextProp.geojson.features[i].properties.universitet+'</div>',
-                      options: {id: nextProp.geojson.features[i].properties._id},
+                      popup: markerPopupContent.bind(this,features_marker),
+                      options: {id: nextProp.geojson.features[i].properties._id, universitet: nextProp.geojson.features[i].properties.universitet},
                       })
       }
+
       this.setState({markers:markers})
-  }
-  componentWillUnmount() {
+    }
+componentWillUnmount() {
   window.removeEventListener('resize', this.updateWindowDimensions);
 }
 
@@ -426,7 +464,7 @@ updateWindowDimensions() {
     );
     }, this)
       return (
-        <div className="mapbox">
+        <div className="mapbox" style={{marginTop:'10vh'}}>
           <Image responsive  src={require('../images/ad.png')} className={this.state.scroll ? "buttonDownAnimation" : "buttonDown"} />
           <div className="map">
 
@@ -461,7 +499,6 @@ updateWindowDimensions() {
               bounds={this.state.bounds}
               fillOpacity = {this.state.fillOpacity}
               maxBounds = {this.state.maxBounds}
-
               zoomDelta={0.5}
               zoomSnap={0}
             >
