@@ -37,6 +37,9 @@ export function mapReducer(state = INITIAL_STATE, action) {
       case 'ALL_MONEY_RETIREVED':
         return {...state, money: action.payload}
         break;
+      case 'DELETE_GEOJSON':
+        return {...state, geojson: geo}
+        break;
       default:
         return state;
     }

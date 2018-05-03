@@ -1,6 +1,12 @@
 import fetch from 'cross-fetch';
 import API_URL from '../index';
 
+
+export const deleteGEOJSON=()=>{
+  return{
+    type: 'DELETE_GEOJSON'
+  };
+};
 export const get_all_choropleth = () => {
   return (dispatch) => {
     fetch(`${API_URL}/get_choropleth_countries`)

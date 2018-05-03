@@ -42,7 +42,7 @@ class Stat extends Component {
           loading={this.state.loader}
 
         />
-        Laster inn kostnadsstatestikk...
+        Laster inn kostnadsstatistikk...
       </div>
       );
     }

@@ -6,7 +6,7 @@ import {bindActionCreators} from 'redux';
 import { icon } from 'leaflet';
 import MarkerClusterGroup from 'react-leaflet-markercluster';
 
-import {getGEOJSON, getSearchResult,getGEOJSONbyID, emptySeachResult, get_all_GEOJSON} from '../actions/mapActions';
+import {getGEOJSON, getSearchResult,getGEOJSONbyID, emptySeachResult, get_all_GEOJSON, deleteGEOJSON} from '../actions/mapActions';
 import {getUniversities} from '../actions/mapInfoActions';
 
 import '../App.css';
@@ -76,7 +76,7 @@ function resetHighlight (component, feature, e) {
 
 
 function onEachFeature (component, feature, layer) {
-  console.log(component);
+  // console.log(component);
   layer.on({
     mouseover: highlightFeature.bind(null, component,feature),
     mouseout: resetHighlight.bind(null, component,feature),
@@ -114,9 +114,11 @@ function onEachPopUp(component, feature, layer) {
 }
 
 function resetButton(component, feature, layer){
+    component.setState({countryName:''});
+
     // component.setState({zoom: 1})
     component.setState({markers:[]})
-    component.setState({countryName:''});
+
     component.setState({bounds:outer});
     component.setState({custom_marker_pos:[]})
     component.refs.map.leafletElement.setZoom(0)
@@ -125,7 +127,7 @@ function resetButton(component, feature, layer){
     component.refs.geojson.leafletElement.clearLayers();
     console.log('reset component',component);
     component.refs.geojson.leafletElement.addData(world_countries);
-
+    component.props.deleteGEOJSON();
 }
 
 function zDown(component, e){
@@ -296,7 +298,9 @@ class MapContainer extends Component {
           top3_id.push(nextProp.top3[i].properties._id)
         }
         if(nextProp.top3.length !== 0){
+
           document.getElementById('country_displayed').innerHTML = this.state.countryName;
+          console.log('countryname', this.state.countryName);
           document.getElementById('top3uni').innerHTML = '';
           for (var i = 0; i < top3_uni.length; i++) {
             var init_bounds = [[top3_coord[i][1]-0.1,top3_coord[i][0]-0.1],[top3_coord[i][1]+0.1,top3_coord[i][0]+0.1]];
@@ -324,7 +328,11 @@ class MapContainer extends Component {
         }
       }
       // add markers to the map for each country clicked
-
+      console.log(nextProp.geojson);
+      if(nextProp.geojson.features.length==0){
+        document.getElementById('country_displayed').innerHTML = ''
+        document.getElementById('top3uni').innerHTML = '';
+      }
       var markers = []
       var component = this;
       for (var i = 0; i < nextProp.geojson.features.length; i++) {
@@ -365,7 +373,7 @@ updateWindowDimensions() {
     this.props.emptySeachResult();
     this.goToSearch(id)
     this.setState({searched:false})
-    
+
   }
   goToSearch(id){
     this.props.getGEOJSONbyID(id);
@@ -426,7 +434,6 @@ updateWindowDimensions() {
     }, this)
       return (
         <div className="mapbox" style={{marginTop:'10vh'}}>
-          <Image responsive  src={require('../images/ad.png')} className={this.state.scroll ? "buttonDownAnimation" : "buttonDown"} />
           <div className="map">
 
             <form className="searchbar">
@@ -544,6 +551,7 @@ function mapDispatchToProps(dispatch){
     getSearchResult: getSearchResult,
     getGEOJSONbyID: getGEOJSONbyID,
     emptySeachResult:emptySeachResult,
+    deleteGEOJSON:deleteGEOJSON,
   },dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(MapContainer);

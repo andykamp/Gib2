@@ -303,7 +303,7 @@ pointToLayer = (feature, latlng) => {
         <div className="mapbox">
           <div className="map">
            <Col className="centerCol" style={{marginTop: 20}}>
-            <h1>Koroplet kart</h1>
+            <h1>Koropletkart</h1>
             <h4>Under kan du velge mellom et utvalg koropletkart for å få en global oversikt.</h4>
           </Col>
           <Row style={{}} className="centerRowRow" >

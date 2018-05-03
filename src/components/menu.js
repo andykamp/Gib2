@@ -6,6 +6,7 @@ import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {setLoginInfo, setLoginFalse} from '../actions/loginActions';
+import {deleteGEOJSON} from '../actions/mapActions'
 import NotLoggedIn from './notLoggedIn'
 class Menu extends React.Component{
   constructor() {
@@ -24,22 +25,42 @@ class Menu extends React.Component{
   }
   onPressNav2(){
     this.setState({from:2})
+
   }
   onPressNav3(){
     this.setState({from:3})
+    this.props.deleteGEOJSON()
+
   }
   onPressNav4(){
     this.setState({from:4})
+    this.props.deleteGEOJSON()
+
   }
   logOut(){
     this.props.setLoginFalse()
     this.props.cookie.remove("hasLogin")
+    this.props.deleteGEOJSON()
+
+  }
+  onPressNavstat(){
+    this.props.deleteGEOJSON()
+
+  }
+
+  onPressNavkor(){
+    this.props.deleteGEOJSON()
+
+  }
+  onProfile(){
+    this.props.deleteGEOJSON()
+
   }
 
   render(){
     const popoverHoverFocus = (
   <Popover id="popover-trigger-hover-focus">
-    View your stated universities.
+    Se universiteter som du har lagt til
   </Popover>
 
 );
@@ -69,16 +90,16 @@ const title = (
       				</NavItem>
 
               <NavItem eventKey={1} onSelect={this.onPressNav2.bind(this)} className="headerItem">
-                <Link to="/kor" onClick={this.onPressNav1.bind(this)}>
+                <Link to="/kor" onClick={this.onPressNavkor.bind(this)}>
 
-                <h4 style={{color: 'white'}}>Koroplet kart</h4>
+                <h4 style={{color: 'white'}}>Koropletkart</h4>
                 {this.state.from == 2 ? (this.renderLine()):('')}
               </Link>
       				</NavItem>
               <NavItem eventKey={1} onSelect={this.onPressNav2.bind(this)} className="headerItem">
-                <Link to="/stat" onClick={this.onPressNav1.bind(this)}>
+                <Link to="/stat" onClick={this.onPressNavstat.bind(this)}>
 
-                <h4 style={{color: 'white'}}>Kostnadsanalyse</h4>
+                <h4 style={{color: 'white'}}>Kostnadsstatistikk</h4>
                 {this.state.from == 2 ? (this.renderLine()):('')}
               </Link>
       				</NavItem>
@@ -93,7 +114,7 @@ const title = (
     			</Nav>
           <Nav pullRight>
 
-      				<NavItem eventKey={4}  onSelect={this.onPressNav4.bind(this)} className="headerItem">
+      				<NavItem eventKey={4}  onSelect={this.onProfile.bind(this)} className="headerItem">
                 {(this.props.mail.length > 0)?(
                 <Link to="/cart">
                   {/* <img src={require('../images/profile.png')} style={{height: 30}} /> */}
@@ -140,6 +161,7 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
   return bindActionCreators({
     setLoginFalse: setLoginFalse,
+    deleteGEOJSON:deleteGEOJSON
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Menu);
