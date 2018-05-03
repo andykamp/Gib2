@@ -231,6 +231,7 @@ function markerPopupContent(component, marker){
     component.props.getUniversities(marker.options._id)
   }
 
+
   var starButton = document.createElement("image");
   starButton.setAttribute("id", "starButton")
   starButton.innerHTML = '<img src="' + 'https://www.shareicon.net/data/128x128/2015/05/15/38871_star_256x256.png" width="20" height="20">';
