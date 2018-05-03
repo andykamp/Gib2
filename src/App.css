@@ -297,7 +297,7 @@ h4{
   position: absolute;
   z-index: 1;
   left: 22vw;
-  top:90vh;
+  top:100vh;
     border-style: solid;
      border-width: medium;
      border-radius: 3px;
@@ -710,12 +710,13 @@ margin: 20px
       border: 2px solid #dcdcdc;
       padding: 3px;
       padding-top: 10px;
-      width: 100px;
+      width: 125px;
       height: 170px;
       background: #fafafa;
       line-height:15px;
       color: #555;
       z-index: 1000;
+      text-align: center
 
 }
 

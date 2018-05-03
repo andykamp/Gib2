@@ -74,8 +74,9 @@ function highlightFeature (component,feature, e) {
     countryName: country_name,
   })
   var div = document.createElement("div");
+  const value = ('university_rating' === component.state.mapType || component.state.mapType === 'report_rating') ? (feature.properties[component.state.mapType] * 100).toFixed(2) + ' %' : feature.properties[component.state.mapType].toFixed(2);
   div.setAttribute("id", "popUpDiv")
-  div.innerHTML = country_name + '<br>' + feature.properties[component.state.mapType]
+  div.innerHTML = country_name + '<br>' + value;
   layer.bindPopup(div)
   layer.openPopup()
 
@@ -279,12 +280,12 @@ pointToLayer = (feature, latlng) => {
     var name;
     if(this.state.mapType ==="report_rating"){
       list = this.props.choropleth.report_rating_groups;
-      list = list.map(a => a.toFixed(2));
+      list = list.map(a => '' + (a * 100).toFixed(2) + ' %');
       name = "Studentandel"
     }
     else if(this.state.mapType ==="university_rating"){
       list = this.props.choropleth.university_rating_groups;
-      list = list.map(a => a.toFixed(2));
+      list = list.map(a => '' + (a * 100).toFixed(2) + ' %');
       name = "Universiteter";
     }
     else if (this.state.mapType ==="social_rating"){
@@ -332,11 +333,11 @@ pointToLayer = (feature, latlng) => {
             <div className = 'legend'>
             <p> {name}</p>
             <ul class = 'list-unstyled'>
-            <li><span className= 'colorBox' style = {{background:'#FFEAC4'}}></span><p> {list[0]}-{list[1]} </p> </li>
-            <li><span className= 'colorBox' style = {{background:'#FFCF76'}}></span><p> {list[1]}-{list[2]}</p> </li>
-            <li><span className= 'colorBox' style = {{background:'#FFA500'}}></span><p> {list[2]}-{list[3]}</p> </li>
-            <li><span className= 'colorBox' style = {{background:'#FF6500'}}></span><p> {list[3]}-{list[4]}</p> </li>
-            <li><span className= 'colorBox' style = {{background:'#FF3700'}}></span><p> {list[4]}-</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FFEAC4'}}></span><p> {list[0]} - {list[1]} </p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FFCF76'}}></span><p> {list[1]} - {list[2]}</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FFA500'}}></span><p> {list[2]} - {list[3]}</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FF6500'}}></span><p> {list[3]} - {list[4]}</p> </li>
+            <li><span className= 'colorBox' style = {{background:'#FF3700'}}></span><p> {list[4]} - </p> </li>
             </ul>
             </div>
 

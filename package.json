@@ -11,6 +11,7 @@
     "d3-scale": "^1.0.7",
     "d3-shape": "^1.0.6",
     "leaflet": "^1.3.0",
+    "leaflet.markercluster": "^1.3.0",
     "material-ui-search-bar": "^0.4.1",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
@@ -21,6 +22,7 @@
     "react-key-handler": "^1.0.1",
     "react-keydown": "^1.9.7",
     "react-leaflet": "^1.8.0",
+    "react-leaflet-markercluster": "^1.1.8",
     "react-modal": "^3.1.13",
     "react-move": "^2.7.0",
     "react-redux": "^5.0.6",
@@ -29,6 +31,7 @@
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.17",
     "react-spinners": "^0.2.6",
+    "really-smooth-scroll": "^2.1.1",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0"
   },

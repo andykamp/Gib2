@@ -187,7 +187,6 @@ this.props.add_favorite_university(email, id)
               </div>
 
               <div className="infoRowHeader">
-                <p>10 stk har gitt tilbakemelding på dette universitetet</p>
               </div>
 
               {/* <div className="infoRow">

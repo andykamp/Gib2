@@ -30,7 +30,7 @@ class SignIn extends React.Component {
   handleLogin(){
     if(this.state.value.includes('@stud.ntnu.no')) {
     this.props.setLoginInfo(this.state.value);
-    this.props.cookies.set('hasLogin', this.state.value) 
+    this.props.cookies.set('hasLogin', this.state.value)
   }
   }
   handleContinueWithoutLogin(){
@@ -42,7 +42,7 @@ class SignIn extends React.Component {
       <form className="signIn">
         <img src={require('../images/logo.png')} style={{height: '10vh'}} />
         <h2 style={{color: 'white'}}>Velkommen</h2>
-        <p style={{color: 'white', textAlign: 'center'}}>Logg deg inn med studieretning for å at vi kan tilrettelegge bedre for deg</p>
+        <p style={{color: 'white', textAlign: 'center'}}>Logg deg inn med studiemail</p>
         <FormGroup
           controlId="formBasicText"
           validationState={this.getValidationState()}
