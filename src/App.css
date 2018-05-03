@@ -710,12 +710,13 @@ margin: 20px
       border: 2px solid #dcdcdc;
       padding: 3px;
       padding-top: 10px;
-      width: 100px;
+      width: 125px;
       height: 170px;
       background: #fafafa;
       line-height:15px;
       color: #555;
       z-index: 1000;
+      text-align: center
 
 }
 
